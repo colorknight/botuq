@@ -1,0 +1,15 @@
+{
+	version:"0.1",
+	items:[
+		{keys:["1"],value:"记录日志"},
+		{keys:["2"],value:"阻断会话"},
+		{keys:["4"],value:"丢弃当前报文"},
+		{keys:["8"],value:"隔离"},
+		{keys:["16"],value:"TCP旁路阻断"},
+		{keys:["32"],value:"发送SnmpTrap"},
+		{keys:["64"],value:"发送短信"},
+		{keys:["128"],value:"抓取会话报文"},
+		{keys:["256"],value:"抓取当前报文"},
+		{keys:["512"],value:"限速"}
+	]
+}

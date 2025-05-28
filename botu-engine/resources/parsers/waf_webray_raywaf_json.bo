@@ -1,0 +1,143 @@
+// 万博润WAF
+botu("WAF/Webray/Raywaf/Json") {
+    inx = indexString(MS_SRC_DATA,"{");
+    if (inx != -1) {
+        if (patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>AuditLog.*(?<msg>\\{[^\\}]+\\})")) {
+            jsonParse(msg, true);
+            pack("event") {
+                START_TIME = r_time;
+                DS_DVC_NAME = devicename;
+                EVT_CATEGORY = "AuditLog";
+                SEVERITY = r_loglevel_name;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("sev_waf_webray_raywaf_json",r_loglevel_name);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = r_operator;
+                SBJ_ROLE = r_role_name;
+                SBJ_IP = r_sip;
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = r_actionid;
+                APP_PROTO = r_logintype_name;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = MS_SRC_ADDRESS;
+                OBJ_IP = MS_SRC_ADDRESS;
+                OUTCOME = r_action;
+            }
+        } else {
+            subStr = subString(MS_SRC_DATA, inx);
+            jsonParse(subStr, true);
+            policyId = field("syslog.r_policyid");
+            ruleId = field("syslog.r_ruleid");
+            itemId = field("syslog.r_itemid");
+            rTime = field("syslog.r_time_s");
+            if (indexString(rTime, ",") != -1) {
+                rTime = format2Time( rTime, "yyyy-MM-dd,HH:mm:ss");
+            } else {
+                rTime = format2Time( rTime, "yyyy-MM-ddHH:mm:ss");
+            }
+            pack("event") {
+                START_TIME = rTime;
+                DS_DVC_NAME = devicename;
+                EVT_CATEGORY = field("syslog.r_type_name");
+                EVT_TYPE = strFormat("%s/%s/%s", policyId, ruleId, itemId);
+                SEVERITY = field("syslog.r_severity_name");
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("sev_waf_webray_raywaf_json",field("syslog.r_severity"));
+                PHRASE = dictMapping("nkc_waf_webray_raywaf_json",field("syslog.r_type_name"));
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = field("syslog.r_xip");
+                SBJ_IP = field("syslog.r_xip");
+                SBJ_TRANS_IP = field("syslog.r_sip_s");
+                SBJ_PORT = field("syslog.r_sport");
+                BEHAVIOR = field("syslog.r_method_name");
+                BHV_BODY = field("syslog.r_hdr");
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = field("syslog.r_dip_s");
+                OBJ_IP = field("syslog.r_dip_s");
+                OBJ_PORT = field("syslog.r_dport");
+                TRANS_PROTO = toUppercase(field("syslog.r_protocol_name"));
+                APP_PROTO = toUppercase(field("syslog.r_layer_name"));
+                PRT_ACTION = field("syslog.r_actiondetails");
+                REQ_URL = field("syslog.r_url");
+                REQ_XFF = field("syslog.r_xffip");
+                REQ_PARAMS = field("syslog.r_args");
+            }
+        }
+    } else if (patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>.*WAF :(?<time>.*) DDOS: devicename=(.*) sip=(?<sip>.*) sport=(?<sport>\\d*)\\s+dip=(?<dip>.*) dport=(?<dport>\\d*)\\s+ipproto=(?<proto>.*) attack=(?<attack>.*) url=(?<url>.*) host=(?<host>.*) cdnip=(?<cdnip>.*) xff=(?<xff>.*) grade=.*")) {
+        sev = parseSyslogSeverity(pri);
+        pack("event") {
+            START_TIME = extractTime(time);
+            DS_DVC_NAME = devicename;
+            EVT_CATEGORY = attack;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Threat/Attack";
+            N_SEVERITY = dictMapping("severity",sev);
+            PHRASE = "invasion";
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = sip;
+            SBJ_IP = sip;
+            SBJ_PORT = sport;
+            BEHAVIOR = attack;
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = dip;
+            OBJ_IP = dip;
+            OBJ_PORT = dport;
+            OBJ_TRANS_IP = cdnip;
+            TRANS_PROTO = proto;
+            REQ_URL = url;
+            REQ_XFF = xff;
+        }
+    } else if (patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>.*WAF :(?<time>.*) WAF: (?<sip>[^:]*):(?<sport>\\d+)-\\>(?<dip>[^ ]*) devicename=(?<devicename>.*) url=(?<url>.*)\\s+method=(?<method>.*)\\s+args=(?<args>.*)\\s+flag_field=(?<flagfield>.*)\\s+block_time=(?<blocktime>\\d*)\\s+http_type=(?<httptype>.*)\\s+attack_field=(?<attackfield>\\d*)\\s+profile_id=(?<profileid>\\d*)\\s+rule_id=(?<ruleid>\\d*)\\s+type=(?<type>.*)\\s+severity=(?<severity>\\d*)\\s+action=(?<action>\\d*)\\s+referer=(?<referer>.*)\\s+useragent=(?<useragent>.*)\\s+post=(?<post>.*)\\s+xip=(?<xff>.*) code=.*")) {
+        pack("event") {
+            START_TIME = extractTime(time);
+            DS_DVC_NAME = devicename;
+            EVT_CATEGORY = type;
+            EVT_TYPE = strFormat("%s/%s", profileid, ruleid);
+            SEVERITY = severity;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("sev_waf_webray_raywaf_json",severity);
+            PHRASE = dictMapping("nkc_waf_webray_raywaf_json",type);
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = sip;
+            SBJ_IP = sip;
+            SBJ_PORT = sport;
+            BEHAVIOR = method;
+            BHV_BODY = post;
+            APP_PROTO = "HTTP";
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = dip;
+            OBJ_IP = dip;
+            PRT_ACTION = dictMapping("pat_waf_webray_raywaf_json",action);
+            REQ_URL = url;
+            REQ_XFF = xff;
+            REQ_PARAMS = args;
+            REQ_REFERER = referer;
+            REQ_USER_AGENT = useragent;
+        }
+    } else {
+        inx = indexString(MS_SRC_DATA,"time=");
+        if (inx == -1) {
+            pack();
+        }
+        subStr = subString(MS_SRC_DATA, inx);
+        splitParse(MS_SRC_DATA, ' ', null, null, "=");
+        pack("event") {
+            START_TIME = format2Time(time,"yyyy-MM-dd HH:mm:ss");
+            EVT_CATEGORY = "防篡改";
+            EVT_TYPE = "防篡改";
+            EVT_NAME = "防篡改";
+            SEVERITY = "2";
+            N_EVT_CATEGORY = "/Threat/Info/Interpolation";
+            N_SEVERITY = 2;
+            PHRASE = "invasion";
+            SBJ_TYPE = "/Process";
+            SBJ_NAME = process;
+            BEHAVIOR = atktype;
+            BHV_BODY = file;
+            OBJ_TYPE = "/Service/Web";
+            OBJ_NAME = webname;
+            OBJ_URI = device;
+            PRT_ACTION = "block";
+        }
+    }
+}

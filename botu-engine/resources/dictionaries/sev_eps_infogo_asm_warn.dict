@@ -1,0 +1,21 @@
+{
+    version:"0.1",
+    items:[
+        {
+            keys:["1"],
+            value:2   // 低
+        },
+        {
+            keys:["2"],
+            value:3   // 中
+        },
+        {
+            keys:["3"],
+            value:4   // 高
+        },
+        {
+            keys:["4"],
+            value:5   // 非常高
+        }
+    ]
+}

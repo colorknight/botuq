@@ -1,0 +1,17 @@
+{
+    version:"0.1",
+    items:[
+        {
+            keys:["INFORMATIONAL"],
+            value:"1"   // 非常低
+        },
+        {
+            keys:["NOTICE"],
+            value:"2"   // 低
+        },
+        {
+            keys:["WARNING"],
+            value:"3"   // 中
+        }
+    ]
+}

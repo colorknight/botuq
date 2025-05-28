@@ -1,0 +1,61 @@
+{
+    version:"0.1",
+    items:[
+        { keys:["SQLInjectionProtection"], value:"invasion" },
+        { keys:["OSInjectionProtection"], value:"invasion" },
+        { keys:["LDAPInjectionProtection"], value:"invasion" },
+        { keys:["XPATHInjectionProtection"], value:"invasion" },
+        { keys:["XMLInjectionProtection"], value:"invasion" },
+        { keys:["JSONInjectionProtection"], value:"invasion" },
+        { keys:["SSIInjectionProtection"], value:"invasion" },
+        { keys:["XSSProtection"], value:"invasion" },
+        { keys:["ComponentVulnerabilityProtection"], value:"invasion" },
+        { keys:["WebScanProtection"], value:"infoDetect" },
+        { keys:["WebshellProtection"], value:"commandControl" },
+        { keys:["BruteForceProtection"], value:"invasion" },
+        { keys:["WeakPasswordCheck"], value:"invasion" },
+        { keys:["CSRFProtection"], value:"invasion" },
+        { keys:["CGI Security"], value:"invasion" },
+        { keys:["API Security"], value:"invasion" },
+        { keys:["Ping Death"], value:"invasion" },
+        { keys:["Tiny IP Fragment"], value:"invasion" },
+        { keys:["Danger IP Option"], value:"invasion" },
+        { keys:["SYN Flood"], value:"invasion" },
+        { keys:["Winnuke"], value:"invasion" },
+        { keys:["Land"], value:"invasion" },
+        { keys:["SYNACK Flood"], value:"invasion" },
+        { keys:["ACK Flood"], value:"invasion" },
+        { keys:["FIN Flood"], value:"invasion" },
+        { keys:["RST Flood"], value:"invasion" },
+        { keys:["TCP X-Flag Flood"], value:"invasion" },
+        { keys:["Conn Exhaust"], value:"invasion" },
+        { keys:["TCP Conn Flood"], value:"invasion" },
+        { keys:["Slow TCP"], value:"invasion" },
+        { keys:["CHARGEN Reflect"], value:"invasion" },
+        { keys:["UDP Flood"], value:"invasion" },
+        { keys:["SNMP Reflect"], value:"invasion" },
+        { keys:["DNS Reflect"], value:"invasion" },
+        { keys:["Fraggle"], value:"invasion" },
+        { keys:["SSDP Reflect"], value:"invasion" },
+        { keys:["NTP Reflect"], value:"invasion" },
+        { keys:["Smurf"], value:"invasion" },
+        { keys:["HTTP Automata"], value:"invasion" },
+        { keys:["ICMP Flood"], value:"invasion" },
+        { keys:["HTTP Post Flood"], value:"invasion" },
+        { keys:["HTTP Get Flood"], value:"invasion" },
+        { keys:["HTTP Slow Body"], value:"invasion" },
+        { keys:["HTTP Slow Header"], value:"invasion" },
+        { keys:["DNS Cache Poison"], value:"invasion" },
+        { keys:["DNS Query Flood"], value:"invasion" },
+        { keys:["MemCached Reflect"], value:"invasion" },
+        { keys:["Black IP"], value:"infoDetect" }
+    ]
+}
+
+
+
+
+
+
+
+

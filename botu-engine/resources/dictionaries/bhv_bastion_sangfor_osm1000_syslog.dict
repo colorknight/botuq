@@ -1,0 +1,15 @@
+{
+	version:"0.1",
+	items:[
+		{keys:["登录"],value:"/Login"},
+		{keys:["退出"],value:"/Logout"},
+		{keys:["添加"],value:"/Create"},
+		{keys:["删除"],value:"/Delete"},
+		{keys:["修改"],value:"/Update"},
+		{keys:["变更"],value:"/Update"},
+		{keys:["导入"],value:"/Import"},
+		{keys:["导出"],value:"/Export"},
+		{keys:["下载"],value:"/Download"},
+		{keys:["上传"],value:"/Upload"}
+	]
+}

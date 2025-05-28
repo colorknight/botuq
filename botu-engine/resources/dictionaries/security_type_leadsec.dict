@@ -1,0 +1,25 @@
+{
+    version:"0.1",
+    items:[
+        { keys:["1"], value:"缓冲溢出"},
+        { keys:["2"], value:"网络数据库攻击"},
+        { keys:["3"], value:"网络设备攻击"},
+        { keys:["4"], value:"安全扫描"},
+        { keys:["5"], value:"木马后门"},
+        { keys:["6"], value:"蠕虫病毒"},
+        { keys:["7"], value:"拒绝服务"},
+        { keys:["8"], value:"分布式拒绝服务"},
+        { keys:["9"], value:"CGI攻击"},
+        { keys:["10"], value:"协议分析"},
+        { keys:["11"], value:"安全审计"},
+        { keys:["12"], value:"可疑行为"},
+        { keys:["15"], value:"网络娱乐"},
+        { keys:["17"], value:"安全漏洞"},
+        { keys:["18"], value:"CGI访问"},
+        { keys:["19"], value:"欺骗劫持"},
+        { keys:["20"], value:"网络通讯"},
+        { keys:["24"], value:"脆弱口令"},
+        { keys:["25"], value:"穷举探测"},
+        { keys:["26"], value:"间谍软件"}
+    ]
+}

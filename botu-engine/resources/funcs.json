@@ -1,0 +1,11 @@
+{
+  "botuFunctions": [
+    {
+      "name": "TestFunc1",
+      "tags": [
+        "String"
+      ],
+      "clazz": "org.datayoo.botu.operand.function.TestFunc1"
+    }
+  ]
+}

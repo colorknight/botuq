@@ -1,0 +1,22 @@
+{
+    version:"0.1",
+    items:[
+        { keys:["0"], value:"没有错误"},
+        { keys:["1"], value:"格式错误"},
+        { keys:["2"], value:"服务器故障"},
+        { keys:["3"], value:"名称错误"},
+        { keys:["4"], value:"未实现"},
+        { keys:["5"], value:"拒绝"},
+        { keys:["6"], value:"在不需要时名字存在"},
+        { keys:["7"], value:"在不需要时RR存在"},
+        { keys:["8"], value:"RR不存在"},
+        { keys:["9"], value:"服务器在区域内未认证"},
+        { keys:["10"], value:"名字在区域内部存在"},
+        { keys:["16"], value:"不合理的OPT版本/TSIG签名失败"},
+        { keys:["17"], value:"不可识别的key"},
+        { keys:["18"], value:"签名已超时"},
+        { keys:["19"], value:"不合理的TKEY模式"},
+        { keys:["20"], value:"重复的key名"},
+        { keys:["21"], value:"算法不支持"},
+    ]
+}

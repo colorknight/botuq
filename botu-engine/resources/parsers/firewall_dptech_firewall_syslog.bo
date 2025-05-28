@@ -1,0 +1,56 @@
+// 迪普防火墙
+botu("Firewall/DPtech/Firewall/Syslog") {
+    if (patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\> \\d+ (?<devip>[^\\s]+) (?<time>\\d+\\s+\\w+\\s+\\d+\\s+\\d+:\\d+:\\d+) (?<devname>\\w+) (?<eid>\\d+) (?<module>[^:]+):(?<cat>[^ ]+) (?<detail>.*)$")) {
+        sev = parseSyslogSeverity(pri);
+        splitParse(detail, '|', null, null, null);
+        pack("event") {
+             START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss", "en");
+             DS_DVC_NAME = devname;
+             DS_PROCESS_NAME = module;
+             EVT_CATEGORY = cat;
+             EVT_ID = eid;
+             SEVERITY = sev;
+             N_EVT_CATEGORY = "/Audit";
+             N_SEVERITY = dictMapping("severity",sev);
+             SBJ_TYPE = "/Ip";
+             SBJ_NAME = $4;
+             SBJ_IP = $4;
+             SBJ_PORT = $5;
+             TRANS_PROTO = dictMapping("trans_protocol",toInt($8));
+             BHV_CATEGORY = "/Access";
+             BEHAVIOR = "access";
+             OBJ_TYPE = "/Ip";
+             OBJ_NAME = $6;
+             OBJ_IP = $6;
+             OBJ_PORT = $7;
+        }
+    } else if (patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\> \\d+ (?<devip>[^\\s]+) (?<time>\\w+\\s+\\d+\\s+\\d+:\\d+:\\d+\\s+\\d+) (?<devname>\\w+) (?<eid>\\d+) (?<module>[^:]+):(?<cat>[^ ]+) (?<detail>.*)$")) {
+        sev = parseSyslogSeverity(pri);
+        splitParse(detail, '|', null, null, null);
+        pack("event") {
+             START_TIME = format2Time(time,"MMM dd HH:mm:ss yyyy", "en");
+             DS_DVC_NAME = devname;
+             DS_PROCESS_NAME = module;
+             EVT_CATEGORY = module;
+             EVT_TYPE = eid;
+             SEVERITY = sev;
+             N_EVT_CATEGORY = "/Audit";
+             N_SEVERITY = dictMapping("severity",sev);
+             SBJ_TYPE = "/Ip";
+             SBJ_NAME = $2;
+             SBJ_IP = $2;
+             SBJ_PORT = $3;
+             SBJ_INTERFACE = $6;
+             TRANS_PROTO = dictMapping("trans_protocol",toInt($1));
+             BHV_CATEGORY = "/Access";
+             BEHAVIOR = "access";
+             OBJ_TYPE = "/Ip";
+             OBJ_NAME = $4;
+             OBJ_IP = $4;
+             OBJ_PORT = $5;
+             OBJ_INTERFACE = $7;
+             PRT_ACTION = cat;
+            }
+        }
+    }
+}

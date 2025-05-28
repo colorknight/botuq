@@ -1,0 +1,11 @@
+{
+    version:"0.1",
+    items:[
+        { keys:["1"], value:"CONTINUE"},
+        { keys:["2"], value:"PASS"},
+        { keys:["3"], value:"ACCEPT"},
+        { keys:["4"], value:"REJECT"},
+        { keys:["5"], value:"BLOCK"},
+        { keys:["6"], value:"REDIRECT "}
+    ]
+}

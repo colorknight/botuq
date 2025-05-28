@@ -1,0 +1,13 @@
+{
+    version:"0.1",
+    items:[
+        { keys:[0], value:"2"},// 低
+        { keys:[1], value:"3"},// 中
+        { keys:[2], value:"4"},// 高
+        { keys:["0"], value:"2"},// 低
+        { keys:["1"], value:"3"},// 中
+        { keys:["2"], value:"4"},// 高
+        { keys:["Informational"], value:"1"},// 低
+        { keys:["Warning"], value:"2"},// 中
+    ]
+}

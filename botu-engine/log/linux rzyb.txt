@@ -1,0 +1,87 @@
+#Linux Doas Conf File Creation
+
+
+
+#dd /dev/zero /dev/null
+<182>Nov 14 04:12:12 localhost audit type=SYSCALL msg=audit(1699953129.291:140): arch=c000003e syscall=59 success=yes exit=0 a0=847f00 a1=851420 a2=80fe60 a3=7ffc8aa86f20 items=2 ppid=1440 pid=1600 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="dd" exe="/usr/bin/dd" key="dd"
+<182>Nov 14 04:12:12 localhost audit type=EXECVE msg=audit(1699953129.291:140): argc=5 a0="dd" a1="if=/dev/zero" a2="bs=1024" a3="count=1" a4="of=/var/test.log"
+<182>Nov 14 04:12:12 localhost audit type=CWD msg=audit(1699953129.291:140):  cwd="/var"
+<182>Nov 14 04:12:12 localhost audit type=PATH msg=audit(1699953129.291:140): item=0 name="/bin/dd" inode=50436761 dev=fd:00 mode=0100755 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 04:12:12 localhost audit type=PATH msg=audit(1699953129.291:140): item=1 name="/lib64/ld-linux-x86-64.so.2" inode=15666 dev=fd:00 mode=0100755 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 04:12:12 localhost audit type=PROCTITLE msg=audit(1699953129.291:140): proctitle=64640069663D2F6465762F7A65726F0062733D3130323400636F756E743D31006F663D2F7661722F746573742E6C6F67
+<182>Nov 14 04:15:33 localhost audit type=SYSCALL msg=audit(1699953330.476:141): arch=c000003e syscall=59 success=yes exit=0 a0=847e60 a1=84c7a0 a2=80fe60 a3=7ffc8aa86f20 items=2 ppid=1440 pid=1602 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="dd" exe="/usr/bin/dd" key="dd"
+<182>Nov 14 04:15:33 localhost audit type=EXECVE msg=audit(1699953330.476:141): argc=5 a0="dd" a1="if=/dev/null" a2="bs=1024" a3="count=1" a4="of=/var/test.log"
+<182>Nov 14 04:15:33 localhost audit type=CWD msg=audit(1699953330.476:141):  cwd="/var"
+<182>Nov 14 04:15:33 localhost audit type=PATH msg=audit(1699953330.476:141): item=0 name="/bin/dd" inode=50436761 dev=fd:00 mode=0100755 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 04:15:33 localhost audit type=PATH msg=audit(1699953330.476:141): item=1 name="/lib64/ld-linux-x86-64.so.2" inode=15666 dev=fd:00 mode=0100755 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 04:15:33 localhost audit type=PROCTITLE msg=audit(1699953330.476:141): proctitle=64640069663D2F6465762F6E756C6C0062733D3130323400636F756E743D31006F663D2F7661722F746573742E6C6F67
+
+#System and Hardware Information Discovery
+<182>Nov 14 05:43:28 localhost audit type=CONFIG_CHANGE msg=audit(1699958605.394:149): auid=0 ses=1 op=add_rule key="bios_version" list=4 res=1
+<182>Nov 14 05:46:38 localhost audit type=SYSCALL msg=audit(1699958792.921:151): arch=c000003e syscall=2 success=yes exit=3 a0=7ffe9c3978a9 a1=0 a2=1fffffffffff0000 a3=7ffe9c394ea0 items=1 ppid=1440 pid=1694 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="cat" exe="/usr/bin/cat" key="bios_version"
+<182>Nov 14 05:46:38 localhost audit type=CWD msg=audit(1699958792.921:151):  cwd="/etc"
+<182>Nov 14 05:46:38 localhost audit type=PATH msg=audit(1699958792.921:151): item=0 name="/sys/class/dmi/id/bios_version" inode=569 dev=00:11 mode=0100444 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 05:46:38 localhost audit type=PROCTITLE msg=audit(1699958792.921:151): proctitle=636174002F7379732F636C6173732F646D692F69642F62696F735F76657273696F6E
+<182>Nov 14 05:48:18 localhost audit type=CONFIG_CHANGE msg=audit(1699958891.417:152): auid=0 ses=1 op=add_rule key="product_name" list=4 res=1
+
+<182>Nov 14 05:48:48 localhost audit type=SYSCALL msg=audit(1699958922.471:153): arch=c000003e syscall=2 success=yes exit=3 a0=7ffcc7a858a9 a1=0 a2=1fffffffffff0000 a3=7ffcc7a84060 items=1 ppid=1440 pid=1698 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="cat" exe="/usr/bin/cat" key="product_name"
+<182>Nov 14 05:48:48 localhost audit type=CWD msg=audit(1699958922.471:153):  cwd="/etc"
+<182>Nov 14 05:48:48 localhost audit type=PATH msg=audit(1699958922.471:153): item=0 name="/sys/class/dmi/id/product_name" inode=572 dev=00:11 mode=0100444 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 05:48:48 localhost audit type=PROCTITLE msg=audit(1699958922.471:153): proctitle=636174002F7379732F636C6173732F646D692F69642F70726F647563745F6E616D65
+
+<182>Nov 14 05:50:08 localhost audit type=CONFIG_CHANGE msg=audit(1699959000.078:154): auid=0 ses=1 op=add_rule key="chassis_vendor" list=4 res=1
+<182>Nov 14 05:51:38 localhost audit type=SYSCALL msg=audit(1699959094.066:155): arch=c000003e syscall=2 success=yes exit=3 a0=7ffdd73848a7 a1=0 a2=1fffffffffff0000 a3=7ffdd73839a0 items=1 ppid=1440 pid=1701 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="cat" exe="/usr/bin/cat" key="chassis_vendor"
+<182>Nov 14 05:51:38 localhost audit type=CWD msg=audit(1699959094.066:155):  cwd="/etc"
+<182>Nov 14 05:51:38 localhost audit type=PATH msg=audit(1699959094.066:155): item=0 name="/sys/class/dmi/id/chassis_vendor" inode=581 dev=00:11 mode=0100444 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 05:51:38 localhost audit type=PROCTITLE msg=audit(1699959094.066:155): proctitle=636174002F7379732F636C6173732F646D692F69642F636861737369735F76656E646F72
+
+<182>Nov 14 05:55:49 localhost audit type=CONFIG_CHANGE msg=audit(1699959341.892:156): auid=0 ses=1 op=add_rule key="scsi" list=4 res=1
+<182>Nov 14 05:55:59 localhost audit type=SYSCALL msg=audit(1699959350.160:157): arch=c000003e syscall=2 success=yes exit=3 a0=7fff429768b8 a1=0 a2=1fffffffffff0000 a3=7fff429740a0 items=1 ppid=1440 pid=1708 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="cat" exe="/usr/bin/cat" key="scsi"
+<182>Nov 14 05:55:59 localhost audit type=CWD msg=audit(1699959350.160:157):  cwd="/etc"
+<182>Nov 14 05:55:59 localhost audit type=PATH msg=audit(1699959350.160:157): item=0 name="/proc/scsi/scsi" inode=4026531969 dev=00:03 mode=0100444 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 05:55:59 localhost audit type=PROCTITLE msg=audit(1699959350.160:157): proctitle=636174002F70726F632F736373692F73637369
+
+
+<182>Nov 14 05:59:59 localhost audit type=CONFIG_CHANGE msg=audit(1699959594.987:158): auid=0 ses=1 op=add_rule key="proc_version" list=4 res=1
+<182>Nov 14 06:00:09 localhost audit type=SYSCALL msg=audit(1699959600.765:159): arch=c000003e syscall=2 success=yes exit=3 a0=7ffe7fbe58ba a1=0 a2=1fffffffffff0000 a3=7ffe7fbe48e0 items=1 ppid=1440 pid=1714 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="cat" exe="/usr/bin/cat" key="proc_version"
+<182>Nov 14 06:00:09 localhost audit type=CWD msg=audit(1699959600.765:159):  cwd="/etc"
+<182>Nov 14 06:00:09 localhost audit type=PATH msg=audit(1699959600.765:159): item=0 name="/proc/version" inode=4026532031 dev=00:03 mode=0100444 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 06:00:09 localhost audit type=PROCTITLE msg=audit(1699959600.765:159): proctitle=636174002F70726F632F76657273696F6E
+
+
+
+<182>Nov 14 06:09:19 localhost audit type=CONFIG_CHANGE msg=audit(1699960150.507:168): auid=0 ses=1 op=add_rule key="centos-release" list=4 res=1
+<182>Nov 14 06:09:29 localhost audit type=SYSCALL msg=audit(1699960161.506:169): arch=c000003e syscall=2 success=yes exit=3 a0=7ffd58eab8b4 a1=0 a2=1fffffffffff0000 a3=7ffd58ea92e0 items=1 ppid=1440 pid=1738 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="cat" exe="/usr/bin/cat" key="centos-release"
+<182>Nov 14 06:09:29 localhost audit type=CWD msg=audit(1699960161.506:169):  cwd="/etc"
+<182>Nov 14 06:09:29 localhost audit type=PATH msg=audit(1699960161.506:169): item=0 name="/etc/centos-release" inode=16777642 dev=fd:00 mode=0100644 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 06:09:29 localhost audit type=PROCTITLE msg=audit(1699960161.506:169): proctitle=636174002F6574632F63656E746F732D72656C65617365
+
+<182>Nov 14 06:38:51 localhost audit type=CONFIG_CHANGE msg=audit(1699960150.507:168): auid=0 ses=1 op=add_rule key="os-release" list=4 res=1
+<182>Nov 14 06:38:51 localhost audit type=SYSCALL msg=audit(1699961926.337:194): arch=c000003e syscall=89 success=yes exit=21 a0=7fff9f2649f0 a1=d1b880 a2=16 a3=2 items=1 ppid=1440 pid=1776 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="ls" exe="/usr/bin/ls" key="os-release"
+<182>Nov 14 06:38:51 localhost audit type=CWD msg=audit(1699961926.337:194):  cwd="/etc"
+<182>Nov 14 06:38:51 localhost audit type=PATH msg=audit(1699961926.337:194): item=0 name="os-release" inode=16777646 dev=fd:00 mode=0120777 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 06:38:51 localhost audit type=PROCTITLE msg=audit(1699961926.337:194): proctitle=6C73002D2D636F6C6F723D6175746F
+
+
+<182>Nov 14 06:20:10 localhost audit type=CONFIG_CHANGE msg=audit(1699960810.361:176): auid=0 ses=1 op=add_rule key="redhat-release" list=4 res=1
+<182>Nov 14 06:20:30 localhost audit type=SYSCALL msg=audit(1699960821.370:177): arch=c000003e syscall=2 success=yes exit=3 a0=7ffccf5658b4 a1=0 a2=1fffffffffff0000 a3=7ffccf564e60 items=1 ppid=1440 pid=1760 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="cat" exe="/usr/bin/cat" key="centos-release"
+<182>Nov 14 06:20:30 localhost audit type=CWD msg=audit(1699960821.370:177):  cwd="/etc"
+<182>Nov 14 06:20:30 localhost audit type=PATH msg=audit(1699960821.370:177): item=0 name="/etc/redhat-release" inode=16777642 dev=fd:00 mode=0100644 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 06:20:30 localhost audit type=PROCTITLE msg=audit(1699960821.370:177): proctitle=636174002F6574632F7265646861742D72656C65617365
+
+
+<182>Nov 14 06:22:20 localhost audit type=CONFIG_CHANGE msg=audit(1699960935.365:178): auid=0 ses=1 op=add_rule key="issue" list=4 res=1
+<182>Nov 14 06:22:30 localhost audit type=SYSCALL msg=audit(1699960948.653:179): arch=c000003e syscall=2 success=yes exit=3 a0=7ffd845e28bd a1=0 a2=1fffffffffff0000 a3=7ffd845e14a0 items=1 ppid=1440 pid=1764 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="cat" exe="/usr/bin/cat" key="issue"
+<182>Nov 14 06:22:30 localhost audit type=CWD msg=audit(1699960948.653:179):  cwd="/etc"
+<182>Nov 14 06:22:30 localhost audit type=PATH msg=audit(1699960948.653:179): item=0 name="/etc/issue" inode=16777644 dev=fd:00 mode=0100644 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 06:22:30 localhost audit type=PROCTITLE msg=audit(1699960948.653:179): proctitle=636174002F6574632F6973737565
+
+
+#Password Policy Discovery
+
+<182>Nov 14 06:48:12 localhost audit type=CONFIG_CHANGE msg=audit(1699962486.994:196): auid=0 ses=1 op=add_rule key="pwquality.conf" list=4 res=1
+<182>Nov 14 06:48:32 localhost audit type=SYSCALL msg=audit(1699962503.404:197): arch=c000003e syscall=2 success=yes exit=3 a0=7ffce52b18a6 a1=0 a2=1fffffffffff0000 a3=7ffce52af2a0 items=1 ppid=1440 pid=1785 auid=0 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0 tty=tty1 ses=1 comm="cat" exe="/usr/bin/cat" key="pwquality.conf"
+<182>Nov 14 06:48:32 localhost audit type=CWD msg=audit(1699962503.404:197):  cwd="/etc/pam.d"
+<182>Nov 14 06:48:32 localhost audit type=PATH msg=audit(1699962503.404:197): item=0 name="/etc/security/pwquality.conf" inode=17245759 dev=fd:00 mode=0100644 ouid=0 ogid=0 rdev=00:00 objtype=NORMAL cap_fp=0000000000000000 cap_fi=0000000000000000 cap_fe=0 cap_fver=0
+<182>Nov 14 06:48:32 localhost audit type=PROCTITLE msg=audit(1699962503.404:197): proctitle=636174002F6574632F73656375726974792F70777175616C6974792E636F6E66
+

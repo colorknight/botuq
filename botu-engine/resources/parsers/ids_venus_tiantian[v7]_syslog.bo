@@ -1,0 +1,244 @@
+// 启明天阗IDS
+botu("IDS/Venus/TianTian[v7]/Syslog") {
+    patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>(?<stime>[^\\(]+)\\([^:]+: (?<json>.*)");
+    inx = indexString(json, "{");
+    sev = parseSyslogSeverity(pri);
+    //审计日志
+    if(inx == -1){
+        pack("event") {
+            START_TIME = format2Time(stime, "MMM dd HH:mm:ss", "en");
+            EVT_CATEGORY = "/Audit";
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            OUTCOME = json;
+        }
+    }else{
+        jsonParse(json, true);
+        if(virus_name != null){
+            pack("event") {
+                START_TIME = toTime(start_time);
+                DS_DVC_NAME = dt;
+                EVT_CATEGORY = type;
+                EVT_TYPE = virus_name;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Threat/Malware";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = src_ip;
+                SBJ_IP = src_ip;
+                SBJ_PORT = src_port;
+                SBJ_MAC = src_mac;
+                BHV_CATEGORY = "/Attack";
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dst_ip;
+                OBJ_IP = dst_ip;
+                OBJ_PORT = dst_port;
+                OBJ_MAC = dst_mac;
+            }
+        }else if(upacket != null){
+            pack("event") {
+                START_TIME = format2Time(stime, "MMM dd HH:mm:ss", "en");
+                DS_DVC_NAME = dt;
+                EVT_CATEGORY = type;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit/Flow";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = s_mac;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = protocol;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = d_mac;
+                PACKETS_IN = upacket;
+                BYTES_IN = ubyte;
+            }
+        }else if(sceneName != null){
+             pack("event") {
+                 START_TIME = format2Time(time, "yyyy-MM-dd");
+                 DS_DVC_NAME = deviceName;
+                 EVT_CATEGORY = sceneName;
+                 SEVERITY = sev;
+                 N_EVT_CATEGORY = "/Threat";
+                 N_SEVERITY = dictMapping("severity",sev);
+                 SBJ_TYPE = "/Ip";
+                 SBJ_NAME = ip;
+                 SBJ_IP = ip;
+                 BHV_CATEGORY = "/Is";
+             }
+          }else if(level != null){
+            if(securityid != null){
+               switch(securityid){
+                  case "4":
+                  case "10":
+                  case "11":
+                  case "12":
+                  case "15":
+                  case "20":
+                        pack("event") {
+                            START_TIME = format2Time(stime, "MMM dd HH:mm:ss", "en");
+                            DS_DVC_NAME = dt;
+                            EVT_CATEGORY = dictMapping("security_type_venus",securityid);
+                            EVT_TYPE = subject;
+                            EVT_ID = id;
+                            SEVERITY = sev;
+                            N_EVT_CATEGORY = "/Audit";
+                            N_SEVERITY = dictMapping("severity",sev);
+                            SBJ_TYPE = "/Ip";
+                            SBJ_NAME = field("source.ip");
+                            SBJ_IP = field("source.ip");
+                            SBJ_PORT = field("source.port");
+                            SBJ_MAC = field("source.mac");
+                            BHV_CATEGORY = "/Access";
+                            BEHAVIOR = "access";
+                            TRANS_PROTO = toUppercase(protocol);
+                            OBJ_TYPE = "/Ip";
+                            OBJ_NAME = field("destination.ip");
+                            OBJ_IP = field("destination.ip");
+                            OBJ_PORT = field("destination.port");
+                            OBJ_MAC = field("destination.mac");
+                            OUTCOME = message;
+                        }
+                  case "5":
+                  case "6":
+                  case "26":
+                      nCat = "/Threat/Malware";
+                  case "17":
+                      if(nCat == null){
+                         nCat = "/Vulnerability";
+                      }
+                  case "24":
+                      if(nCat == null){
+                         nCat = "/HiddenDanger";
+                      }
+                        pack("event") {
+                            START_TIME = format2Time(stime, "MMM dd HH:mm:ss", "en");
+                            DS_DVC_NAME = dt;
+                            EVT_CATEGORY = dictMapping("security_type_venus",securityid);
+                            EVT_TYPE = dictMapping("attack_type_venus",attackid);
+                            SEVERITY = sev;
+                            N_EVT_CATEGORY = nCat;
+                            N_SEVERITY = dictMapping("severity",sev);
+                            SBJ_TYPE = "/Ip";
+                            SBJ_NAME = field("source.ip");
+                            SBJ_IP = convert2Ip(field("source.ip"));
+                            SBJ_PORT = field("source.port");
+                            SBJ_MAC = field("source.mac");
+                            BHV_CATEGORY = "/Attack";
+                            BEHAVIOR = dictMapping("attack_type_venus",attackid);
+                            TRANS_PROTO = toUppercase(protocol);
+                            OBJ_TYPE = "/Ip";
+                            OBJ_NAME = field("destination.ip");
+                            OBJ_IP = convert2Ip(field("destination.ip"));
+                            OBJ_PORT = field("destination.port");
+                            OBJ_MAC = field("destination.mac");
+                            OUTCOME = message;
+                        }
+                  default:
+                        pack("event") {
+                            START_TIME = format2Time(stime, "MMM dd HH:mm:ss", "en");
+                            DS_DVC_NAME = dt;
+                            EVT_CATEGORY = dictMapping("security_type_venus",securityid);
+                            EVT_TYPE = dictMapping("attack_type_venus",attackid);
+                            SEVERITY = sev;
+                            N_EVT_CATEGORY = "/Threat/Attack";
+                            N_SEVERITY = dictMapping("severity",sev);
+                            SBJ_TYPE = "/Ip";
+                            SBJ_NAME = field("source.ip");
+                            SBJ_IP = field("source.ip");
+                            SBJ_PORT = field("source.port");
+                            SBJ_MAC = field("source.mac");
+                            BHV_CATEGORY = "/Attack";
+                            BEHAVIOR = "access";
+                            TRANS_PROTO = toUppercase(protocol);
+                            OBJ_TYPE = "/Ip";
+                            OBJ_NAME = field("destination.ip");
+                            OBJ_IP = field("destination.ip");
+                            OBJ_PORT = field("destination.port");
+                            OBJ_MAC = field("destination.mac");
+                            OUTCOME = message;
+                        }
+               }
+            }else{
+               pack("event") {
+                   START_TIME = format2Time(stime, "MMM dd HH:mm:ss", "en");
+                   DS_DVC_NAME = dt;
+                   EVT_CATEGORY = type;
+                   EVT_TYPE = subject;
+                   EVT_ID = id;
+                   SEVERITY = sev;
+                   N_EVT_CATEGORY = "/Audit";
+                   N_SEVERITY = dictMapping("severity",sev);
+                   SBJ_TYPE = "/Ip";
+                   SBJ_NAME = field("source.ip");
+                   SBJ_IP = field("source.ip");
+                   SBJ_PORT = field("source.port");
+                   SBJ_MAC = field("source.mac");
+                   BHV_CATEGORY = "/Access";
+                   BEHAVIOR = "access";
+                   TRANS_PROTO = toUppercase(protocol);
+                   OBJ_TYPE = "/Ip";
+                   OBJ_NAME = field("destination.ip");
+                   OBJ_IP = field("destination.ip");
+                   OBJ_PORT = field("destination.port");
+                   OBJ_MAC = field("destination.mac");
+                   OUTCOME = message;
+               }
+            }
+        }else if(character != null){
+               pack("event") {
+                   START_TIME = extractTime(start_time);
+                   DS_DVC_NAME = dt;
+                   EVT_CATEGORY = type;
+                   SEVERITY = sev;
+                   N_EVT_CATEGORY = "/Threat";
+                   N_SEVERITY = dictMapping("severity",sev);
+                   SBJ_TYPE = "/Ip";
+                   SBJ_NAME = src_ip;
+                   SBJ_IP = src_ip;
+                   SBJ_PORT = src_port;
+                   BHV_CATEGORY = "/Access";
+                   OBJ_TYPE = "/Ip";
+                   OBJ_NAME = dst_ip;
+                   OBJ_IP = dst_ip;
+                   OBJ_PORT = dst_port;
+               }
+        }else if(content != null){
+               jsonParse(content);
+               pack("event") {
+                   START_TIME = toTime(start_time);
+                   DS_DVC_NAME = dt;
+                   EVT_CATEGORY = type;
+                   SEVERITY = sev;
+                   N_EVT_CATEGORY = "/Audit";
+                   N_SEVERITY = dictMapping("severity",sev);
+                   SBJ_TYPE = "/Ip";
+                   SBJ_NAME = decodeBase64(sender);
+                   SBJ_IP = src_ip;
+                   SBJ_PORT = src_port;
+                   BHV_CATEGORY = "/Access";
+                   OBJ_TYPE = "/Ip";
+                   OBJ_NAME = dst_ip;
+                   OBJ_IP = dst_ip;
+                   OBJ_PORT = dst_port;
+                   PLD_TYPE = "/Resource/File";
+                   PLD_NAME = decodeBase64(name);
+               }
+        }else{
+               pack("event") {
+                   START_TIME = format2Time(stime, "MMM dd HH:mm:ss", "en");
+                   DS_DVC_NAME = dt;
+                   EVT_CATEGORY = type;
+                   SEVERITY = sev;
+                   N_EVT_CATEGORY = "/Audit";
+                   N_SEVERITY = dictMapping("severity",sev);
+               }
+        }
+    }
+}

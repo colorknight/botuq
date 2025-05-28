@@ -1,0 +1,7 @@
+{
+	version:"0.1",
+	items:[
+	    {keys:["拒绝"],value:"/Solved"},
+	    {keys:["被记录"],value:"/Recorded"},
+	]
+}

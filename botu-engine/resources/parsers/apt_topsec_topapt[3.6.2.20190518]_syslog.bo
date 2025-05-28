@@ -1,0 +1,108 @@
+// 天融信高级可持续威胁安全监测系统
+botu("APT/Topsec/TopAPT[3.6.2.20190518]/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>.*) (?<host>\\S+) (?<detail>Log.*)")) {
+	    splitParse(detail, ';', '"', '"', "=");
+		sev = parseSyslogSeverity(pri);
+	    switch(LogType) {
+            case "Alarm":
+                pack("event") {
+                    DS_PROCESS_NAME = LogType;
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    EVT_NAME = "系统告警";
+                    SEVERITY = Level;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = simpleMapping(Level, "{4:4,3:3,2:2,1:1}", 1);
+                    SBJ_IP = SIP;
+                    APP_PROTO = toUppercase(Proto);
+                    OBJ_IP = DIP;
+                    PRT_ACTION = Method;
+                    OUTCOME = Info;
+                }
+            case "Trojan":
+                pack("event") {
+                    DS_PROCESS_NAME = LogType;
+                    START_TIME = format2Time(Time, "yyyy-MM-dd HH:mm:ss");
+                    EVT_NAME = RVal;
+                    EVT_CATEGORY = Category;
+                    EVT_TYPE = RuleID;
+                    SEVERITY = Level;
+                    N_SEVERITY = simpleMapping(Level, "{4:4,3:3,2:2,1:1}", 1);
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SPort;
+                    TRANS_PROTO = AP;
+                    OBJ_IP = DstIP;
+                    OBJ_PORT = DPort;
+                }
+            case "Vulns":
+                pack("event") {
+                    DS_PROCESS_NAME = LogType;
+                    START_TIME = format2Time(Time, "yyyy-MM-dd HH:mm:ss");
+                    EVT_NAME = "漏洞检测";
+                    EVT_CATEGORY = Category;
+                    EVT_TYPE = RuleID;
+                    SEVERITY = Level;
+                    N_EVT_CATEGORY = "/Threat/Attack/Vulnerability";
+                    N_SEVERITY = simpleMapping(Level, "{4:4,3:3,2:2,1:1}", 1);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SPort;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = toUppercase(AP);
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = DstIP;
+                    OBJ_IP = DstIP;
+                    OBJ_PORT = DPort;
+                }
+            case "Web":
+                pack("event") {
+                    DS_PROCESS_NAME = LogType;
+                    START_TIME = format2Time(Time, "yyyy-MM-dd HH:mm:ss");
+                    EVT_NAME = "WEB攻击检测";
+                    EVT_CATEGORY = Type;
+                    EVT_TYPE = RuleID;
+                    SEVERITY = Level;
+                    N_SEVERITY = simpleMapping(Level, "{4:4,3:3,2:2,1:1}", 1);
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SPort;
+                    TRANS_PROTO = toUppercase(AP);
+                    BEHAVIOR = Method;
+                    OBJ_IP = DstIP;
+                    OBJ_PORT = DPort;
+                    OBJ_HOST = HOST;
+                    OBJ_URI = URL;
+                    STATUS = Status;
+                }
+            default:
+                if ("File" == LogFile){
+                    pack("event") {
+                        DS_PROCESS_NAME = LogFile;
+                        START_TIME = format2Time(Time, "yyyy-MM-dd HH:mm:ss");
+                        EVT_NAME = "文件检测";
+                        EVT_CATEGORY = Type;
+                        EVT_TYPE = RuleID;
+                        SEVERITY = Level;
+                        N_SEVERITY = simpleMapping(Level, "{4:4,3:3,2:2,1:1}", 1);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = SIP;
+                        SBJ_IP = SIP;
+                        SBJ_PORT = SPort;
+                        APP_PROTO = toUppercase(Proto);
+                        BHV_CATEGORY = "/Access";
+                        BEHAVIOR = Behav;
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME =DIP;
+                        OBJ_IP = DIP;
+                        OBJ_PORT = DPort;
+                        OUTCOME = AV;
+                        REQ_URL = From;
+                        PLD_NAME = Filename;
+                        PLD_SIG = Hash;
+                        PLD_EXT_NAME = ReportPath;
+                    }
+                }else{
+                    pack("event") {}
+                }
+		}
+	}
+}

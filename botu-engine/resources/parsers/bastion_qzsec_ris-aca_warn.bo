@@ -1,0 +1,183 @@
+// 齐治堡垒机
+botu("Bastion/QzSec/RIS-ACA/Warn") {
+    // 身份验证
+    if (patternParse(MS_SRC_DATA, "^(?<time>.*)\\s(?<devname>[^\\s]+)\\s[^:]+:(?<evtcat>[^\\(]+)\\((?<evttype>[^\\)]+)\\)\\((?<severity>[^\\)]+)\\)\\(service=(?<service>[^,]+),identity=(?<id>[^,]+),from=(?<srcip>[^,]+),(?<content>[^\\)]+)\\)$")) {
+        pack("event") {
+            START_TIME = format2Time(time, "MMM dd HH:mm:ss", "en");
+            DS_DVC_NAME = devname;
+            DS_PROCESS_NAME = service;
+            EVT_CATEGORY = evtcat;
+            N_EVT_CATEGORY = "/Audit";
+            EVT_TYPE = strFormat("%s/%s", evtcat, evttype);
+            SEVERITY = severity;
+            N_SEVERITY = dictMapping("sev_bastion_qzsec_ris-aca_warn", severity);
+            SBJ_TYPE = "/User";
+            SBJ_NAME = id;
+            SBJ_IP = srcip;
+            BEHAVIOR = evtcat;
+            OBJ_TYPE = "/Host";
+            OBJ_NAME = devname;
+            OBJ_IP = MS_SRC_ADDRESS;//日志源IP
+            OUTCOME = content;
+        }
+    // 资产访问
+    } else if (patternParse(MS_SRC_DATA, "^(?<time>.*)\\s(?<devname>[^\\s]+)\\s[^:]+:(?<evtcat>[^\\(]+)\\((?<severity>[^\\)]+)\\)\\(id=(?<id>[^,]+),service=(?<service>[^,]+),server=(?<server>[^\\(]+)\\((?<srvip>[^\\)]+)\\),account=(?<account>[^,]+),identity=(?<identity>[^\\(]+)\\([^\\(]+\\),from=(?<cliip>\\d+\\.\\d+\\.\\d+\\.\\d+)\\)$")) {
+       pack("event") {
+           START_TIME = format2Time(time, "MMM dd HH:mm:ss", "en");
+           DS_DVC_NAME = devname;
+           DS_PROCESS_NAME = service;
+           EVT_CATEGORY = evtcat;
+           EVT_TYPE = service;
+           SEVERITY = severity;
+           N_EVT_CATEGORY = "/Audit";
+           N_SEVERITY = dictMapping("sev_bastion_qzsec_ris-aca_warn", severity);
+           EVT_ID = id;
+           SBJ_TYPE = "/User";
+           SBJ_NAME = identity;
+           SBJ_IP = cliip;
+           SBJ_ROLE = account;
+           BEHAVIOR = evtcat;
+           OBJ_TYPE = "/Host";
+           OBJ_NAME = server;
+           OBJ_IP = srvip;
+       }
+    // 命令防火墙
+    } else if (patternParse(MS_SRC_DATA, "^(?<time>.*)\\s(?<devname>[^\\s]+)\\s[^:]+:(?<evtcat>[^\\(]+)\\((?<severity>[^\\)]+)\\)\\(id=(?<id>[^,]+),service=(?<service>[^,]+),action=(?<action>[^,]+),server=(?<server>[^\\(]+)\\((?<srvip>[^\\)]+)\\),account=(?<account>[^,]+),identity=(?<identity>[^\\(]+)\\([^\\(]+\\),from=(?<cliip>[^,]+),command=(?<command>[^\\)]+)\\)$")) {
+       if(action != "confirm(pass)"){
+            nCat = "/Violation";
+       }else{
+            nCat = "/Audit";
+       }
+       pack("event") {
+           START_TIME = format2Time(time, "MMM dd HH:mm:ss", "en");
+           DS_DVC_NAME = devname;
+           DS_PROCESS_NAME = service;
+           EVT_CATEGORY = evtcat;
+           EVT_TYPE = service;
+           SEVERITY = severity;
+           N_EVT_CATEGORY = nCat;
+           N_SEVERITY = dictMapping("sev_bastion_qzsec_ris-aca_warn", severity);
+           EVT_ID = id;
+           SBJ_TYPE = "/User";
+           SBJ_NAME = identity;
+           SBJ_IP = cliip;
+           SBJ_ROLE = account;
+           BEHAVIOR = evtcat;
+           BHV_BODY = command;
+           OBJ_TYPE = "/Host";
+           OBJ_NAME = server;
+           OBJ_IP = srvip;
+           PRT_ACTION = action;
+       }
+       // 会话复核
+    } else if (patternParse(MS_SRC_DATA, "^(?<time>.*)\\s(?<devname>[^\\s]+)\\s[^:]+:(?<evtcat>[^\\(]+)\\((?<severity>[^\\)]+)\\)\\(id=(?<id>[^,]+),service=(?<service>[^,]+),server=(?<server>[^\\(]+)\\((?<srvip>[^\\)]+)\\),account=(?<account>[^,]+),identity=(?<identity>[^\\(]+)\\([^\\(]+\\),from=(?<cliip>[^,]+),authorizer=(?<authorizer>[^,]+),(?<msg>[^\\)]+)\\)$")) {
+       pack("event") {
+           START_TIME = format2Time(time, "MMM dd HH:mm:ss", "en");
+           DS_DVC_NAME = devname;
+           DS_PROCESS_NAME = service;
+           EVT_CATEGORY = evtcat;
+           EVT_TYPE = service;
+           SEVERITY = severity;
+           N_EVT_CATEGORY = "/Audit";
+           N_SEVERITY = dictMapping("sev_bastion_qzsec_ris-aca_warn", severity);
+           EVT_ID = id;
+           SBJ_TYPE = "/User";
+           SBJ_NAME = identity;
+           SBJ_IP = cliip;
+           SBJ_ROLE = account;
+           BEHAVIOR = service;
+           OBJ_TYPE = "/Host";
+           OBJ_NAME = server;
+           OBJ_IP = srvip;
+           OUTCOME = msg;
+           PRT_ACTION = strFormat("authorized by %s", authorizer);
+       }
+       // 字符审计日志
+    } else if (patternParse(MS_SRC_DATA, "^(?<time>.*)\\s(?<devname>[^\\s]+)\\s[^:]+:(?<evtcat>[^\\(]+)\\((?<severity>[^\\)]+)\\)\\(id=(?<id>[^,]+),service=(?<service>[^,]+),server=(?<srvip>[^\\(]+)\\((?<server>[^\\)]+)\\),account=([^,]+),identity=(?<identity>[^\\(]+)\\([^\\(]+\\),from=(?<cliip>[^,]+),action=(?<action>[^,]+),command=([^\\)]+)\\)$")) {
+        if(action != "allow"){
+           nCat = "/Violation";
+        }else{
+           nCat = "/Audit";
+        }
+       pack("event") {
+           START_TIME = format2Time(time, "MMM dd HH:mm:ss", "en");
+           DS_DVC_NAME = devname;
+           DS_PROCESS_NAME = service;
+           EVT_CATEGORY = evtcat;
+           EVT_TYPE = service;
+           SEVERITY = severity;
+           N_EVT_CATEGORY = "/Audit";
+           N_SEVERITY = dictMapping("sev_bastion_qzsec_ris-aca_warn", severity);
+           EVT_ID = id;
+           SBJ_TYPE = "/User";
+           SBJ_NAME = identity;
+           SBJ_IP = cliip;
+           SBJ_ROLE = account;
+           BHV_CATEGORY = "/Access";
+           BEHAVIOR = "access";
+           BHV_BODY = command;
+           OBJ_TYPE = "/Host";
+           OBJ_NAME = server;
+           OBJ_IP = srvip;
+           PRT_ACTION = action;
+       }
+       // 公有云资产同步
+    } else if (patternParse(MS_SRC_DATA, "^(?<time>.*)\\s(?<devname>[^\\s]+)\\s[^:]+:(?<evtcat>[^\\(]+)\\((?<severity>[^\\)]+)\\)\\(changeType=(?<changeType>[^,]+),resName=(?<resName>[^,]+),resIp=(?<resIp>[^\\,]+),resType=([^,]+),updateTime=.*")) {
+       pack("event") {
+           START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+           DS_DVC_NAME = devname;
+           EVT_CATEGORY = evtcat;
+           EVT_TYPE = evtcat;
+           SEVERITY = severity;
+           N_EVT_CATEGORY = "/Audit";
+           N_SEVERITY = dictMapping("sev_bastion_qzsec_ris-aca_warn", severity);
+           EVT_ID = id;
+           SBJ_TYPE = "/Host";
+           SBJ_NAME = devname;
+           SBJ_IP = MS_SRC_ADDRESS;
+           BEHAVIOR = changeType;
+           OBJ_TYPE = "/Custom";
+           OBJ_NAME = resType;
+           OBJ_URI = resName;
+           OBJ_IP = resIp;
+       }
+       // 配置日志
+    } else if (patternParse(MS_SRC_DATA, "^(.*)\\s(?<devname>[^\\s]+)\\s[^:]+:(?<evtcat>[^\\(]+)\\((?<severity>[^\\)]+)\\)\\(id=(?<id>[^,]+),service=(?<service>[^,]+),identity=(?<identity>[^\\(]+)\\([^\\(]+\\),from=(?<cliip>[^,]+),operate=(?<op>[^,]+),object=(?<object>[^,]+),result=(?<result>[^,]+),details=\\[(?<detail>[^\\]]+)\\].*")) {
+       pack("event") {
+           START_TIME = format2Time(time, "MMM dd HH:mm:ss", "en");
+           DS_DVC_NAME = devname;
+           DS_PROCESS_NAME = service;
+           EVT_CATEGORY = evtcat;
+           EVT_TYPE = service;
+           SEVERITY = severity;
+           N_EVT_CATEGORY = "/Audit/System";
+           N_SEVERITY = dictMapping("sev_bastion_qzsec_ris-aca_warn", severity);
+           EVT_ID = id;
+           SBJ_TYPE = "/User";
+           SBJ_NAME = identity;
+           SBJ_IP = cliip;
+           BEHAVIOR = op;
+           BHV_BODY = detail;
+           OBJ_TYPE = "/Custom";
+           OBJ_NAME = object;
+           OUTCOME = result;
+       }
+       // 系统负载告警 系统告警
+    } else if (patternParse(MS_SRC_DATA, "^(?<time>.*)\\s(?<devname>[^\\s]+)\\s[^:]+:(?<msg>.*)")) {
+       pack("event") {
+           START_TIME = format2Time(time, "MMM dd HH:mm:ss", "en");
+           DS_DVC_NAME = devname;
+           EVT_CATEGORY = evtcat;
+           EVT_TYPE = evtcat;
+           SEVERITY = "WARNING";
+           N_EVT_CATEGORY = "/Audit";
+           N_SEVERITY = dictMapping("sev_bastion_qzsec_ris-aca_warn", "WARNING");
+           SBJ_TYPE = "/HOST";
+           SBJ_NAME = devname;
+           //SBJ_SUBO = "Payload";
+           //BHV_CATEGORY = "/Is";
+           OUTCOME = msg;
+       }
+    }
+
+}

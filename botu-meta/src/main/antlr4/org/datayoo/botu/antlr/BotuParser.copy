@@ -1,0 +1,330 @@
+parser grammar BotuParser;
+
+options {
+language = Java;
+//backtrack=true;
+tokenVocab=BotuLexer;
+}
+
+//tokens {
+//}
+
+@header {
+import java.util.LinkedList;
+import org.datayoo.botu.metadata.*;
+import org.datayoo.moql.util.StringFormater;
+}
+@lexer::header {
+package org.datayoo.botu.antlr;
+
+}
+
+botuUnit returns[BotuMetadata botuMetadata]
+@after {
+    $botuMetadata = new BotuMetadata($s.getText());
+    $botuMetadata.setStatement($blockCtx.blockMetadata);
+    $botuMetadata.setLineNo($t.getLine());
+}
+: t = BOTU'(' s = STRING_LITERAL')' blockCtx = block EOF
+;
+
+// STATEMENTS / BLOCKS
+block returns[BlockMetadata blockMetadata]
+@init {
+    $blockMetadata = new BlockMetadata();
+}
+: '{' (statCtx = statement {$blockMetadata.getStatements().add($statCtx.statementMetadata);})*'}'
+;
+
+statement returns[Statementable statementMetadata]
+: blockCtx = block {$statementMetadata = $blockCtx.blockMetadata;}
+| breakCtx = botu_break {$statementMetadata = $breakCtx.breakMetadata; }
+| ifCtx = ifBlock {$statementMetadata = $ifCtx.ifMetadata;}
+| packCtx = packBlock {$statementMetadata = $packCtx.packMetadata;}
+| patternCtx = patternBlock {$statementMetadata = $patternCtx.patternMetadata;}
+| switchCtx = switchBlock {$statementMetadata = $switchCtx.switchMetadata;}
+| splitCtx = splitBlock {$statementMetadata = $splitCtx.splitMetadata;}
+| expressionCtx = expression ';'{$statementMetadata = $expressionCtx.expressionMetadata;}
+;
+
+botu_break returns[BreakMetadata breakMetadata]
+: t = BREAK ';'
+{
+    $breakMetadata = new BreakMetadata();
+    $breakMetadata.setLineNo($t.getLine());
+}
+;
+
+ifBlock returns [IfMetadata ifMetadata]
+: t = IF conditionCtx = parExpression ifCtx = statement
+{
+    $ifMetadata = new IfMetadata($conditionCtx.expressionMetadata);
+    $ifMetadata.setStatement($ifCtx.statementMetadata);
+    $ifMetadata.setLineNo($t.getLine());
+}
+( ELSE elseCtx = statement)?
+{
+    $ifMetadata.setElseStatement($elseCtx.statementMetadata);
+}
+;
+
+packBlock returns [PackMetadata packMetadata]
+: t = PACK'(' s = STRING_LITERAL? ')'
+{
+    if ($s != null) {
+        $packMetadata = new PackMetadata($s.getText());
+    } else {
+        $packMetadata = new PackMetadata(null);
+    }
+    $packMetadata.setLineNo($t.getLine());
+}
+'{' (statCtx = packStatement)* '}'
+{
+    $packMetadata.getExpressions().add($statCtx.expressionMetadata);
+}
+;
+
+packStatement returns[ExpressionMetadata expressionMetadata]
+: lctx = expression '=' rctx = expression ';'
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.EVALUATION_OP, "=", $lctx.expressionMetadata, $rctx.expressionMetadata);
+}
+;
+
+patternBlock returns[PatternMetadata patternMetadata]
+: t = PATTERN'(' k = IDENTIFIER ',' p = STRING_LITERAL ')'
+{
+    $patternMetadata = new PatternMetadata($k.getText(), $p.getText());
+    $patternMetadata.setLineNo($t.getLine());
+
+}
+'{' statCtx = statement '}'
+{
+    $patternMetadata.setStatement($statCtx.statementMetadata);
+}
+;
+
+switchBlock returns[SwitchMetadata switchMetadata]
+: t = SWITCH keyCtx = parExpression
+{
+    $switchMetadata = new SwitchMetadata($keyCtx.expressionMetadata);
+    $switchMetadata.setLineNo($t.getLine());
+}
+'{' (casesCtx = switchBlockStatementGroup { $switchMetadata.getCases().addAll($casesCtx.caseMetadatas);})*
+defaultCtx = defaultBlockStatement?
+{
+    $switchMetadata.setDefaultCase($defaultCtx.defaultMetadata);
+}
+'}'
+;
+
+switchBlockStatementGroup returns[List<CaseMetadata> caseMetadatas]
+@init{
+    $caseMetadatas = new LinkedList<CaseMetadata>();
+    CaseMetadata caseMetadata;
+}
+: valueCtx = switchLabel+
+{
+caseMetadata = new CaseMetadata($valueCtx.expressionMetadata);
+$caseMetadatas.add(caseMetadata);
+}
+  statCtx = statement
+{
+caseMetadata.setStatement($statCtx.statementMetadata);
+}
+;
+
+switchLabel returns[ExpressionMetadata expressionMetadata]
+: CASE (literalCtx = literal) ':' {$expressionMetadata = $literalCtx.constantMetadata;}
+;
+
+defaultBlockStatement returns[Statementable defaultMetadata]
+: DEFAULT':' statCtx = statement {$defaultMetadata = $statCtx.statementMetadata;}
+;
+
+splitBlock returns[SplitMetadata splitMetadata]
+: t = SPLIT'('p = IDENTIFIER ',' ch1 = CHAR_LITERAL',' ch2 = CHAR_LITERAL',' ch3 = CHAR_LITERAL ')'
+{
+    $splitMetadata = new SplitMetadata($p.getText(), $ch1.getText().charAt(0),$ch2.getText().charAt(0),$ch3.getText().charAt(0));
+    $splitMetadata.setLineNo($t.getLine());
+}
+'{' statCtx = statement '}'
+{
+    $splitMetadata.setStatement($statCtx.statementMetadata);
+}
+;
+
+parExpression returns[ExpressionMetadata expressionMetadata]
+: '(' exprCtx = expression ')' {$expressionMetadata = $exprCtx.expressionMetadata;}
+;
+
+expressionList returns[List<ExpressionMetadata> expressionMetadatas]
+@init {
+    $expressionMetadatas = new LinkedList<ExpressionMetadata>();
+}
+: expressionCtx = expression
+{
+$expressionMetadatas.add($expressionCtx.expressionMetadata);
+}
+(',' expressionCtx = expression
+{
+$expressionMetadatas.add($expressionCtx.expressionMetadata);
+}
+)*
+;
+
+methodCall returns[MethodMetadata methodMetadata]
+: t = IDENTIFIER '(' paramCtx = expressionList? ')'
+{
+    $methodMetadata = new MethodMetadata($t.getText());
+    $methodMetadata.setParameters($paramCtx.expressionMetadatas);
+    $methodMetadata.setLineNo($t.getLine());
+}
+;
+
+expression returns[ExpressionMetadata expressionMetadata]
+: primaryCtx = primary
+{
+    $expressionMetadata = $primaryCtx.expressionMetadata;
+}
+| lCtx = expression bop='.'
+( t = IDENTIFIER
+{
+    VariableMetadata idExpression = new VariableMetadata($t.getText());
+    idExpression.setLineNo($t.getLine());
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.MEMBER_ID,$bop.getText(), $lCtx.expressionMetadata, idExpression);
+    $expressionMetadata.setLineNo($lCtx.expressionMetadata.getLineNo());
+}
+| methodCtx = methodCall
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.MEMBER_METHOD, $bop.getText(), $lCtx.expressionMetadata, $methodCtx.methodMetadata);
+    $expressionMetadata.setLineNo($lCtx.expressionMetadata.getLineNo());
+}
+)
+| lCtx = expression op = '[' rCtx = expression ']'
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.COLLACC_OP, $bop.getText(), $lCtx.expressionMetadata, $rCtx.expressionMetadata);
+}
+| methodCtx = methodCall { $expressionMetadata = $methodCtx.methodMetadata;}
+| op = '!' notCtx = expression
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.LOGIC_OP, $op.getText(), $notCtx.expressionMetadata);
+    $expressionMetadata.setLineNo($op.getLine());
+}
+| lCtx = expression bop=('*'|'/'|'%') rCtx = expression
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.ARITHMETIC_OP, $bop.getText(), $lCtx.expressionMetadata, $rCtx.expressionMetadata);
+    $expressionMetadata.setLineNo($lCtx.expressionMetadata.getLineNo());
+}
+| lCtx = expression bop=('+'|'-') rCtx = expression
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.ARITHMETIC_OP, $bop.getText(), $lCtx.expressionMetadata, $rCtx.expressionMetadata);
+    $expressionMetadata.setLineNo($lCtx.expressionMetadata.getLineNo());
+}
+| lCtx = expression ('<' '<' | '>' '>') rCtx = expression
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.SHIFT_OP, $bop.getText(), $lCtx.expressionMetadata, $rCtx.expressionMetadata);
+    $expressionMetadata.setLineNo($lCtx.expressionMetadata.getLineNo());
+}
+| lCtx = expression bop=('<=' | '>=' | '>' | '<') rCtx = expression
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.COMPARE_OP, $bop.getText(), $lCtx.expressionMetadata, $rCtx.expressionMetadata);
+    $expressionMetadata.setLineNo($lCtx.expressionMetadata.getLineNo());
+}
+| lCtx = expression bop=('==' | '!=') rCtx = expression
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.COMPARE_OP, $bop.getText(), $lCtx.expressionMetadata, $rCtx.expressionMetadata);
+    $expressionMetadata.setLineNo($lCtx.expressionMetadata.getLineNo());
+}
+| lCtx = expression bop='&&' rCtx = expression
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.LOGIC_OP, $bop.getText(), $lCtx.expressionMetadata, $rCtx.expressionMetadata);
+    $expressionMetadata.setLineNo($lCtx.expressionMetadata.getLineNo());
+}
+| lCtx = expression bop='||' rCtx = expression
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.LOGIC_OP, $bop.getText(), $lCtx.expressionMetadata, $rCtx.expressionMetadata);
+    $expressionMetadata.setLineNo($lCtx.expressionMetadata.getLineNo());
+}
+| t = IDENTIFIER '=' assignmentCtx = assignment
+{
+    VariableMetadata idExpression = new VariableMetadata($t.getText());
+    idExpression.setLineNo($t.getLine());
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.EVALUATION_OP, "=", idExpression, $assignmentCtx.expressionMetadata);
+}
+| lCtx = expression
+bop=('+=' | '-=' | '*=' | '/=' | '&=' | '|=' | '^=' | '>>=' | '<<=' | '%=')
+rCtx = expression
+{
+    $expressionMetadata = new ExpressionMetadata(ExpressionType.EVALUATION_OP, $bop.getText(), $lCtx.expressionMetadata, $rCtx.expressionMetadata);
+}
+;
+
+primary returns[ExpressionMetadata expressionMetadata]
+: '(' exprCtx = expression ')'{ $expressionMetadata = $exprCtx.expressionMetadata;}
+| literalCtx = literal
+{
+    $expressionMetadata = $literalCtx.constantMetadata;
+}
+| t = IDENTIFIER
+{
+    $expressionMetadata = new VariableMetadata($t.getText());
+    $expressionMetadata.setLineNo($t.getLine());
+}
+;
+
+assignment returns[ExpressionMetadata expressionMetadata]
+: collectionCtx = collectionAssignment {$expressionMetadata = $collectionCtx.collectionMetadata;}
+| exprCtx = expression {$expressionMetadata = $exprCtx.expressionMetadata;}
+;
+
+collectionAssignment returns[CollectionMetadata collectionMetadata]
+: '{' (exprCtx = assignment
+{
+    $collectionMetadata.getExpressionMetadatas().add($exprCtx.expressionMetadata);
+}
+(',' exprCtx = assignment
+{
+    $collectionMetadata.getExpressionMetadatas().add($exprCtx.expressionMetadata);
+}
+)* (',')? )? '}'
+;
+
+literal returns[ConstantMetadata constantMetadata]
+: ti = integerLiteral
+{
+$constantMetadata = new ConstantMetadata(ExpressionType.LONG, $ti.token.getText());
+$constantMetadata.setLineNo($ti.token.getLine());
+}
+| tf = floatLiteral
+{
+$constantMetadata = new ConstantMetadata(ExpressionType.DOUBLE, $tf.token.getText());
+$constantMetadata.setLineNo($tf.token.getLine());
+}
+| ts = STRING_LITERAL
+{
+$constantMetadata = new ConstantMetadata(ExpressionType.STRING, $ts.getText());
+$constantMetadata.setLineNo($ts.getLine());
+}
+| tb = BOOL_LITERAL
+{
+$constantMetadata = new ConstantMetadata(ExpressionType.BOOLEAN, $tb.getText());
+$constantMetadata.setLineNo($tb.getLine());
+}
+| tn = NULL_LITERAL
+{
+$constantMetadata = new ConstantMetadata(ExpressionType.NULL, $tn.getText());
+$constantMetadata.setLineNo($tn.getLine());
+}
+;
+
+integerLiteral returns[Token token]
+: t = DECIMAL_LITERAL {$token = $t;}
+| t = HEX_LITERAL {$token = $t;}
+| t = OCT_LITERAL {$token = $t;}
+| t = BINARY_LITERAL {$token = $t;}
+;
+floatLiteral returns[Token token]
+: t = FLOAT_LITERAL {$token = $t;}
+| t = HEX_FLOAT_LITERAL {$token = $t;}
+;

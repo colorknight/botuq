@@ -1,0 +1,32 @@
+{
+    version:"0.1",
+    items:[
+        { keys:["100"], value:"系统普通报警"},
+        { keys:["101"], value:"系统关机报警"},
+        { keys:["102"], value:"系统重启报警"},
+        { keys:["103"], value:"系统状态报警"},
+        { keys:["104"], value:"系统开机报警"},
+        { keys:["105"], value:"系统恢复配置报警"},
+        { keys:["106"], value:"系统升级报警"},
+        { keys:["107"], value:"系统模块管理报警"},
+        { keys:["108"], value:"DHCP配置错误报警"},
+        { keys:["109"], value:"DHCP地址池满报警"},
+        { keys:["200"], value:"网络普通报警"},
+        { keys:["201"], value:"网络发现新设备报警"},
+        { keys:["202"], value:"网络存在HUB端口报警"},
+        { keys:["203"], value:"网络获取交换机报警"},
+        { keys:["204"], value:"网络IPMAC冲突报警"},
+        { keys:["205"], value:"网络IPMAC违规报警"},
+        { keys:["206"], value:"网络存在NAT设备报警"},
+        { keys:["207"], value:"交换机连接超时报警"},
+        { keys:["300"], value:"终端普通报警"},
+        { keys:["301"], value:"终端安检报警"},
+        { keys:["302"], value:"终端USB注册报警"},
+        { keys:["303"], value:"终端USB未知类型报警"},
+        { keys:["304"], value:"网络连接检查报警"},
+        { keys:["305"], value:"终端安全加固报警"},
+        { keys:["306"], value:"终端违规外联报警"},
+        { keys:["307"], value:"指纹变动报警"},
+        { keys:["308"], value:"终端待审核报警"}
+    ]
+}

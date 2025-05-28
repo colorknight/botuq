@@ -1,0 +1,75 @@
+// 捷普入侵检测与防御系统
+botu("IPS/Jump/IDS/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>\\s+(?<time>\\S+\\s+\\S+)\\s+(?<cat>\\w+\\s+\\w+)\\s+type\\s+(?<type>.*)\\s+id\\s+(?<id>.*)\\s+name\\s+(?<name>.*)\\s+smac\\s+(?<smac>.*)\\s+dmac\\s+(?<dmac>.*)\\s+prot\\s+(?<prot>.*)\\s+sip\\s+(?<sip>.*)\\s+sport\\s+(?<sport>.*)\\s+dip\\s+(?<dip>.*)\\s+dport\\s+(?<dport>.*)\\s+times\\s+(?<times>.*).*")) {
+		sev = parseSyslogSeverity(pri);
+		pack("event") {
+			START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+			EVT_ID = id;
+			EVT_CATEGORY = cat;
+			EVT_TYPE = type;
+			EVT_NAME = name;
+			SEVERITY = sev;
+			N_EVT_CATEGORY = "/Threat/Attack";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = sip;
+			SBJ_IP = sip;
+			SBJ_MAC = smac;
+			SBJ_PORT = sport;
+			TRANS_PROTO = toUppercase(prot);
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = dip;
+			OBJ_IP = dip;
+			OBJ_MAC = dmac;
+			OBJ_PORT = dport;
+		}
+	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>\\s+(?<time>\\S+\\s+\\S+.*)\\s+(?<cat>\\w+\\s+\\w+)\\s+user\\s+(?<user>.*)\\s+ip\\s+(?<ip>.*)\\s+module\\s+(?<module>.*)\\s+cmd\\s+(?<cmd>.*)\\s+result\\s+(?<result>.*).*")) {
+        severity = ParseSyslogSeverity(pri);
+        pack("event") {
+			START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+			EVT_CATEGORY = cat;
+			EVT_TYPE = module;
+			SEVERITY = severity;
+			N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",severity);
+            SBJ_TYPE = "/User";
+			SBJ_NAME = user;
+			SBJ_IP = ip;
+			BHV_CATEGORY = "/Update";
+			BHV_BODY = cmd;
+			OUTCOME = result;
+		}
+	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>\\s+(?<time>\\S+\\s+\\S+.*)\\s+\\w+\\s+\\w+\\s+(?<cat>\\w+\\s+\\w+)\\s+user\\s+(?<user>.*)\\s+ip\\s+(?<ip>.*)\\s+action\\s+(?<action>.*)\\s+result\\s+(?<result>.*).*")) {
+        severity = ParseSyslogSeverity(pri);
+        bhvc = "/Login";
+        if (action == "logout") {
+            bhvc = "/Logout";
+        }
+        pack("event") {
+			START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+			EVT_CATEGORY = cat;
+			SEVERITY = severity;
+            N_SEVERITY = dictMapping("severity",severity);
+            SBJ_TYPE = "/User";
+			SBJ_NAME = user;
+			SBJ_IP = ip;
+			BHV_CATEGORY = bhvc;
+            BEHAVIOR = action;
+			OUTCOME = result;
+		}
+	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>\\s+(?<time>\\S+\\s+\\S+.*)\\s+\\w+\\s+\\w+\\s+(?<cat1>\\w+)\\s+(?<cat2>\\w+)\\s+(?<cat3>.*)")) {
+	    severity = ParseSyslogSeverity(pri);
+		pack("event") {
+			START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+			EVT_CATEGORY = cat1;
+			SEVERITY = severity;
+			N_SEVERITY = dictMapping("severity",severity);
+			SBJ_TYPE = "/Ip";
+			SBJ_NAME = MS_SRC_ADDRESS;
+			SBJ_IP = MS_SRC_ADDRESS;
+			SBJ_SUBO = cat2;
+			BHV_CATEGORY = "/Is";
+		    OUTCOME = cat3;
+		}
+	}
+}

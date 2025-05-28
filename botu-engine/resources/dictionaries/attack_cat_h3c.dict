@@ -1,0 +1,25 @@
+//h3c attack cat
+{
+	version:"0.1",
+	items:[
+		{keys:[0],value:"其它"},
+		{keys:[1],value:"病毒"},
+		{keys:[2],value:"木马"},
+		{keys:[3],value:"蠕虫"},
+		{keys:[4],value:"后门"},
+		{keys:[5],value:"勒索软件"},
+		{keys:[6],value:"下载器"},
+		{keys:[7],value:"广告"},
+		{keys:[8],value:"脚本"},
+		{keys:[9],value:"宏病毒"},
+		{keys:[10],value:"恶意漏洞文件"},
+		{keys:[11],value:"网络钓鱼"},
+		{keys:[12],value:"风险工具"},
+		{keys:[13],value:"加壳软件"},
+		{keys:[14],value:"启发式行为"},
+		{keys:[15],value:"数字货币"},
+		{keys:[16],value:"僵尸网络"},
+		{keys:[17],value:"APT情报"},
+		{keys:[18],value:"DGA恶意域名"}
+	]
+}

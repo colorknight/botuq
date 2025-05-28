@@ -1,0 +1,187 @@
+// 华三入侵防御系统
+//<188>Feb 24 13:13:09 2021 HIHK-0898-MAKJCIDC-MAKJC01-H3C-T9008-01 %%10DPI/4/DAC_STORE_STATE_FULL: -Chassis=2-Slot=3.1; The storage space-based alarm threshold (AlarmThreshold(1121)=20%) set for StoreName(1119)=TRAFFIC was exceeded.
+//<189>Feb 24 12:53:40 2021 HIHK-0898-MAKJCIDC-MAKJC01-H3C-T9008-01 %%10SYSLOG/5/LOGFILE_USAGEHIGH: The usage of log-file flash:/logfile/atk_single.log reaches 80%.
+//<189>Feb 24 08:55:19 2021 HIHK-0898-MAKJCIDC-MAKJC01-H3C-T9008-01 %%10WEB/5/LOGOUT: zhangcm �� 202.100.192.23 �˳���¼.
+//<188>Feb 24 08:45:13 2021 HIHK-0898-MAKJCIDC-MAKJC01-H3C-T9008-01 %%10ATK/4/ATK_ICMPV6_TRACEROUTE_SZ: -Chassis=1-Slot=3.1; SubModule(1127)=SINGLE; SrcZoneName(1025)=Untrust; SrcIPv6Addr(1036)=240e:958:6002::27; DstIPv6Addr(1037)=240e:914:a001:1:8000::5; RcvVPNInstance(1042)=; Action(1053)=logging; BeginTime_c(1011)=20210224084013; EndTime_c(1012)=20210224084513; AtkTimes(1054)=1.
+//<187>Feb 24 08:41:37 2021 HIHK-0898-MAKJCIDC-MAKJC01-H3C-T9008-01 %%10ATK/3/ATK_ICMPV6_FLOOD_SZ: -Chassis=1-Slot=3.1; SrcZoneName(1025)=Untrust; DstIPv6Addr(1037)=240e:914:a001:1::41; RcvVPNInstance(1042)=; UpperLimit(1049)=1000; Action(1053)=logging; BeginTime_c(1011)=20210224084137.
+//<187>Feb 24 08:41:35 2021 HIHK-0898-MAKJCIDC-MAKJC01-H3C-T9008-01 %%10ATK/3/ATK_IP4_ACK_FLOOD_SZ: -Chassis=1-Slot=3.1; SrcZoneName(1025)=Untrust; DstIPAddr(1007)=139.189.223.235; RcvVPNInstance(1042)=; UpperLimit(1049)=1000; Action(1053)=logging; BeginTime_c(1011)=20210224084135.
+//<190>Feb 24 08:44:43 2021 HIHK-0898-MAKJCIDC-MAKJC01-H3C-T9008-01 %%10FILTER/6/FILTER_ZONE_IPV4_EXECUTION: -Chassis=1-Slot=3.1; SrcZoneName(1025)=Untrust;DstZoneName(1035)=Untrust;Type(1067)=ACL;SecurityPolicy(1072)=IPS;RuleID(1078)=5;Protocol(1001)=TCP;Application(1002)=other;SrcIPAddr(1003)=124.225.89.1;SrcPort(1004)=80;SrcMacAddr(1021)=8ce5-ef7a-4902;DstIPAddr(1007)=140.240.61.149;DstPort(1008)=3931;MatchCount(1069)=256;Event(1048)=Permit;
+//<188>Feb 24 08:44:33 2021 HIHK-0898-MAKJCIDC-MAKJC01-H3C-T9008-01 %%10UFLT/4/UFLT_LICENSE_UNAVAILABLE: -Chassis=2-Slot=3.1;  The feature UFLT has no available license.
+//<185>Feb 24 08:40:02 2021 HIHK-0898-MAKJCIDC-MAKJC01-H3C-T9008-01 %%10DIAG/1/MEM_EXCEED_THRESHOLD: -Chassis=1-Slot=3.1; Memory minor threshold has been exceeded.
+//<188>Feb 24 08:40:01 2021 HIHK-0898-MAKJCIDC-MAKJC01-H3C-T9008-01 %%10DIAG/4/MEM_ALERT: -Chassis=1-Slot=3.1;  system memory info:              total       used       free     shared    buffers     cached Mem:      16412828   14836060    1576768          0         36     365428 -/+ buffers/cache:   14470596    1942232 Swap:            0          0          0
+botu("IPS/H3C/IPS/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>.*) (?<host>\\S+) %%10(?<module>[^\\/]+)\\/(?<sev>\\d)\\/(?<brief>[^:]+): (?<detail>.*)")){
+	    if(brief == "LOGOUT"){
+	        patternParse(detail,"(?<user>\\S+).*(?<sip>\\d+\\.\\d+\\.\\d+\\.\\d+).*");
+            pack("event") {
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy", "en");
+                DS_DVC_NAME = host;
+                DS_PROCESS_NAME = module;
+                EVT_CATEGORY = module;
+                EVT_TYPE = brief;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit/System";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user;
+                BHV_CATEGORY = "/Login";
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = sip;
+            }
+	    } else if(brief == "ATK_ICMPV6_TRACEROUTE_SZ" || brief == "FILTER_ZONE_IPV4_EXECUTION"){
+	        patternSplitParse(detail, "; ?", "=");
+	        if (field("SrcIPAddr(1003)") != null) {
+	            sip = field("SrcIPAddr(1003)");
+	        } else {
+	            sip = field("SrcIPv6Addr(1036)");
+	        }
+            if (field("DstIPAddr(1007)") != null) {
+	            dip = field("DstIPAddr(1007)");
+	        } else {
+	            dip = field("DstIPv6Addr(1037)");
+	        }
+            pack("event") {
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy", "en");
+                DS_DVC_NAME = host;
+                DS_PROCESS_NAME = module;
+                EVT_CATEGORY = module;
+                EVT_TYPE = brief;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = field("SrcPort(1004)");
+                SBJ_MAC = convert2Mac(field("SrcMacAddr(1021)"));
+                SBJ_VLAN = field("SrcZoneName(1025)");
+                TRANS_PROTO = toUppercase(field("Protocol(1001)"));
+                BEHAVIOR = field("Action(1053)");
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = field("DstPort(1008)");
+                PRT_ACTION = field("Event(1048)");
+            }
+	    }else if (brief == "ATK_ICMPV6_FLOOD_SZ" || brief == "ATK_IP4_ACK_FLOOD_SZ") {
+            patternSplitParse(detail, "; ?", "=");
+             if (field("DstIPAddr(1007)") != null) {
+ 	            dip = field("DstIPAddr(1007)");
+ 	        } else {
+ 	            dip = field("DstIPv6Addr(1037)");
+ 	        }
+            pack("event") {
+                DS_DVC_NAME = host;
+                DS_PROCESS_NAME = module;
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy", "en");
+                DS_PROCESS_NAME = module;
+                EVT_CATEGORY = module;
+                EVT_TYPE = brief;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Zone";
+                SBJ_NAME = field("SrcZoneName(1025)");
+                SBJ_VLAN = field("SrcZoneName(1025)");
+                BHV_CATEGORY = "/Attack";
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                PRT_ACTION = field("Action(1053)");
+            }
+	    }else if(brief == "DAC_STORE_STATE_FULL"){
+            patternParse(detail,".*;\\s+(?<outcome>.*\\(AlarmThreshold\\(1121\\)=(?<AlarmThreshold>.*)\\) set for StoreName\\(1119\\)=(?<StoreName>.*) was exceeded\\.)");
+            pack("event") {
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy", "en");
+                DS_PROCESS_NAME = module;
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = module;
+                EVT_TYPE = brief;
+                EVT_NAME = "存储空间超限";
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit/Status";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = MS_SRC_ADDRESS;
+                SBJ_IP = MS_SRC_ADDRESS;
+                SBJ_SUBO_TYPE = "/Resource/Disk";
+                SBJ_SUBO = StoreName;
+                BHV_CATEGORY = "/Is";
+                OUTCOME = outcome;
+            }
+        }else if(brief == "LOGFILE_USAGEHIGH"){
+            patternParse(detail,"The usage of log-file flash:(?<logfile>.*) reaches (?<value>.*)\\.");
+            pack("event") {
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy", "en");
+                DS_PROCESS_NAME = module;
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = module;
+                EVT_NAME = "日志文件空间超限";
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit/Status";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = MS_SRC_ADDRESS;
+                SBJ_IP = MS_SRC_ADDRESS;
+                SBJ_SUBO_TYPE = "/Resource/File";
+                SBJ_SUBO = logfile;
+                BHV_CATEGORY = "/Is";
+                OUTCOME = detail;
+            }
+        }else if(brief == "UFLT_LICENSE_UNAVAILABLE"){
+            patternParse(detail,".*;\\s+(?<outcome>.*)");
+            pack("event") {
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy", "en");
+                DS_PROCESS_NAME = module;
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = module;
+                EVT_NAME = "许可告警";
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit/Status";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = MS_SRC_ADDRESS;
+                SBJ_IP = MS_SRC_ADDRESS;
+                SBJ_SUBO_TYPE = "/Resource/License";
+                BHV_CATEGORY = "/Is";
+                OUTCOME = outcome;
+            }
+        }else if(brief == "MEM_EXCEED_THRESHOLD"){
+            patternParse(detail,".*;\\s+(?<outcome>.*)");
+            pack("event") {
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy", "en");
+                DS_PROCESS_NAME = module;
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = module;
+                EVT_NAME = "内存超限";
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit/Status";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = MS_SRC_ADDRESS;
+                SBJ_IP = MS_SRC_ADDRESS;
+                SBJ_SUBO_TYPE = "/Resource/Memory";
+                BHV_CATEGORY = "/Is";
+                OUTCOME = outcome;
+            }
+        }else if(brief == "MEM_ALERT"){
+            patternParse(detail,".*;\\s+(?<outcome>.*)");
+            pack("event") {
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy", "en");
+                DS_PROCESS_NAME = module;
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = module;
+                EVT_NAME = "内存告警";
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit/Status";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = MS_SRC_ADDRESS;
+                SBJ_IP = MS_SRC_ADDRESS;
+                SBJ_SUBO_TYPE = "/Resource/Memory";
+                BHV_CATEGORY = "/Is";
+                OUTCOME = detail;
+           }
+        }
+	}
+}

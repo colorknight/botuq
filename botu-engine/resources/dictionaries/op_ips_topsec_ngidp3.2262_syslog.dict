@@ -1,0 +1,13 @@
+{
+	version:"0.1",
+	items:[
+		{keys:["1"], value:"告警"},
+		{keys:["2"], value:"阻断"},
+		{keys:["3"], value:"发送"},
+		{keys:["4"], value:"防火墙联动"},
+		{keys:["5"], value:"ip黑名单"},
+		{keys:["6"], value:"url黑名单"},
+		{keys:["7"], value:"URL重定向"},
+		{keys:["8"], value:"限制连接"},
+	]
+}
