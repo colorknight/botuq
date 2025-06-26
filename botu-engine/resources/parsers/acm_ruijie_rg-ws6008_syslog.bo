@@ -1,0 +1,26 @@
+// 锐捷无线AC控制器
+botu("ACM/RuiJie/RG-WS6008/Syslog") {
+    patternParse(MS_SRC_DATA, ".*\\s*(?<time>\\d{4}-\\d+-\\d+[^\\s]+) %(?<module>\\S+)-(?<sev>\\d+)-(?<type>\\S+): (?<detail>.*)");
+    switch(module) {
+        case "CLI":
+            pack("event") {
+                START_TIME = format2Time(time,"yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+                DS_PROCESS_NAME = module;
+                EVT_CATEGORY = type;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                OUTCOME = detail;
+            }
+        default:
+            pack("event") {
+                START_TIME = extractTime(time);
+                DS_PROCESS_NAME = module;
+                EVT_CATEGORY = module;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                OUTCOME = detail;
+            }
+    }
+}

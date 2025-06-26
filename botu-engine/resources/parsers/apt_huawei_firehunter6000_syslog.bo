@@ -1,0 +1,17 @@
+// 华为FireHunter6000
+botu("APT/Huawei/FireHunter6000/Syslog") {
+    if(patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+)\\s*(?<host>[^\\s]+) %*\\s*(?<version>\\d*)\\s*(?<recorder>((?!/).)*)/(?<sev>\\d+)/(?<module>[^\\(:]+): \\(*(?<brief>[^\\(:]*)")){
+        sev = parseSyslogSeverity(pri);
+        pack("event"){
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+            DS_DVC_NAME = host;
+            DS_PROCESS_NAME = recorder;
+            EVT_CATEGORY = recorder;
+            EVT_TYPE = module;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            OUTCOME = brief;
+        }
+    }
+}

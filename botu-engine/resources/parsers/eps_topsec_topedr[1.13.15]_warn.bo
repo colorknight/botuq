@@ -1,0 +1,389 @@
+botu("EPS/Topsec/TopEDR[1.13.15]/Warn") {
+    if (patternParse(MS_SRC_DATA, "^(?<time>\\w+\\s+\\d+\\s+\\d+:\\d+:\\d+)\\s(?<ip>[^\\s]+)\\s(?<outcome>.*)")) {
+        pack("event") {
+            START_TIME = extractTime(time);
+            EVT_CATEGORY = "基本信息";
+            SEVERITY = 1;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = 1;
+            SBJ_TYPE = "/Host";
+            SBJ_NAME = ip;
+            SBJ_IP = ip;
+            BHV_CATEGORY = "/Is";
+            OUTCOME = outcome;
+        }
+    } else {
+        splitParse(MS_SRC_DATA, ' ', '"', '"', "=");
+        switch(fname) {
+            case "update":
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = defense_type;
+                    EVT_TYPE = fname;
+                    EVT_NAME = "版本升级";
+                    SEVERITY = 1;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = 1;
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = hostname;
+                    SBJ_ROLE = person;
+                    SBJ_IP = client_ip;
+                    SBJ_HOST = hostname;
+                    BHV_CATEGORY = "/Update";
+                    BEHAVIOR = simpleMapping(detail_auto,"{0:手动更新,1:自动更新}",null);
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = hostname;
+                    OBJ_IP = client_ip;
+                    OBJ_HOST = hostname;
+                    STATUS = simpleMapping(detail_err,"{0:成功,1:失败}",null);
+                }
+            case "scan":
+                if(detail_threat_list_virus_type != null){
+                    bhvCat = "/Scan";
+                    evtCat = strFormat("%s/%s", defense_type, detail_threat_list_virus_type);
+                    evtType = detail_threat_list_virus_name;
+		            nCat = "/Threat/Malware/Virus";
+                }else{
+                   bhvCat = "/Audit";
+                   evtCat = "病毒查杀审计";
+                   evtType = "病毒查杀审计";
+                   nCat = "/Audit";
+                }
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = evtCat;
+                    EVT_TYPE = evtType;
+                    EVT_NAME = "病毒查杀";
+                    SEVERITY = 3;
+                    N_EVT_CATEGORY = nCat;
+                    N_SEVERITY = 3;
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = hostname;
+                    SBJ_ROLE = person;
+                    SBJ_HOST = hostname;
+                    BHV_CATEGORY = bhvCat;
+                    BEHAVIOR = simpleMapping(detection_method,"{HEUR:静态启发,HVM:动态启发,BEHAV:行为分析,DEFAULT:特征检测,SVM:脚本动态启发}",null);
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = hostname;
+                    OBJ_IP = client_ip;
+                    OBJ_HOST = hostname;
+                    STATUS = simpleMapping(detail_threat_list_mcs,"{0:等待,1:已忽略,2:已信任,3:处理中,4:已处理,5:失败}",null);
+                    OUTCOME = simpleMapping(detail_threat_list_clean,"{0:未清除,1:清除}",null);
+                    EVIDENCE = detail_threat_list_objn;
+                    PLD_TYPE = "/Resource/File";
+                    PLD_NAME = detail_threat_list_fn;
+                }
+            case "filemon":
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = strFormat("%s/%s", defense_type, detail_virus_type);
+                    EVT_TYPE = detail_virus_name;
+                    EVT_NAME = "文件实时监控";
+                    SEVERITY = 3;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = 3;
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = detail_proc_path;
+                    SBJ_ROLE = person;
+                    SBJ_HOST = hostname;
+                    SBJ_IP = client_ip;
+                    BHV_CATEGORY = "/Access";
+                    BHV_BODY = detail_cmdline;
+                    OBJ_TYPE = "/Resource/File";
+                    OBJ_NAME = detail_file_path;
+                    OBJ_HOST = hostname;
+                    OBJ_IP = client_ip;
+                    PRT_ACTION = simpleMapping(detection_method,"{HEUR:静态启发,HVM:动态启发,BEHAV:行为分析,DEFAULT:特征检测,SVM:脚本动态启发}",null);
+                    STATUS = simpleMapping(detail_treatment,"{0:忽略,1:询问,2:清除,3:阻止,4:信任,5:结束进程}",null);
+                    OUTCOME = simpleMapping(detail_result,"{0:清除失败,1:隔离失败,2:阻止（用户忽略）,3:删除,4:清除,5:信任,6:用户忽略}",null);
+                }
+            case "dlmon":
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = strFormat("%s/%s", defense_type, detail_virus_type);
+                    EVT_TYPE = detail_virus_name;
+                    EVT_NAME = "下载保护";
+                    SEVERITY = 3;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = 3;
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = detail_proc_path;
+                    SBJ_ROLE = person;
+                    SBJ_HOST = hostname;
+                    SBJ_IP = client_ip;
+                    BHV_CATEGORY = "/Download";
+                    BHV_BODY = detail_cmdline;
+                    OBJ_TYPE = "/Resource/File";
+                    OBJ_NAME = detail_file_path;
+                    OBJ_HOST = hostname;
+                    OBJ_IP = client_ip;
+                    PRT_ACTION = simpleMapping(detection_method,"{HEUR:静态启发,HVM:动态启发,BEHAV:行为分析,DEFAULT:特征检测,SVM:脚本动态启发}",null);
+                    STATUS = simpleMapping(detail_treatment,"{0:忽略,1:询问,2:清除,3:阻止,4:信任,5:结束进程}",null);
+                    OUTCOME = simpleMapping(detail_result,"{0:清除失败,1:隔离失败,2:阻止（用户忽略）,3:删除,4:清除,5:信任,6:用户忽略}",null);
+                }
+            case "instmon":
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = defense_typ;
+                    EVT_TYPE = detail_software_name;
+                    EVT_NAME = "软件安装拦截";
+                    SEVERITY = 3;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = 3;
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = detail_proc_path;
+                    SBJ_ROLE = person;
+                    SBJ_HOST = hostname;
+                    SBJ_IP = client_ip;
+                    BHV_CATEGORY = "/Install";
+                    BHV_BODY = detail_runcmd;
+                    OBJ_TYPE = "/Resource/File";
+                    OBJ_NAME = detail_file_path;
+                    OBJ_HOST = hostname;
+                    OBJ_IP = client_ip;
+                    STATUS = simpleMapping(detail_treatment,"{0:忽略,1:询问,2:清除,3:阻止,4:信任,5:结束进程}",null);
+                }
+            case "udiskmon":
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = strFormat("%s/%s", defense_type, detail_virus_type);
+                    EVT_TYPE = detail_virus_name;
+                    EVT_NAME = "U盘保护";
+                    SEVERITY = 2;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = 2;
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = hostname;
+                    SBJ_ROLE = person;
+                    SBJ_IP = client_ip;
+                    SBJ_HOST = hostname;
+                    BHV_CATEGORY = "/Scan";
+                    OBJ_TYPE = "/Resource/File";
+                    OBJ_NAME = detail_file_path;
+                    OBJ_IP = client_ip;
+                    OBJ_HOST = hostname;
+                    PRT_ACTION = simpleMapping(detection_method,"{HEUR:静态启发,HVM:动态启发,BEHAV:行为分析,DEFAULT:特征检测,SVM:脚本动态启发}",null);
+                    STATUS = simpleMapping(detail_treatment,"{0:忽略,1:询问,2:清除,3:阻止,4:信任,5:结束进程}",null);
+                    OUTCOME = simpleMapping(detail_result,"{0:清除失败,1:隔离失败,2:阻止（用户忽略）,3:删除,4:清除,5:信任,6:用户忽略}",null);
+                }
+            case "sysprot":
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = defense_type;
+                    EVT_TYPE = detail_RuleID;
+                    //EVT_NAME = "系统加固";
+                    EVT_NAME = detail_description;
+                    SEVERITY = detail_level;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = 2;
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = detail_proc_path;
+                    SBJ_ROLE = person;
+                    SBJ_IP = client_ip;
+                    SBJ_HOST = hostname;
+                    BHV_CATEGORY = "/Update";
+                    BHV_BODY = detail_cmdline;
+                    OBJ_TYPE = "/Resource/Registry";
+                    OBJ_NAME = detail_res_path;
+                    OBJ_IP = client_ip;
+                    OBJ_HOST = hostname;
+                    PRT_ACTION = simpleMapping(detection_method,"{HEUR:静态启发,HVM:动态启发,BEHAV:行为分析,DEFAULT:特征检测,SVM:脚本动态启发}",null);
+                    STATUS = simpleMapping(detail_treatment,"{0:忽略,1:询问,2:清除,3:阻止,4:信任,5:结束进程}",null);
+                }
+            case "malsite":
+                inx = indexString(detail_url, "/");
+                dn = subString(detail_url, 0, inx);
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = defense_type;
+                    EVT_TYPE = detail_type;
+                    EVT_NAME = "恶意网站拦截";
+                    SEVERITY = 3;
+                    N_EVT_CATEGORY = "/Threat/Malware";
+                    N_SEVERITY = 3;
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = detail_proc_path;
+                    SBJ_ROLE = person;
+                    SBJ_IP = client_ip;
+                    SBJ_HOST = hostname;
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Service/Web";
+                    OBJ_NAME = dn;
+                    OBJ_SUBO = detail_url;
+                }
+            case "instrusion":
+                inx = indexString(detail_name, "/");
+                cat = subString(detail_name, 0, inx);
+                type = subString(detail_name, inx + 1);
+                sip = convert2Ip(toLong(detail_raddr));
+                action = "/Scan";
+                nCat = "/Audit";
+                if(detail_blocked == 1) {
+                    action = "/Block";
+                    nCat = "/Threat";
+                }
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = cat;
+                    EVT_TYPE = type;
+                    EVT_NAME = "入侵检测";
+                    SEVERITY = 3;
+                    N_EVT_CATEGORY = nCat;
+                    N_SEVERITY = 3;
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = detail_rport;
+                    TRANS_PROTO = dictMapping("trans_protocol",toInt(detail_protocol));
+                    BHV_CATEGORY = "/Access";
+                    BHV_BODY = detail_cmdline;
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = hostname;
+                    OBJ_IP = client_ip;
+                    OBJ_HOST = hostname;
+                    OBJ_PORT = detail_lport ;
+                    OBJ_SUBO = detail_proc_path;
+                    PRT_ACTION = action;
+                }
+            case "ipblacklist":
+                dip = convert2Ip(toLong(detail_raddr));
+                action = "/Scan";
+                nCat = "/Audit";
+                if(detail_blocked == 1) {
+                    action = "/Block";
+                    nCat = "/Violation";
+                }
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = fname;
+                    EVT_NAME = strFormat("%s/%s","IP黑名单", detail_name);
+                    SEVERITY = 3;
+                    N_EVT_CATEGORY = nCat;
+                    N_SEVERITY = 3;
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = hostname;
+                    SBJ_IP = client_ip;
+                    SBJ_PORT = detail_lport;
+                    SBJ_SUBO = detail_proc_path;
+                    TRANS_PROTO = dictMapping("trans_protocol",toInt(detail_protocol));
+                    BHV_CATEGORY = "/Access";
+                    BHV_BODY = detail_cmdline;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = detail_rport ;
+                    PRT_ACTION = action;
+                }
+            case "ipproto":
+                dip = convert2Ip(toLong(detail_raddr));
+                action = "/Scan";
+                nCat = "/Audit";
+                if(detail_blocked == 1) {
+                    action = "/Block";
+                    nCat = "/Violation";
+                }
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = fname;
+                    EVT_NAME = strFormat("%s/%s","IP协议控制", detail_name);
+                    SEVERITY = 3;
+                    N_EVT_CATEGORY = nCat;
+                    N_SEVERITY = 3;
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = hostname;
+                    SBJ_IP = client_ip;
+                    SBJ_PORT = detail_lport;
+                    SBJ_SUBO = detail_proc_path;
+                    TRANS_PROTO = dictMapping("trans_protocol",toInt(detail_protocol));
+                    BHV_CATEGORY = "/Access";
+                    BHV_BODY = detail_cmdline;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = detail_rport ;
+                    PRT_ACTION = action;
+                }
+            case "behavior":
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = strFormat("%s/%s", defense_type, virus_type);
+                    EVT_TYPE = virus_name;
+                    EVT_NAME = "恶意行为";
+                    SEVERITY = 3;
+                    N_EVT_CATEGORY = "/Threat/Malware";
+                    N_SEVERITY = 3;
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = detail_file_path;
+                    SBJ_ROLE = person;
+                    SBJ_IP = client_ip;
+                    SBJ_HOST = hostname;
+                    BHV_CATEGORY = "/Start";
+                    BHV_BODY = detail_cmdline;
+                    PRT_ACTION = detection_method;
+                    STATUS = simpleMapping(detail_treatment,"{0:忽略,1:询问,2:清除,3:阻止,4:信任,5:结束进程}",null);
+                }
+            case "ipattack":
+                dip = convert2Ip(toLong(detail_raddr));
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = defense_type;
+                    EVT_TYPE = detail_flood_type;
+                    EVT_NAME = "对外攻击";
+                    SEVERITY = 3;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = 3;
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = detail_proc_path;
+                    SBJ_ROLE = person;
+                    SBJ_IP = client_ip;
+                    SBJ_HOST = hostname;
+                    BHV_CATEGORY = "/Access";
+                    BHV_BODY = detail_cmdline;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                }
+            case "mail":
+                pack("event") {
+                    START_TIME = toTime(time);
+                    DS_PROCESS_NAME = fname;
+                    EVT_CATEGORY = strFormat("%s/%s", defense_type, detail_virus_type);
+                    EVT_TYPE = detail_virus_name;
+                    EVT_NAME = "邮件监控";
+                    SEVERITY = 3;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = 3;
+                    SBJ_TYPE = "/Resource/Account";
+                    SBJ_NAME = detail_mail_from;
+                    SBJ_ROLE = person;
+                    SBJ_IP = client_ip;
+                    SBJ_HOST = hostname;
+                    BHV_CATEGORY = "/Send";
+                    BEHAVIOR = detail_cmdline;
+                    BHV_BODY = detail_file_path;
+                    OBJ_TYPE = "/Resource/Account";
+                    OBJ_NAME = detail_mail_to;
+                    CC = detail_mail_cc;
+                    SUBJECT = detail_mail_subject;
+                    PRT_ACTION = simpleMapping(detection_method,"{HEUR:静态启发,HVM:动态启发,BEHAV:行为分析,DEFAULT:特征检测,SVM:脚本动态启发}",null);
+                    STATUS = simpleMapping(detail_treatment,"{0:忽略,1:询问,2:清除,3:阻止,4:信任,5:结束进程}",null);
+                }
+            default:
+                pack(){}
+        }
+    }
+
+}

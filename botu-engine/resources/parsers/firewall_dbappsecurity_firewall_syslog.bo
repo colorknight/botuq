@@ -1,0 +1,16 @@
+// 安恒明御关保防火墙
+botu("Firewall/DBAPPSecurity/Firewall/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<logTime>[^:]+:\\d+:\\d+) (?<host>\\S+) (?<dvcName>[^:]+): (?<detail>.*)")) {
+        splitParse(detail, ' ', '\"', '\"', "=");
+        sev = parseSyslogSeverity(pri);
+        pack("event") {
+            DS_DVC_NAME = dvcName;
+            START_TIME = extractTime(logTime);
+            EVT_CATEGORY = "/Audit";
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            OUTCOME = msg;
+        }
+	}
+}

@@ -1,0 +1,21 @@
+botu("Bastion/JHSec/JH-OAM[3.0.6.sec]/Syslog"){
+     splitParse(MS_SRC_DATA, ' ', '"', '"', "=");
+     sev = parseSyslogSeverity(log_type);
+     pack("event"){
+        START_TIME = toTime(timestamp);
+        DS_PROCESS_NAME = module;
+        EVT_CATEGORY = "/Audit";
+        SEVERITY = sev;
+        N_EVT_CATEGORY = "/Audit";
+        N_SEVERITY = dictMapping("severity",sev);
+        SBJ_TYPE = "/User";
+        SBJ_NAME = username;
+        SBJ_IP = MS_SRC_ADDRESS;
+        BHV_CATEGORY = "/Access";
+        BEHAVIOR = op;
+        OBJ_TYPE = "/Ip";
+        OBJ_NAME = remoteIP;
+        OBJ_IP = remoteIP;
+        STATUS = result;
+     }
+}

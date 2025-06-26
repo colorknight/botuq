@@ -1,0 +1,87 @@
+botu("AuthServer/SangFor/ATrust/Syslog") {
+    if (patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>(?<time>[^:]+ \\d+:\\d+:\\d+) (?<host>[^\\s]+) (?<dev>.*)@(?<module>.*)\\[\\d+\\]: (?<msg>.*)")) {
+        sev = parseSyslogSeverity(pri);
+        time = strFormat("%s %s", time2String(now(), "yyyy"), time);
+        switch(module) {
+            case "userLog":
+                jsonParse(msg,true);
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss");
+                    DS_DVC_NAME = dev;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = field("event.mainType");
+                    EVT_TYPE = field("event.subType");
+                    SEVERITY = sev;
+                    N_SEVERITY = dictMapping("severity",sev);
+                    N_EVT_CATEGORY = "/Audit";
+                    SBJ_TYPE = field("actor.type");
+                    SBJ_NAME = field("actor.username");
+                    SBJ_IP = field("client.ip");
+                    SBJ_PORT = field("client.port");
+                    SBJ_MAC = convert2Mac(field("client.mac"));
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = field("target.type");
+                    OBJ_NAME = field("target.displayName");
+                    STATUS = field("event.result");
+                }
+            case "systemLog":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss");
+                    DS_DVC_NAME = dev;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = field("event.mainType");
+                    EVT_TYPE = field("event.subType");
+                    SEVERITY = sev;
+                    N_SEVERITY = dictMapping("severity",sev);
+                    N_EVT_CATEGORY = "/Audit";
+                }
+            default:
+                jsonParse(msg,true);
+                if(field("actor.type") == "admin"){
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss");
+                        DS_DVC_NAME = dev;
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = field("event.mainType");
+                        EVT_TYPE = field("event.subType");
+                        SEVERITY = sev;
+                        N_SEVERITY = dictMapping("severity",sev);
+                        N_EVT_CATEGORY = "/Audit";
+                        SBJ_TYPE = field("actor.type");
+                        SBJ_NAME = field("actor.username");
+                        SBJ_IP = field("client.ip");
+                        SBJ_PORT = field("client.port");
+                        SBJ_MAC = convert2Mac(field("client.mac"));
+                        BHV_CATEGORY = "/Access";
+                        OBJ_TYPE = field("target.type");
+                        OBJ_NAME = field("target.displayName");
+                        STATUS = field("event.result");
+                    }
+                }else{
+                    url = field("target.details.app.wb.request.url");
+                    ip =  regExtract(url, "////(.*):.*");
+                    port =  regExtract(url, ".*:(.*)//.*");
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss");
+                        DS_DVC_NAME = dev;
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = field("event.mainType");
+                        EVT_TYPE = field("event.subType");
+                        SEVERITY = sev;
+                        N_SEVERITY = dictMapping("severity",sev);
+                        N_EVT_CATEGORY = "/Thread/Attack";
+                        SBJ_TYPE = field("actor.type");
+                        SBJ_NAME = field("/Ip");
+                        SBJ_IP = field("client.ip");
+                        SBJ_PORT = field("client.port");
+                        BHV_CATEGORY = "/Attack";
+                        OBJ_TYPE = field("target.type");
+                        OBJ_NAME = ip;
+                        OBJ_IP = ip;
+                        OBJ_PORT = port;
+                        STATUS = field("event.result");
+                    }
+                }
+        }
+    }
+}

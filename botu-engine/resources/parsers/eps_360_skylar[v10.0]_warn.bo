@@ -1,0 +1,150 @@
+botu("EPS/360/SkyLar[v10.0]/Warn") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<startTime>[^:]+:\\d+:\\d+) (?<type>[^\\s]+) (?<detail>.*)")) {
+	    inx = indexString(detail,"\"=");
+	    if(inx != -1){
+            jsonParse(detail,true);
+	    }else{
+	        length = detail.length();
+	        data = subString(detail,1,toInt(length - 1));
+	        patternSplitParse(data, ", ?", "=");
+	    }
+		sev = parseSyslogSeverity(pri);
+        switch(type) {
+            case "gnac_alarm":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    EVT_CATEGORY = type;
+                    SEVERITY = "alarm";
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity","alarm");
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = convert2Ip(ipaddr);
+                    SBJ_MAC = convert2Mac(macaddr);
+                    SBJ_IP = convert2Ip(ipaddr);
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = convert2Ip(ipvisit);
+                    OBJ_MAC = convert2Mac(macvisit);
+                    OBJ_IP = convert2Ip(ipvisit);
+                    PRT_ACTION = disposemode;
+                    OUTCOME = illegalflag;
+                }
+            case "visitor_past_log":
+            case "vis_user_past_log":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    EVT_CATEGORY = type;
+                    SEVERITY = "info";
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity","info");
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = v_name;
+                    SBJ_IP = v_ip;
+                    SBJ_MAC = v_mac;
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/User";
+                    OBJ_NAME = b_name;
+                    OUTCOME = detail;
+                }
+            case "alarm_allow_net":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    EVT_CATEGORY = type;
+                    SEVERITY = ALARM_LEVEL;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",ALARM_LEVEL);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = LOGINNAME;
+                    SBJ_IP = convert2Ip(ALARM_VISIT_IP);
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = CMPNAME;
+                    OBJ_MAC = convert2Mac(MACADDR);
+                    OBJ_IP = convert2Ip(IPADDR);
+                    STATUS = RESULT;
+                    OUTCOME = detail;
+                }
+            case "alarm_antivirus_software":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    EVT_CATEGORY = type;
+                    N_EVT_CATEGORY = "/Audit";
+                    SEVERITY = ALARM_LEVEL;
+                    N_SEVERITY = dictMapping("severity",ALARM_LEVEL);
+                    PRT_ACTION = ALARM_ANTIVIRUS_MODE;
+                    PRT_STATUS = ALARM_ANTIVIRUS_MODE;
+                    OUTCOME = detail;
+                }
+            case "ALARM_BANDING_COMPUTER_NAME":
+                prtStatus = ALARM_BINDSOFT_MODE;
+            case "ALARM_BINDSOFT":
+                prtStatus = TYPE;
+            case "alarm_device":
+                prtStatus = ALARM_DEVICE_MODE;
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    EVT_CATEGORY = type;
+                    N_EVT_CATEGORY = "/Audit";
+                    SEVERITY = ALARM_LEVEL;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",ALARM_LEVEL);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = LOGINNAME;
+                    BHV_CATEGORY = "/Update";
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = CMPNAME;
+                    OBJ_MAC = convert2Mac(MACADDR);
+                    OBJ_IP = convert2Ip(IPADDR);
+                    STATUS = RESULT;
+                    OUTCOME = detail;
+                    PRT_STATUS = prtStatus;
+                }
+            case "alarm_dlp_scanf_log":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = VIOLATE_TYPE;
+                    EVT_ID = RULE;
+                    SEVERITY = ALARM_LEVEL;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",ALARM_LEVEL);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = ACCOUNT_ID;
+                    SBJ_IP = IPADDR;
+                    SBJ_MAC = MACADDR;
+                    BHV_CATEGORY = "/Send";
+                    OBJ_TYPE = "/Resource/File";
+                    OBJ_NAME = FILE_NAME;
+                    STATUS = RESULT;
+                    OUTCOME = detail;
+                    PRT_STATUS = DEAL_TYPE;
+                }
+            case "website_alarm":
+            case "website_audit":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    EVT_CATEGORY = type;
+                    SEVERITY = ALARM_LEVEL;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",ALARM_LEVEL);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = LOGINNAME;
+                    SBJ_IP = convert2Ip(IPADDR);
+                    SBJ_MAC = convert2Mac(MACADDR);
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Resources";
+                    OBJ_NAME = ALARM_WEBSITE_VIOLATE_WEB;
+                    OUTCOME = detail;
+                }
+            default:
+                pack("event") {
+                    START_TIME = extractTime(startTime);
+                    EVT_CATEGORY = type;
+                    N_EVT_CATEGORY = "/Audit";
+                    SEVERITY = "info";
+                    N_SEVERITY = dictMapping("severity","info");
+                    OUTCOME = detail;
+                }
+        }
+	}
+}

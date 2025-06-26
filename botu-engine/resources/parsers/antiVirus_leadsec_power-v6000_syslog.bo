@@ -1,0 +1,72 @@
+botu("AntiVirus/LeadSec/Power-V6000/Syslog") {
+    patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>(?<evtcat>[^:]+):(?<msg>.*)");
+    splitParse(msg, ' ', '"', '"', "=");
+    index = indexString(proto, "_");
+    if (index != -1) {
+        proto = subString(proto, index + 1);
+    }
+    switch(evtcat) {
+        case "rule":
+            pack("event") {
+                START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                DS_PROCESS_NAME = mod;
+                DS_DVC_NAME = dname;
+                EVT_CATEGORY = logtype;
+                EVT_TYPE = evtcat;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user;
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = act;
+                OBJ_TYPE = "/Resource/Configuration";
+                OBJ_NAME = name;
+                OUTCOME = result;
+            }
+        case "webui":
+            pack("event") {
+                START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                DS_DVC_NAME = dname;
+                DS_PROCESS_NAME = mod;
+                EVT_CATEGORY = logtype;
+                EVT_TYPE = evtcat;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit/Session/HTTP";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user;
+                SBJ_NAME = admin;
+                SBJ_IP = from;
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = act;
+                REQ_USER_AGENT = agent;
+                OUTCOME = dsp_msg;
+            }
+        case "kernel":
+            pack("event") {
+                START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                DS_DVC_NAME = dname;
+                DS_PROCESS_NAME = mod;
+                EVT_CATEGORY = logtype;
+                EVT_TYPE = rule_name;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+                DURATION = duration;
+                SBJ_TYPE = "Ip";
+                SBJ_NAME = sa;
+                SBJ_IP = sa;
+                SBJ_PORT = sport;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = proto;
+                OBJ_TYPE = "Ip";
+                OBJ_NAME = da;
+                OBJ_IP = da;
+                OBJ_PORT = dport;
+                OUTCOME = dsp_msg;
+                BYTES_IN = rcvd;
+                BYTES_OUT = sent;
+            }
+    }
+}

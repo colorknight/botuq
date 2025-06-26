@@ -1,0 +1,218 @@
+botu("Firewall/Hillstone/SG-6000/Syslog") {
+    temp1 = replaceString(MS_SRC_DATA,"，",",");
+    temp2 = replaceString(temp1,"！","!");
+    temp3 = replaceString(temp2,"：",":");
+    temp4 = replaceString(temp3,"（","(");
+    temp5 = replaceString(temp4,"）",")");
+	if (patternParse(temp5, "\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) (?<dev>[^\\s]+) ([^\\s]+) (?<deviceName>\\w+#){0,}(?<type>[^\\s]+): (?<detail>.*)") ||
+	patternParse(temp5, "\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) (?<ip>[^\\s]+) (?<dev>[^\\s]+) ([^\\s]+) (?<deviceName>\\w+#){0,}(?<type>[^\\s]+): (?<detail>.*)")) {
+        sev = parseSyslogSeverity(pri);
+        typeAry = strSplit(type,"@");
+        infoType = typeAry[0];
+        eventType = typeAry[1];
+        switch(infoType){
+            case "Event":
+            case "Configuration":
+            case "Operate":
+            case "Debug":
+            case "Sandbox":
+            case "NetWork":
+                pack("event") {
+                    DS_DVC_NAME = dev;
+                    DS_PROCESS_NAME = eventType;
+                    START_TIME = extractTime(time);
+                    EVT_CATEGORY = "/Audit";
+                    EVT_TYPE = type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    OUTCOME = detail;
+                }
+            case "Security":
+                if(patternParse(detail,"(?<attackType>[^:]+)[:](?<action>.*)![^\\s]*\\s(?<sourceIp>\\d+.\\d+.\\d+.\\d+)-\\>\\s*(?<destinationIp>\\d+.\\d+.\\d+.\\d+).*")){
+                    pack("event") {
+                        DS_DVC_NAME = dev;
+                        DS_PROCESS_NAME = eventType;
+                        START_TIME = extractTime(time);
+                        EVT_CATEGORY = "/Attack";
+                        EVT_TYPE = type;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Threat/Attack";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = sourceIp;
+                        SBJ_IP = sourceIp;
+                        BHV_CATEGORY = "/Attack";
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME = destinationIp;
+                        OBJ_IP = destinationIp;
+                        PRT_ACTION = action;
+                        OUTCOME = detail;
+                    }
+                }else if(patternParse(detail,"(?<attackType>[^:]+)[:](?<action>.*)[!]\\s*Source IP (?<srcIp>\\d+.\\d+.\\d+.\\d+).*") ||
+                patternParse(detail,"(?<attackType>[^:]+)[:](?<action>.*)[!]\\s*源地址 (?<srcIp>\\d+.\\d+.\\d+.\\d+).*")){
+                    pack("event") {
+                        DS_DVC_NAME = dev;
+                        DS_PROCESS_NAME = eventType;
+                        START_TIME = extractTime(time);
+                        EVT_CATEGORY = "/Attack";
+                        EVT_TYPE = type;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Threat/Attack";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME= srcIp;
+                        SBJ_IP = srcIp;
+                        BHV_CATEGORY = "/Attack";
+                        OBJ_TYPE = "/Host";
+                        OBJ_HOST= "n/a";
+                        OBJ_IP = convert2Ip("0.0.0.0");
+                        PRT_ACTION = action;
+                        OUTCOME = detail;
+                    }
+                }else if(patternParse(detail,"(?<attackType>[^:]+)[:](?<action>.*)[!]\\s*Destination IP (?<dstIp>\\d+.\\d+.\\d+.\\d+).*") ||
+                patternParse(detail,"(?<attackType>[^:]+)[:](?<action>.*)[!]\\s*目的地址 (?<dstIp>\\d+.\\d+.\\d+.\\d+).*")){
+                     pack("event") {
+                         DS_DVC_NAME = dev;
+                         DS_PROCESS_NAME = eventType;
+                         START_TIME = extractTime(time);
+                         EVT_CATEGORY = "/Attack";
+                         EVT_TYPE = type;
+                         SEVERITY = sev;
+                         N_EVT_CATEGORY = "/Threat/Attack";
+                         N_SEVERITY = dictMapping("severity",sev);
+                         SBJ_TYPE = "/Host";
+                         SBJ_NAME= "n/a";
+                         SBJ_IP = convert2Ip("0.0.0.0");
+                         BHV_CATEGORY = "/Attack";
+                         OBJ_TYPE = "/Ip";
+                         OBJ_NAME= dstIp;
+                         OBJ_IP = dstIp;
+                         PRT_ACTION = action;
+                         OUTCOME = detail;
+                     }
+                }else if(patternParse(detail,"IP address (?<ip>\\d+.\\d+.\\d+.\\d+) on .*") ||
+                patternParse(detail,"IP 地址 (?<ip>\\d+.\\d+.\\d+.\\d+) on .*")){
+                    pack("event") {
+                        DS_DVC_NAME = dev;
+                        DS_PROCESS_NAME = eventType;
+                        START_TIME = extractTime(time);
+                        EVT_CATEGORY = "/Audit";
+                        EVT_TYPE = type;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        OUTCOME = detail;
+                    }
+                }else{
+                    pack("event") {
+                        DS_DVC_NAME = dev;
+                        DS_PROCESS_NAME = eventType;
+                        START_TIME = extractTime(time);
+                        EVT_CATEGORY = "/Audit";
+                        EVT_TYPE = type;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        OUTCOME = detail;
+                    }
+                }
+            case "Threat":
+                if(patternParse(detail,".*From (?<srcIp>\\d+.\\d+.\\d+.\\d+)(\\(.*\\)){0,1}:(?<srcPort>\\d*)(\\(.*\\)){0,1} to (?<dstIp>\\d+.\\d+.\\d+.\\d+)(\\(.*\\)){0,1}:(?<dstPort>\\d*)(\\(.*\\)){0,1},(?<info>.*)") ||
+                patternParse(detail,".*From \\[(?<srcIp>.*)\\](\\(.*\\)){0,1}:(?<srcPort>\\d*)(\\(.*\\)){0,1} to \\[(?<dstIp>.*)\\](\\(.*\\)){0,1}:(?<dstPort>\\d*)(\\(.*\\)){0,1},(?<info>.*)")){
+                    keyPositionSplitParse(info, ',', ":");
+                    if(eventType == "IPS"){
+                        nCat = "/Threat";
+                    }else{
+                        nCat = "/Threat";
+                    }
+                    pack("event") {
+                        DS_DVC_NAME = dev;
+                        DS_PROCESS_NAME = eventType;
+                        START_TIME = extractTime(time);
+                        EVT_CATEGORY = strFormat("%s-%s",field("threat type"),dictMapping("threat_type_hillstone",field("threat subtype")));
+                        EVT_TYPE = field("threat name");
+                        SEVERITY = sev;
+                        SEVERITY = field("threat severity");
+                        N_EVT_CATEGORY = nCat;
+                        N_SEVERITY = dictMapping("severity",sev);
+                        N_SEVERITY = dictMapping("severity",field("threat severity"));
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME= srcIp;
+                        SBJ_IP = srcIp;
+                        SBJ_PORT = srcPort;
+                        BHV_CATEGORY = "/Attack";
+                        APP_PROTO = field("App/Protocol");
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME= dstIp;
+                        OBJ_IP = dstIp;
+                        OBJ_PORT = dstPort;
+                        PRT_ACTION = action;
+                    }
+                }else if(patternParse(detail,".*从\\s*(?<srcIp>\\d+.\\d+.\\d+.\\d+).*:(?<srcPort>\\d+)([^,])*到\\s*(?<dstIp>\\d+.\\d+.\\d+.\\d+)[^,]*:(?<dstPort>\\d+)[^,]+,(?<info>.*)")){
+                    splitParse(info, ',',null, null, ":");
+                    pack("event") {
+                        DS_DVC_NAME = dev;
+                        DS_PROCESS_NAME = eventType;
+                        START_TIME = extractTime(time);
+                        EVT_CATEGORY = field("威胁类型");
+                        EVT_TYPE = field("威胁名称");
+                        EVT_TYPE = dictMapping("threat_type_hillstone",field("威胁子类型"));
+                        SEVERITY = sev;
+                        SEVERITY = field("威胁级别");
+                        N_EVT_CATEGORY = "/Threat";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        N_SEVERITY = dictMapping("severity",field("威胁级别"));
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME= srcIp;
+                        SBJ_IP = srcIp;
+                        SBJ_PORT = srcPort;
+                        BHV_CATEGORY = "/Attack";
+                        APP_PROTO = field("应用/协议");
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME= dstIp;
+                        OBJ_IP = dstIp;
+                        OBJ_PORT = dstPort;
+                        PRT_ACTION = field("响应行为");
+                    }
+
+                }else{
+                     pack("event") {
+                         DS_DVC_NAME = dev;
+                         DS_PROCESS_NAME = eventType;
+                         START_TIME = extractTime(time);
+                         EVT_CATEGORY = "/Audit";
+                         EVT_TYPE = type;
+                         SEVERITY = sev;
+                         N_EVT_CATEGORY = "/Audit";
+                         N_SEVERITY = dictMapping("severity",sev);
+                         OUTCOME = detail;
+                     }
+                }
+            case "Traffic":
+                 pack("event") {
+                     DS_DVC_NAME = dev;
+                     DS_PROCESS_NAME = eventType;
+                     START_TIME = extractTime(time);
+                     EVT_CATEGORY = "/Audit";
+                     EVT_TYPE = type;
+                     SEVERITY = sev;
+                     N_EVT_CATEGORY = "/Audit/Flow";
+                     N_SEVERITY = dictMapping("severity",sev);
+                     OUTCOME = detail;
+                 }
+            default:
+                pack("event") {
+                     DS_DVC_NAME = dev;
+                     DS_PROCESS_NAME = eventType;
+                     START_TIME = extractTime(time);
+                     EVT_CATEGORY = "/Audit";
+                     EVT_TYPE = type;
+                     SEVERITY = sev;
+                     N_EVT_CATEGORY = "/Audit";
+                     N_SEVERITY = dictMapping("severity",sev);
+                     OUTCOME = detail;
+                }
+        }
+	}
+}

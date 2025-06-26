@@ -1,0 +1,85 @@
+botu("Firewall/Nsfocus/NF[V6.0.3F01]/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>time:(?<time>.*);danger_degree:(?<dangerDegree>\\d+);breaking_sighn:(?<breakingSighn>\\d+);event:\\[(?<ruleId>\\d+)\\](?<msg>.*);src_addr:(?<srcIp>.*);src_port:(?<sport>\\d+);dst_addr:(?<dip>.*);dst_port:(?<dport>\\d+);proto:(?<proto>.*);user:(?<user>.*);{0,}")) {
+		sev = parseSyslogSeverity(pri);
+        pack("event"){
+            START_TIME = extractTime(time);
+            EVT_CATEGORY = "IPS/AV/URL";
+            EVT_TYPE = event;
+            EVT_ID = ruleId;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = srcIp;
+            SBJ_ROLE = user;
+            SBJ_IP = srcIp;
+            SBJ_PORT = sport;
+            TRANS_PROTO = proto;
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = dip;
+            OBJ_IP = dip;
+            OBJ_PORT = dport;
+            PRT_ACTION = simpleMapping(breakingSighn, "{0:允许,1:阻断}", 0);
+            OUTCOME = msg;
+        }
+	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>rule_id:(?<ruleId>\\d+);time:(?<time>.*);module:(?<module>.*);src_intf:(?<srcIntf>.*);dst_intf:(?<dstIntf>.*);action:(?<action>.*);proto:(?<proto>.*);src_addr:(?<srcAddr>.*);src_port:(?<sport>\\d+);dst_addr:(?<dstAddr>.*);dst_port:(?<dstPort>\\d+);src_addr_nat:(?<srcAddrNat>.*);src_port_nat:(?<srcPortNat>.*);dst_addr_nat:(?<dstAddrNat>.*);dst_port_nat:(?<dstPortNat>.*);info:(?<info>.*);user:(?<user>.*);{0,}")) {
+        sev = parseSyslogSeverity(pri);
+        pack("event"){
+            START_TIME = extractTime(time);
+            DS_PROCESS_NAME = module;
+            EVT_CATEGORY = "Firewall";
+            EVT_ID = ruleId;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = src_addr;
+            SBJ_ROLE = user;
+            SBJ_IP = srcAddr;
+            SBJ_PORT = sport;
+            TRANS_PROTO = proto;
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = dstAddr;
+            OBJ_IP = dstAddr;
+            OBJ_PORT = dstPort;
+            PRT_ACTION = action;
+            OUTCOME = info;
+        }
+	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>module:(?<module>.*);type:(?<type>.*);level:(?<level>.*);time:(?<time>\\d+);clientIp:(?<clientIp>.*);locationInfo:(?<locationInfo>.*);description:(?<description>.*);{0,}")) {
+        sev = parseSyslogSeverity(pri);
+        pack("event"){
+            START_TIME = extractTime(time);
+            DS_PROCESS_NAME = module;
+            EVT_CATEGORY = "VPN";
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            OUTCOME = description;
+        }
+
+	}else if (patternParse(MS_SRC_DATA, "time(?<time>.*);module: (?<module>[^\\s]+) (?<decodeMsg>.*);{0,}")) {
+        sev = parseSyslogSeverity(pri);
+        pack("event"){
+            START_TIME = extractTime(time);
+            DS_PROCESS_NAME = module;
+            EVT_CATEGORY = "/Audit";
+            SEVERITY = "info";
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity","info");
+            OUTCOME = decodeMsg;
+        }
+	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>user:(?<user>.*);loginip:(?<loginip>.*);time:(?<time>.*);type:(?<type>.*);(?<msg>.*);{0,}")) {
+        sev = parseSyslogSeverity(pri);
+        pack("event"){
+            START_TIME = extractTime(time);
+            EVT_CATEGORY = "/Audit";
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = loginip;
+            SBJ_IP = loginip;
+            OUTCOME = msg;
+        }
+	}
+}

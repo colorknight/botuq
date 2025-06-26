@@ -1,0 +1,68 @@
+botu("NAC/Huafoun/NAM[10.5]/Warn") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>.*)\\s*NAM[^:]+:\\s*(?<detail>.*)")) {
+		splitParse(detail, ' ', null, null, "=");
+		sev = parseSyslogSeverity(pri);
+		if (eventid != null) {
+            patternParse(term, "(?<host>.*)\\((?<mac>[^/]+)/(?<ip>[^\\)]+)");
+            patternParse(nas, "(?<nasHost>[^/]+)/(?<intf>.*)");
+            if (nasHost != "-") {
+                pack("event") {
+                    START_TIME = extractTime(time);
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    EVT_ID = eventid;
+                    EVT_CATEGORY = event;
+                    EVT_NAME = event;
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = host;
+                    SBJ_HOST = host;
+                    SBJ_IP = ip;
+                    SBJ_MAC = mac;
+                    SBJ_ROLE = user;
+                    SBJ_VLAN = vlan;
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = nasHost;
+                    OBJ_HOST = nasHost;
+                    OBJ_INTERFACE = intf;
+                    OUTCOME = msg;
+                }
+            } else {
+                pack("event") {
+                    START_TIME = extractTime(time);
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    EVT_ID = eventid;
+                    EVT_CATEGORY = event;
+                    EVT_NAME = event;
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = host;
+                    SBJ_HOST = host;
+                    SBJ_IP = ip;
+                    SBJ_MAC = mac;
+                    SBJ_ROLE = user;
+                    SBJ_VLAN = vlan;
+                    OUTCOME = msg;
+                }
+            }
+        } else {
+            pack("event") {
+              START_TIME = extractTime(time);
+              SEVERITY = sev;
+              N_EVT_CATEGORY = "/Audit";
+              N_SEVERITY = dictMapping("severity",sev);
+              EVT_ID = eventid;
+              EVT_CATEGORY = "/Other";
+              EVT_NAME = event;
+              SBJ_TYPE = "/User";
+              SBJ_NAME = secadmin;
+              SBJ_IP = optip;
+              BEHAVIOR = act;
+              STATUS = result;
+              OUTCOME = msg;
+          }
+        }
+	}
+}

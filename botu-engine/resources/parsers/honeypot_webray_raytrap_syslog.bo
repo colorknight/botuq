@@ -1,0 +1,53 @@
+botu("Honeypot/Webray/RayTRAP/Syslog"){
+    if (patternParse(MS_SRC_DATA, "\\<\\d+\\>(?<startTime>\\w+\\s+\\d+ \\d+:\\d+:\\d+) ([^{]+)(?<detail>.*)")) {
+        jsonParse(detail,true);
+        if(logData.length() > 0){
+            jsonParse(logData,true);
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss'+08:00'");
+                DS_PROCESS_NAME = module;
+                EVT_CATEGORY = source;
+                EVT_TYPE = type;
+                SEVERITY = level;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                PHRASE = simpleMapping(stage,"{1:攻击尝试,2:单点突破,3:控制通道,4:横向移动,5:数据窃取}",null);
+                N_SEVERITY = dictMapping("severity",level);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user;
+                SBJ_IP = srcIp;
+                SBJ_LOCATION = srcIpLoc;
+                BHV_CATEGORY = "/Attack";
+                BEHAVIOR = action;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = destIp;
+                OBJ_IP = destIp;
+                OBJ_LOCATION = destIpLoc;
+                STATUS = status;
+                PLD_CONTENT = decodeBase64(field("data.payload"));
+                CONFIDENCE = cfdc;
+            }
+        }else{
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss'+08:00'");
+                DS_PROCESS_NAME = module;
+                EVT_CATEGORY = source;
+                EVT_TYPE = type;
+                SEVERITY = level;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",level);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = srcIp;
+                SBJ_IP = srcIp;
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = action;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = destIp;
+                OBJ_IP = destIp;
+                STATUS = status;
+                CONFIDENCE = cfdc;
+                OUTCOME = desc;
+                PLD_CONTENT = decodeBase64(field("data.payload"));
+            }
+        }
+    }
+}

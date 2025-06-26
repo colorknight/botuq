@@ -1,0 +1,59 @@
+botu("OS/Microsoft/Windows/Eventlog/Syslog"){
+    if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>\\w+\\s+\\d+ \\d+:\\d+:\\d+) (?<ComputerName>\\S+) (?<type>[^:]+): (?<EventCode>\\d+): (?<Result>[^\\s]+) (?<detail>.*)")) {
+        sev = parseSyslogSeverity(pri);
+        switch(type){
+            case "Security-Auditing":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = ComputerName;
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = EventCode;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    BHV_CATEGORY = "/Audit";
+                    STATUS = Result;
+                    OUTCOME = detail;
+                }
+            default:
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = ComputerName;
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = EventCode;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    BHV_CATEGORY = "/Audit";
+                    OUTCOME = detail;
+                }
+        }
+    }else if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>(?<time>\\w+\\s+\\d+ \\d+:\\d+:\\d+) (?<ComputerName>\\S+) (?<detail>.*)")){
+        sev = parseSyslogSeverity(pri);
+        pack("event"){
+            START_TIME = extractTime(time);
+            DS_DVC_NAME = ComputerName;
+            EVT_CATEGORY = "/Audit";
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            BHV_CATEGORY = "/Audit";
+            OUTCOME = detail;
+        }
+    }else if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>\\d+\\s+(?<time>[^\\s]+) (?<host>[^\\s]+) (?<module>[^\\s]+) - - - (?<detail>.*)")){
+        sev = parseSyslogSeverity(pri);
+        switch(module){
+            default:
+                pack("event"){
+                    START_TIME = universalExtractTime(time);
+                    DS_DVC_NAME = host;
+                    EVT_CATEGORY = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    BHV_CATEGORY = "/Audit";
+                    OUTCOME = detail;
+                }
+        }
+    }
+}

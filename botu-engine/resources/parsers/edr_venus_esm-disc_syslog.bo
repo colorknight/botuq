@@ -1,0 +1,252 @@
+botu("EDR/Venus/ESM-DISC/Syslog") {
+    if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>([^:]+:\\d+:\\d+) (?<host>[^\\s]+).*Policy(?<type>[^\\>]+).*Data (?<detail>.*)/\\>.*")){
+        logType = strFormat("%s%s", "Policy", type);
+        splitParse(detail, ' ', '"', '"', "=");
+        sev = parseSyslogSeverity(pri);
+    }else  if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>([^:]+:\\d+:\\d+) (?<host>[^\\s]+).*Policy(?<type>[^\\s]+)\\s(?<detail>[^\\>]+)/\\>.*")){
+        logType = strFormat("%s%s", "Policy", type);
+        splitParse(detail, ' ', '"', '"', "=");
+        sev = parseSyslogSeverity(pri);
+    }
+    switch(logType){
+        case "Policy_Base_ProcessRedList":
+            objType = "/Policy/Process";
+            evtType = "进程红名单策略事件";
+        case "Policy_Base_ProcessBlackList":
+            if(objType == null){
+               objType = "/Policy/Process";
+            }
+            if(evtType == null){
+               evtType = "进程黑名单策略事件";
+            }
+        case "Policy_Base_ProcessWhiteList":
+            if(objType == null){
+               objType = "/Policy/Process";
+            }
+            if(evtType == null){
+               evtType = "进程白名单策略事件";
+            }
+        case "Policy_Base_SoftwareRedList":
+            if(objType == null){
+               objType = "/Policy/Software";
+            }
+            if(evtType == null){
+               evtType = "软件红名单策略事件";
+            }
+        case "Policy_Base_SoftwareBlackList":
+            if(objType == null){
+               objType = "/Policy/Software";
+            }
+            if(evtType == null){
+               evtType = "软件黑名单策略事件";
+            }
+        case "Policy_Base_SoftwareWhiteList":
+            if(objType == null){
+               objType = "/Policy/Software";
+            }
+            if(evtType == null){
+               evtType = "软件白名单策略事件";
+            }
+        case "Policy_Base_SoftwareBusiness":
+            if(objType == null){
+               objType = "/Policy/Software";
+            }
+            if(evtType == null){
+               evtType = "商用软件策略事件";
+            }
+        case "Policy_Base_Antivirus":
+            if(objType == null){
+               objType = "/Policy/Antivirus";
+            }
+            if(evtType == null){
+               evtType = "防病毒软件策略事件";
+            }
+        case "Policy_Base_Regfunction":
+            if(objType == null){
+               objType = "/Policy/Regfunction";
+            }
+            if(evtType == null){
+               evtType = "windows注册表策略事件";
+            }
+        case "Policy_Base_Winservice":
+            if(objType == null){
+               objType = "/Policy/Winservice";
+            }
+            if(evtType == null){
+               evtType = "windows服务策略事件";
+            }
+        case "Policy_Base_ADPolicy":
+            if(objType == null){
+               objType = "/Policy/ADPolicy";
+            }
+            if(evtType == null){
+               evtType = "AD域策略事件";
+            }
+        case "Policy_Base_PasswordOption":
+            if(objType == null){
+               objType = "/Policy/PasswordOption";
+            }
+            if(evtType == null){
+               evtType = "弱密码策略事件";
+            }
+        case "Policy_Hotfix":
+            if(objType == null){
+               objType = "/Policy/Hotfix";
+            }
+            if(evtType == null){
+               evtType = "Hotfix策略事件";
+            }
+            pack("event"){
+                START_TIME = extractTime(occurtime);
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = logType;
+                EVT_TYPE = evtType;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit/System";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = hostname;
+                SBJ_IP = ip;
+                SBJ_MAC = convert2Mac(mac);
+                BHV_CATEGORY = "/Create";
+                OBJ_TYPE = objType;
+                OBJ_NAME = policyname;
+            }
+        case "Policy_Audit_DLPCopySecret":
+            evtType = "文件拷贝";
+        case "Policy_Audit_Secret":
+            if(evtType == null){
+               evtType = "敏感文件扫描";
+            }
+        case "Policy_Audit_Clipboard":
+            if(evtType == null){
+               evtType = "剪切板";
+            }
+        case "Policy_Audit_DLPPrint":
+            if(evtType == null){
+               evtType = "打印";
+            }
+        case "Policy_Audit_Burning":
+            if(evtType == null){
+               evtType = "刻录";
+            }
+        case "Policy_DLP_Keywords":
+            if(evtType == null){
+               evtType = "邮件";
+            }
+            pack("event"){
+                START_TIME = extractTime(time);
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = logType;
+                EVT_TYPE = evtType;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = hostname;
+                SBJ_IP = ip;
+                SBJ_MAC = convert2Mac(mac);
+                BHV_CATEGORY = evtType;
+                PRT_ACTION = action;
+            }
+        case "Policy_Audit_File":
+            pack("event"){
+                START_TIME = extractTime(time);
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = logType;
+                EVT_TYPE = "文件审计";
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = hostname;
+                SBJ_IP = ip;
+                SBJ_MAC = convert2Mac(mac);
+            }
+        case "Policy_Audit_Web":
+            pack("event"){
+                START_TIME = extractTime(time);
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = logType;
+                EVT_TYPE = "网站审计";
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = hostname;
+                SBJ_IP = ip;
+                SBJ_MAC = convert2Mac(mac);
+                BHV_CATEGORY = "/Access";
+                OBJ_TYPE = "/Service/Web";
+                OBJ_NAME = httphost;
+                OBJ_PORT = httpport;
+            }
+        case "Policy_Radius":
+            evtType = "802.1X";
+        case "Policy_Outlink_Peripheral":
+            if(evtType == null){
+               evtType = "外设管理";
+            }
+        case "Policy_Outlink_MultiNic":
+            if(evtType == null){
+               evtType = "多网卡限制";
+            }
+        case "Policy_Outlink_Trustssid":
+            if(evtType == null){
+               evtType = "可信无线SSID";
+            }
+        case "Policy_Desktop_Shutdown":
+            if(evtType == null){
+               evtType = "自动关机节电";
+            }
+        case "Policy_Firewall_AccessControl":
+            if(evtType == null){
+               evtType = "ACL";
+            }
+        case "Policy_Firewall_IcmpControl":
+            if(evtType == null){
+               evtType = "Ping控制";
+            }
+            pack("event"){
+                START_TIME = extractTime(logtime);
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = logType;
+                EVT_TYPE = evtType;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = hostname;
+                SBJ_IP = ip;
+                SBJ_MAC = convert2Mac(mac);
+            }
+        case "Policy_Firewall_AttackControl":
+            pack("event"){
+                START_TIME = extractTime(logtime);
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = logType;
+                EVT_TYPE = evtType;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = hostname;
+                SBJ_IP = ip;
+                SBJ_MAC = convert2Mac(mac);
+            }
+        default:
+            pack("event"){
+                START_TIME = extractTime(logtime);
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = logType;
+                EVT_TYPE = evtType;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = hostname;
+                SBJ_IP = ip;
+                SBJ_MAC = convert2Mac(mac);
+            }
+    }
+}

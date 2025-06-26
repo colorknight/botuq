@@ -1,0 +1,51 @@
+botu("Bastion/Venus/OSM-VIRT/Syslog") {
+    if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>([^{]+)*(?<detail>.*)")){
+        jsonParse(detail,true);
+        sev = parseSyslogSeverity(pri);
+        switch(log_type){
+            case "002":
+                pack("event") {
+                    START_TIME = extractTime(log_time);
+                    DS_DVC_NAME = dev_name;
+                    EVT_CATEGORY = login_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",severity);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user_name;
+                    SBJ_IP = user_addr;
+                    SBJ_PORT = user_port;
+                    BHV_CATEGORY = "/Login";
+                    BEHAVIOR = login_action;
+                    OBJ_TYPE = "/Resource/Other";
+                    OBJ_NAME = resource_name;
+                    OBJ_IP = resource_addr;
+                    OBJ_PORT = resource_port;
+                }
+            case "003":
+                pack("event") {
+                    START_TIME = extractTime(log_time);
+                    DS_DVC_NAME = dev_name;
+                    EVT_CATEGORY = login_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",severity);
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = user_name;
+                    SBJ_IP = MS_SRC_ADDRESS;
+                    BHV_CATEGORY = "/Execute";
+                    STATUS =simpleMapping(type, "{0:无动作,1:策略允许,2:指令阻断,3:会话阻断,5:申请被批准,6:申请被拒绝,7:申请超时,8:申请取消}", 1);
+                    OUTCOME = command;
+                }
+            default:
+                pack("event") {
+                    START_TIME = extractTime(log_time);
+                    DS_DVC_NAME = dev_name;
+                    EVT_CATEGORY = login_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",severity);
+                }
+        }
+    }
+}

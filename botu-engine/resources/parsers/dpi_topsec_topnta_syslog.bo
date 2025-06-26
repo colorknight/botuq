@@ -1,0 +1,67 @@
+botu("DPI/Topsec/TopNTA/Syslog") {
+    if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) (?<host>[^\\s]+) (?<type>[^;]+);(?<detail>.*)")){
+        segs = strSplit(detail, ",");
+        sev = parseSyslogSeverity(pri);
+        switch(type){
+            case "tbl_ori_flow_ipv4_realtime":
+            case "tbl_ori_flow_ipv6_realtime":
+                pack("event"){
+                    START_TIME = toTime(toLong(segs[0]));
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = type;
+                    EVT_CATEGORY = type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = convert2Ip(toLong(segs[2]));
+                    SBJ_IP = convert2Ip(toLong(segs[2]));
+                    SBJ_PORT = segs[4];
+                    SBJ_MAC = convert2Mac(segs[20]);
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = dictMapping("trans_protocol",toInt(segs[6]));
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = convert2Ip(toLong(segs[3]));
+                    OBJ_IP = convert2Ip(toLong(segs[3]));
+                    OBJ_PORT = segs[5];
+                    OBJ_MAC = convert2Mac(segs[21]);
+                    PACKETS_IN = segs[7];
+                    PACKETS_OUT = segs[8];
+                    BYTES_IN = segs[9];
+                    BYTES_OUT = segs[10];
+                }
+            case "tbl_ori_alert_ipv4_realtime":
+                pack("event"){
+                    START_TIME = toTime(toLong(segs[0]));
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = type;
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = segs[3];
+                    EVT_NAME = segs[14];
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = convert2Ip(toLong(segs[4]));
+                    SBJ_IP = convert2Ip(toLong(segs[4]));
+                    SBJ_PORT = segs[5];
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = segs[8];
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = convert2Ip(toLong(segs[6]));
+                    OBJ_IP = convert2Ip(toLong(segs[6]));
+                    OBJ_PORT = segs[7];
+                }
+            default:
+                pack("event"){
+                    START_TIME = toTime(toLong(segs[0]));
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = type;
+                    EVT_CATEGORY = type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                }
+        }
+    }
+}

@@ -1,0 +1,48 @@
+// windows eventlog
+botu("OS/Microsoft/Windows/Eventlog/EventLog"){
+    if(Type == "审核成功"){
+        sev = 1;
+    } else if(Type == "审核失败"){
+        sev = 3;
+    } else {
+        sev = Type;
+    }
+    if(EventIdentifier == 4663){
+        subName = regExtract(Message,".*帐户名:(?<subName>.*)");
+        objType = regExtract(Message,".*对象类型:(?<objType>.*)");
+        objName = regExtract(Message,".*对象名:(?<objName>.*)");
+        action = regExtract(Message,".*访问:(?<action>.*)");
+        pack("event"){
+            START_TIME = extractTime(TimeGenerated);
+            DS_DVC_NAME = ComputerName;
+            EVT_CATEGORY = MS_SRC_OBJ_NAME;
+            EVT_TYPE = toInt(EventType);
+            EVT_ID = EventCode;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/User";
+            SBJ_NAME = replaceString(subName,"\\t","");
+            BHV_CATEGORY = replaceString(action,"\\t","");
+            OBJ_TYPE = replaceString(objType,"\\t","");
+            OBJ_NAME = replaceString(objName,"\\t","");
+            OUTCOME = Message;
+        }
+    }else{
+        pack("event"){
+            START_TIME = extractTime(TimeGenerated);
+            DS_DVC_NAME = ComputerName;
+            EVT_CATEGORY = MS_SRC_OBJ_NAME;
+            EVT_TYPE = toInt(EventType);
+            EVT_ID = EventCode;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/User";
+            SBJ_NAME = User;
+            SBJ_IP = MS_SRC_ADDRESS;
+            BHV_CATEGORY = "/Execute";
+            OUTCOME = Message;
+        }
+    }
+}

@@ -1,0 +1,16 @@
+botu("EPS/KOAL/NetDefense[5.1]/Syslog") {
+    splitParse(MS_SRC_DATA, ' ', '"', '"', "=");
+	pack("event") {
+		START_TIME = extractTime(time);
+		EVT_CATEGORY = logtype;
+		EVT_TYPE = event;
+		SEVERITY = 6;
+		N_EVT_CATEGORY = "/Audit";
+        N_SEVERITY = dictMapping("severity",sev);
+		SBJ_TYPE = "/User";
+		SBJ_NAME = user;
+		SBJ_HOST = station;
+		BHV_CATEGORY = "/Is";
+		OUTCOME = result;
+	}
+}

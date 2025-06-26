@@ -1,0 +1,24 @@
+// 迪普APT1000
+botu("APT/DPtech/APT1000/Syslog") {
+    splitParse(MS_SRC_DATA, ' ', '"', '"', "=");
+    pack("event"){
+        START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZ");
+        DS_DVC_NAME = dname;
+        SEVERITY = prio;
+        N_SEVERITY = dictMapping("severity",prio);
+        EVT_CATEGORY = "/Attack";
+        EVT_TYPE = dictMapping("attack_type_class_dptech",class);
+        N_EVT_CATEGORY = "/Attack";
+        SBJ_TYPE = "/Ip";
+        SBJ_NAME = src_ip;
+        SBJ_IP = src_ip;
+        SBJ_PORT = src_port;
+        BHV_CATEGORY = "/Attack";
+        TRANS_PROTO = protocol;
+        OBJ_TYPE = "/Ip";
+        OBJ_NAME = dst_ip;
+        OBJ_IP = dst_ip;
+        OBJ_PORT = dst_port;
+        OUTCOME = msg;
+    }
+}

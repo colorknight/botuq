@@ -1,0 +1,123 @@
+botu("IPS/NsFocus/UTS/Syslog") {
+    segs = strSplit(MS_SRC_DATA, ",");
+    transProto = segs[3];
+    switch(transProto){
+        case "TCPUDP":
+            pack("event"){
+                START_TIME = extractTime(segs[20]);
+                DS_DVC_NAME = segs[0];
+                DS_PROCESS_NAME = segs[2];
+                EVT_CATEGORY = segs[3];
+                EVT_TYPE = segs[2];
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit/Flow";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = segs[9];
+                SBJ_IP = segs[9];
+                SBJ_PORT = segs[12];
+                SBJ_MAC = convert2Mac(segs[11]);
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_protocol",segs[13]);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = segs[15];
+                OBJ_IP = segs[16];
+                OBJ_MAC = convert2Mac(segs[18]);
+                PACKETS_IN = segs[26];
+                PACKETS_OUT =  segs[28];
+                BYTES_IN = segs[27];
+                BYTES_OUT = segs[29];
+            }
+        case "HTTP":
+            pack("event"){
+                START_TIME = extractTime(segs[20]);
+                DS_DVC_NAME = segs[0];
+                DS_PROCESS_NAME = segs[2];
+                EVT_CATEGORY = segs[3];
+                EVT_TYPE = segs[2];
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit/Flow";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = segs[9];
+                SBJ_IP = segs[9];
+                SBJ_PORT = segs[12];
+                SBJ_MAC = convert2Mac(segs[11]);
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = segs[24];
+                TRANS_PROTO = dictMapping("trans_protocol",segs[13]);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = segs[15];
+                OBJ_IP = segs[16];
+                OBJ_MAC = convert2Mac(segs[18]);
+                REQ_URL = segs[25];
+                //OUTCOME = decodeBase64(segs[37]);
+            }
+        case "DBOP":
+            pack("event"){
+                START_TIME = extractTime(segs[20]);
+                DS_DVC_NAME = segs[0];
+                DS_PROCESS_NAME = segs[2];
+                EVT_CATEGORY = segs[3];
+                EVT_TYPE = segs[2];
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit/Flow";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = segs[9];
+                SBJ_IP = segs[9];
+                SBJ_PORT = segs[12];
+                SBJ_MAC = convert2Mac(segs[11]);
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_protocol",segs[13]);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = segs[15];
+                OBJ_IP = segs[16];
+                OBJ_MAC = convert2Mac(segs[18]);
+            }
+        case "DNS":
+            pack("event"){
+                START_TIME = extractTime(segs[20]);
+                DS_DVC_NAME = segs[0];
+                DS_PROCESS_NAME = segs[2];
+                EVT_CATEGORY = segs[3];
+                EVT_TYPE = segs[2];
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit/Flow";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = segs[9];
+                SBJ_IP = segs[9];
+                SBJ_PORT = segs[12];
+                SBJ_MAC = convert2Mac(segs[11]);
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_protocol",segs[13]);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = segs[16];
+                OBJ_IP = segs[16];
+                OBJ_MAC = convert2Mac(segs[18]);
+            }
+        case "SSL":
+            pack("event"){
+                START_TIME = extractTime(segs[20]);
+                DS_DVC_NAME = segs[0];
+                DS_PROCESS_NAME = segs[2];
+                EVT_CATEGORY = segs[3];
+                EVT_TYPE = segs[2];
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit/Flow";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = segs[9];
+                SBJ_IP = segs[9];
+                SBJ_PORT = segs[12];
+                SBJ_MAC = convert2Mac(segs[11]);
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_protocol",segs[13]);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = segs[16];
+                OBJ_IP = segs[16];
+                OBJ_MAC = convert2Mac(segs[18]);
+            }
+    }
+}

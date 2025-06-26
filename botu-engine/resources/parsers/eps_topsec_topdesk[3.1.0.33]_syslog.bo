@@ -1,0 +1,126 @@
+botu("EPS/Topsec/TopDesk[3.1.0.33]/Syslog") {
+    temp = replaceString(MS_SRC_DATA,"变更信息","changeLog");
+	if (patternParse(temp, "\\<(?<pri>\\d+)\\>(?<time>\\w+\\s+\\d+ \\d+:\\d+:\\d+) (?<hostname>[^\\s]+) (?<detail>.*)")) {
+		sev = parseSyslogSeverity(pri);
+        data = toXmlElement(detail);
+        header = data.header;
+        body = data.body;
+        startTime = header.sendtime.getText();
+        module = body.Log.attribute("type").getValue();
+        switch(module){
+            case "NETCFG":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    DS_DVC_NAME = hostname;
+                    DS_PROCESS_NAME = header.from.getText();
+                    EVT_CATEGORY = module;
+                    EVT_TYPE = body.Log.Trigger.attribute("name").getValue();
+                    EVT_ID = header.id.getText();
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Resource/Configuration";
+                    SBJ_NAME = body.Log.Subject.计算机.getText();
+                    SBJ_MAC = convert2Mac(body.Log.Object.NetConfig.MAC.getText());
+                    BHV_CATEGORY = "/Update";
+                    BEHAVIOR = body.Log.Action.getText();
+                    PRT_STATUS = body.Log.Result.getText();
+                    PRT_ACTION = body.Log.Handle.getText();
+                    OUTCOME = body.Log.Reason.getText();
+                }
+            case "PNP":
+            case "UDEV":
+            case "UFS":
+            case "HARDCHANGE":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    DS_DVC_NAME = hostname;
+                    DS_PROCESS_NAME = header.from.getText();
+                    EVT_CATEGORY = module;
+                    EVT_TYPE = body.Log.Trigger.attribute("name").getValue();
+                    EVT_ID = header.id.getText();
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME =  body.Log.Subject.attribute("name").getValue();
+                    BHV_CATEGORY = "/Update";
+                    BEHAVIOR = body.Log.Action.getText();
+                    OBJ_TYPE = "/Resource/Firmware";
+                    OBJ_NAME = body.Log.Object.attribute("name").getValue();
+                    PRT_STATUS = body.Log.Result.getText();
+                    PRT_ACTION = body.Log.Handle.getText();
+                    OUTCOME = body.Log.Reason.getText();
+                }
+            case "BOOTRECORD":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    DS_DVC_NAME = hostname;
+                    DS_PROCESS_NAME = header.from.getText();
+                    EVT_CATEGORY = module;
+                    EVT_TYPE = body.Log.Trigger.attribute("name").getValue();
+                    EVT_ID = header.id.getText();
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME =  body.Log.Subject.attribute("name").getValue();
+                    BHV_CATEGORY = "/Recorded";
+                    BEHAVIOR = body.Log.Action.getText();
+                    PRT_STATUS = body.Log.Result.getText();
+                    PRT_ACTION = body.Log.Handle.getText();
+                    OUTCOME = body.Log.Reason.getText();
+                }
+            case "MONITORBOOT":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    DS_DVC_NAME = hostname;
+                    DS_PROCESS_NAME = header.from.getText();
+                    EVT_CATEGORY = module;
+                    EVT_TYPE = body.Log.Trigger.attribute("name").getValue();
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME =  body.Log.Subject.attribute("用户").getValue();
+                    SBJ_IP = body.Log.Object.attribute("客户端IP").getValue();
+                    BHV_CATEGORY = "/Other";
+                    BEHAVIOR = body.Log.Action.getText();
+                    PRT_STATUS = body.Log.Result.getText();
+                    PRT_ACTION = body.Log.Handle.getText();
+                    OUTCOME = body.Log.Reason.getText();
+                }
+            case "SOFTCHANGE":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    DS_DVC_NAME = hostname;
+                    DS_PROCESS_NAME = header.from.getText();
+                    EVT_CATEGORY = module;
+                    EVT_TYPE = body.Log.Trigger.attribute("name").getValue();
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME =  body.Log.Object.IP.getText();
+                    SBJ_IP = body.Log.Object.IP.getText();
+                    OUTCOME = body.Log.Object.changeLog.getText();
+                }
+            case "SERVERSTATUSCHANGE":
+                pack("event"){
+                    START_TIME = extractTime(startTime);
+                    DS_DVC_NAME = hostname;
+                    DS_PROCESS_NAME = header.from.getText();
+                    EVT_CATEGORY = module;
+                    EVT_TYPE = body.Log.Trigger.attribute("name").getValue();
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME =  body.Log.Object.主机IP.getText();
+                    SBJ_IP = body.Log.Object.主机IP.getText();
+                    SBJ_PORT = body.Log.Object.端口.getText();
+                    OUTCOME = body.Log.Object.描述.getText();
+                }
+        }
+	}
+}

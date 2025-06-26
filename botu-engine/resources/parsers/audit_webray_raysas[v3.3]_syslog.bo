@@ -1,0 +1,24 @@
+botu("Audit/WebRay/RaySAS[v3.3]/Syslog"){
+   if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) (?<dev>[^\\s]+) (?<detail>.*)")) {
+        sev = parseSyslogSeverity(pri);
+        jsonParse(detail, true);
+        time = strFormat("%s %s", time2String(now(), "yyyy"), time);
+        pack("event"){
+            START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss");
+            DS_DVC_NAME = dev;
+            EVT_CATEGORY = functionname;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/User";
+            SBJ_NAME = loginname;
+            SBJ_IP = ip;
+            BHV_CATEGORY = "/Access";
+            BEHAVIOR = operid;
+            OBJ_TYPE = "/Resource";
+            OBJ_NAME = operobjectname;
+            STATUS = operresult;
+            OUTCOME = description;
+        }
+   }
+}

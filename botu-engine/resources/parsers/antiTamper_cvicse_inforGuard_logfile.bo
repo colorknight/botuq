@@ -1,0 +1,19 @@
+// 中创防篡改
+botu("AntiTamper/CVICSE/InforGuard/Logfile"){
+    if(patternParse(MS_SRC_DATA,"^(?<Address>[^\t]*)\t(?<Agent>[^\t]*)\t(?<FilePath>[^\t]*)\t(?<EventType>[^\t]*)\t(?<Date>[^\t]*)\t(?<Time>[^\t]*).*")){
+        startTime = strFormat("%s %s", Date, Time);
+        pack("event"){
+            START_TIME = extractTime(startTime);
+            DS_DVC_NAME = Agent;
+            DS_PROCESS_NAME = Agent;
+            EVT_CATEGORY = EventType;
+            SEVERITY = "info";
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity","info");
+            SBJ_TYPE = "/Resource/File";
+            SBJ_NAME = Agent;
+            SBI_IP = MS_SRC_ADDRESS;
+            BHV_CATEGORY = "/Is";
+        }
+    }
+}

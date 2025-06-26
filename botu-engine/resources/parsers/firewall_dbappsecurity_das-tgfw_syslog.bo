@@ -1,0 +1,332 @@
+botu("Firewall/DBAPPSecurity/DAS-TGFW/Syslog") {
+	if (patternParse(MS_SRC_DATA, "[^\\s]+ (?<logType>[^\\s]+) .* (?<time>[^:]+:\\d+:\\d+[^\\s]+) (?<detail>.*)")) {
+        temp = replaceString(detail,"\"","");
+        splitParse(temp, ',', null, null, ":");
+        switch(logType){
+            case "operationlog":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    EVT_CATEGORY = logType;
+                    DS_PROCESS_NAME = logType;
+                    EVT_TYPE = "操作日志";
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = operatoruser;
+                    SBJ_IP = operatorip;
+                    OUTCOME = message;
+                }
+            case "systemlog":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    EVT_CATEGORY = logType;
+                    DS_PROCESS_NAME = logType;
+                    EVT_TYPE = "系统日志";
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",level);
+                    OUTCOME = message;
+                }
+            case "ipssec":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "入侵防御日志";
+                    EVT_TYPE = hit_rule;
+                    EVT_ID = policyid;
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = proto;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = simpleMapping(action, "{1:记录日志,2:放行,3:告警,4:丢弃,5:阻断,6:重置}", 0);
+                    OUTCOME = message;
+                }
+            case "virussec":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "防病毒日志";
+                    EVT_TYPE = vir_malware_name;
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Threat/Malware/Virus";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = simpleMapping(action, "{1:记录日志,2:放行,3:告警,4:丢弃,5:阻断,6:重置}", 0);
+                    PLD_TYPE = "/File";
+                    PLD_NAME = filename;
+                    OUTCOME = message;
+                }
+            case "contentsec":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "内容过滤日志";
+                    EVT_TYPE = contentfilter_type;
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Violation";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = simpleMapping(action, "{1:记录日志,2:放行,3:告警,4:丢弃,5:阻断,6:重置}", 0);
+                    OUTCOME = message;
+                }
+            case "filesec":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "文件过滤日志";
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = simpleMapping(action, "{1:记录日志,2:放行,3:告警,4:丢弃,5:阻断,6:重置}", 0);
+                    PLD_TYPE = "/File";
+                    PLD_NAME = filename;
+                    OUTCOME = message;
+                }
+            case "urlsec":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "URL过滤日志";
+                    EVT_TYPE = urlfilter_type;
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Violation";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = simpleMapping(action, "{1:记录日志,2:放行,3:告警,4:丢弃,5:阻断,6:重置}", 0);
+                    REQ_URL = URL;
+                    OUTCOME = message;
+                }
+            case "websec":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "web防护日志";
+                    EVT_TYPE = hit_rule;
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Violation";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = simpleMapping(action, "{1:记录日志,2:放行,3:告警,4:丢弃,5:阻断,6:重置}", 0);
+                    REQ_URL = URL;
+                    OUTCOME = message;
+                }
+            case "weakpwchecksec":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "弱密码防护日志";
+                    EVT_TYPE = type;
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = simpleMapping(action, "{1:记录日志,2:放行,3:告警,4:丢弃,5:阻断,6:重置}", 0);
+                    OUTCOME = message;
+                }
+            case "explosionproofsec":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "防暴力破解日志";
+                    EVT_TYPE = service;
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = simpleMapping(action, "{1:记录日志,2:放行,3:告警,4:丢弃,5:阻断,6:重置}", 0);
+                    OUTCOME = msg;
+                }
+            case "vppPolicyPluginLog":
+            case "appPolicyPluginLog":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "应用控制日志";
+                    EVT_TYPE = application;
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = simpleMapping(action, "{1:记录日志,2:放行,3:告警,4:丢弃,5:阻断,6:重置}", 0);
+                    OUTCOME = msg;
+                }
+            case "antiddospktlog":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "单包防护日志";
+                    EVT_TYPE = attack_type;
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    OUTCOME = msg;
+                }
+            case "antiddoslog":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "Flood攻击日志";
+                    EVT_TYPE = attack_type;
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = ddos_alg;
+                    OUTCOME = msg;
+                }
+            case "wblistlog":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "黑白名单日志";
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Threat/MalResource";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = s_addr;
+                    SBJ_IP = s_addr;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = d_addr;
+                    OBJ_IP = d_addr;
+                    OUTCOME = msg;
+                }
+            case "edrlog":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "EDR推广日志";
+                    SEVERITY = level;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",level);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sip;
+                    SBJ_IP = sip;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = proto;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dip;
+                    OBJ_IP = dip;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = simpleMapping(action, "{1:记录日志,2:放行,3:告警,4:丢弃,5:阻断,6:重置}", 0);
+                    OUTCOME = msg;
+                }
+        }
+	}
+}

@@ -1,0 +1,61 @@
+botu("WAF/DBAPPSecurity/WAF-2000GT/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>.* (?<host>\\S+) DBAppWAF: (?<detail>.*)")) {
+        splitParse(detail, ',', null, null, "/");
+        sev = parseSyslogSeverity(pri);
+	    if(NULL != 发生时间){
+            patternParse(HTTP,"/(?<status>\\d+)");
+            pack("event") {
+                DS_DVC_NAME = host;
+                START_TIME = extractTime(发生时间);
+                EVT_CATEGORY = 事件;
+                EVT_TYPE = 触发规则;
+                EVT_ID = 访问唯一编号;
+                SEVERITY = 威胁;
+                N_EVT_CATEGORY = "/Violation";
+                N_SEVERITY = dictMapping("severity",威胁);
+                SBJ_TYPE = "/Host";
+                SBJ_NAME = host;
+                SBJ_HOST = host;
+                SBJ_IP = 客户端IP;
+                SBJ_PORT = 客户端端口;
+                BHV_CATEGORY = "/Access";
+                BHV_BODY = body;
+                BEHAVIOR = 请求方法;
+                TECHNICAL = 攻击特征串;
+                OBJ_TYPE = "/Host";
+                OBJ_NAME = 主机名;
+                OBJ_IP = 服务器IP;
+                OBJ_HOST = 主机名;
+                OBJ_PORT = 服务器端口;
+                STATUS = status;
+                PRT_ACTION = 动作;
+                REQ_URL = URL地址;
+                REQ_USER_AGENT = 客户端环境;
+            }
+		} else if(NULL != happentime){
+            pack("event") {
+                DS_DVC_NAME = host;
+                START_TIME = extractTime(happentime);
+                EVT_TYPE = tag_id;
+                EVT_ID = msg_id;
+                SEVERITY = severity_id;
+                N_SEVERITY = dictMapping("severity",severity_id);
+                SBJ_TYPE = "/Ip";
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = method;
+                BHV_BODY = post;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_HOST = hostname;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                STATUS = response_code;
+                PRT_ACTION = action_id;
+                REQ_URL = url;
+                REQ_USER_AGENT = user_agent;
+            }
+        }
+	}
+}

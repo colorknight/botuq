@@ -1,0 +1,13 @@
+botu("VulnScanner/Venus/TJCS-NS-VM/Syslog") {
+  if(patternParse(MS_SRC_DATA,".*(?<clientIp>\\d+.\\d+.\\d+.\\d) (?<time>[^:]+:\\d+:\\d+) (?<hostname>[^\\s]+) (?<msg>.*)")){
+    pack("event") {
+        START_TIME = extractTime(time);
+        DS_DVC_NAME = hostname;
+        EVT_CATEGORY = "/Audit";
+        SEVERITY = 1;
+        N_EVT_CATEGORY = "/Audit/System";
+        N_SEVERITY = 1;
+        OUTCOME = msg;
+    }
+  }
+}

@@ -1,0 +1,34 @@
+botu("UTM/Venus/UTM/Syslog") {
+    if(patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>.*date=\"(?<time>[^\"]+)\" (?<detail>.*)")){
+        sev = parseSyslogSeverity(pri);
+        splitParse(detail, ' ',null,null, "=");
+        switch(mod) {
+            case "pf":
+            case "pf6":
+                pack("event") {
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = dname;
+                    DS_PROCESS_NAME = mod;
+                    EVT_CATEGORY = mod;
+                    EVT_NAME = rule_name;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Violation";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = sa;
+                    SBJ_IP = sa;
+                    SBJ_PORT = sport;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = proto;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = da;
+                    OBJ_IP = da;
+                    OBJ_PORT = dport;
+                    PACKETS_IN = rcvd;
+                    PACKETS_OUT = sent;
+                    OUTCOME = dsp_msg;
+                }
+        }
+    }
+
+}

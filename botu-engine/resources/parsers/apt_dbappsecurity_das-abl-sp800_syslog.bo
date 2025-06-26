@@ -1,0 +1,202 @@
+botu("APT/DBAPPSecurity/DAS-ABL-SP800/Syslog") {
+    if(patternParse(MS_SRC_DATA,"(?<time>[^:]+:\\d+:\\d+ \\d+) (?<hostName>[^\\s]+) APT~(?<APPTYPE>\\d+)~1~(?<HAPPENTIME>[^~]*)~?(?<SIP>[^~]*):(?<SPORT>\\d+)~?(?<DIP>[^~]*):(?<DPORT>\\d+)~?(?<ATTACKTYPE>[^~]*)~?(?<RULENAME>[^~]*)~?(?<MESSAGE>[^~]*)~?(?<ATTACKGRADE>[^~]*)~?(?<ACCESSID>[^~]*)~?(?<FILENAME>[^~]*)~?(?<PAYLOAD>[^~]*)~?(?<FILEMD5>[^~]*)~?(?<HOST>[^~]*)~?(?<REPLYCODE>[^~]*)~?(?<ATTACKSTAGE>[^~]*)~?(?<DIRECTION>[^~]*)~?(?<SMAC>[^~]*)~?(?<DMAC>[^~]*)~?(?<REPLYLEN>[^~]*)~?(?<REQUESTHEADER>[^~]*)~?(?<POSTBODY>[^~]*)~?(?<REPLYCONTENT>[^~]*)~?(?<ATTACKFILETYPE>[^~]*)~?(?<ATTACKSTATUS>[^~]*)~?(?<ATTACKTYPEID>[^~]*)~?(?<ATTACKSUBTYPEID>[^~]*)~?(?<ATTACKPOLICYID>[^~]*)~?(?<KNOWLEDGEID>[^~]*)")){
+        //0：目的IP向源IP攻击；1：源IP向目的IP攻击
+        if(DIRECTION == 1){
+          srcIp = SIP;
+          srcPort = SPORT;
+          srcMac = convert2Mac(SMAC);
+          dstIp = DIP;
+          dstPort = DPORT;
+          dstMac = convert2Mac(DMAC);
+        }else{
+          srcIp = DIP;
+          srcPort = DPORT;
+          srcMac = convert2Mac(DMAC);
+          dstIp = SIP;
+          dstPort = SPORT;
+          dstMac = convert2Mac(SMAC);
+        }
+        switch(ATTACKTYPE){
+            case "WEB后门访问":
+                pack("event") {
+                    START_TIME = format2Time(log_time, "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = hostName;
+                    DS_PROCESS_NAME = ATTACKTYPE;
+                    PHRASE = simpleMapping(ATTACKSTAGE, "{1:弱点探测,2:渗透入侵,3:获取权限,4:命令与控制,5:数据盗取}", 1);
+                    EVT_CATEGORY = dictMapping("src_type",toInt(APPTYPE));
+                    EVT_TYPE = RULENAME;
+                    SEVERITY = ATTACKGRADE;
+                    N_EVT_CATEGORY = "/Threat/Attack/Backdoor";
+                    N_SEVERITY = dictMapping("severity",ATTACKGRADE);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = srcIp;
+                    SBJ_IP = srcIp;
+                    SBJ_PORT = srcPort;
+                    SBJ_MAC = convert2Mac(srcMac);
+                    BHV_CATEGORY = "/Attack";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = dstIp;
+                    OBJ_NAME = dstIp;
+                    OBJ_PORT = dstPort;
+                    OBJ_MAC = dstMac;
+                    PLD_TYPE = "/File";
+                    PLD_NAME = PAYLOAD;
+                    PLD_CONTENT = POSTBODY;
+                    STATUS = ATTACKSTATUS;
+                    OUTCOME = MESSAGE;
+                    REQ_USER_AGENT = REQUESTHEADER;
+                    BYTES_OUT = REPLYLEN;
+                }
+            case "DGA域名请求":
+                pack("event") {
+                    START_TIME = format2Time(log_time, "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = hostName;
+                    DS_PROCESS_NAME = ATTACKTYPE;
+                    PHRASE = simpleMapping(ATTACKSTAGE, "{1:弱点探测,2:渗透入侵,3:获取权限,4:命令与控制,5:数据盗取}", 1);
+                    EVT_CATEGORY = dictMapping("src_type",toInt(APPTYPE));
+                    EVT_TYPE = RULENAME;
+                    SEVERITY = ATTACKGRADE;
+                    N_EVT_CATEGORY = "/Threat/MalResource";
+                    N_SEVERITY = dictMapping("severity",ATTACKGRADE);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = srcIp;
+                    SBJ_IP = srcIp;
+                    SBJ_PORT = srcPort;
+                    SBJ_MAC = convert2Mac(srcMac);
+                    BHV_CATEGORY = "/Attack";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = dstIp;
+                    OBJ_NAME = dstIp;
+                    OBJ_PORT = dstPort;
+                    OBJ_MAC = dstMac;
+                    PLD_TYPE = "/File";
+                    PLD_NAME = PAYLOAD;
+                    PLD_CONTENT = POSTBODY;
+                    STATUS = ATTACKSTATUS;
+                    OUTCOME = MESSAGE;
+                    REQ_USER_AGENT = REQUESTHEADER;
+                    BYTES_OUT = REPLYLEN;
+                }
+            case "SMB远程溢出攻击":
+                pack("event") {
+                    START_TIME = format2Time(log_time, "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = hostName;
+                    DS_PROCESS_NAME = ATTACKTYPE;
+                    PHRASE = simpleMapping(ATTACKSTAGE, "{1:弱点探测,2:渗透入侵,3:获取权限,4:命令与控制,5:数据盗取}", 1);
+                    EVT_CATEGORY = dictMapping("src_type",toInt(APPTYPE));
+                    EVT_TYPE = RULENAME;
+                    SEVERITY = ATTACKGRADE;
+                    N_EVT_CATEGORY = "/Threat/Attack/Vulnerability";
+                    N_SEVERITY = dictMapping("severity",ATTACKGRADE);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = srcIp;
+                    SBJ_IP = srcIp;
+                    SBJ_PORT = srcPort;
+                    SBJ_MAC = convert2Mac(srcMac);
+                    BHV_CATEGORY = "/Attack";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = dstIp;
+                    OBJ_NAME = dstIp;
+                    OBJ_PORT = dstPort;
+                    OBJ_MAC = dstMac;
+                    PLD_TYPE = "/File";
+                    PLD_NAME = PAYLOAD;
+                    PLD_CONTENT = POSTBODY;
+                    STATUS = ATTACKSTATUS;
+                    OUTCOME = MESSAGE;
+                    REQ_USER_AGENT = REQUESTHEADER;
+                    BYTES_OUT = REPLYLEN;
+                }
+            case "WEB特征检测":
+                pack("event") {
+                    START_TIME = format2Time(log_time, "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = hostName;
+                    DS_PROCESS_NAME = ATTACKTYPE;
+                    PHRASE = simpleMapping(ATTACKSTAGE, "{1:弱点探测,2:渗透入侵,3:获取权限,4:命令与控制,5:数据盗取}", 1);
+                    EVT_CATEGORY = dictMapping("src_type",toInt(APPTYPE));
+                    EVT_TYPE = RULENAME;
+                    SEVERITY = ATTACKGRADE;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",ATTACKGRADE);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = srcIp;
+                    SBJ_IP = srcIp;
+                    SBJ_PORT = srcPort;
+                    SBJ_MAC = convert2Mac(srcMac);
+                    BHV_CATEGORY = "/Attack";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = dstIp;
+                    OBJ_NAME = dstIp;
+                    OBJ_PORT = dstPort;
+                    OBJ_MAC = dstMac;
+                    PLD_TYPE = "/File";
+                    PLD_NAME = PAYLOAD;
+                    PLD_CONTENT = POSTBODY;
+                    STATUS = ATTACKSTATUS;
+                    OUTCOME = MESSAGE;
+                    REQ_USER_AGENT = REQUESTHEADER;
+                    BYTES_OUT = REPLYLEN;
+                }
+            case "恶意文件攻击":
+                pack("event") {
+                    START_TIME = format2Time(log_time, "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = hostName;
+                    DS_PROCESS_NAME = ATTACKTYPE;
+                    PHRASE = simpleMapping(ATTACKSTAGE, "{1:弱点探测,2:渗透入侵,3:获取权限,4:命令与控制,5:数据盗取}", 1);
+                    EVT_CATEGORY = dictMapping("src_type",toInt(APPTYPE));
+                    EVT_TYPE = RULENAME;
+                    SEVERITY = ATTACKGRADE;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",ATTACKGRADE);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = srcIp;
+                    SBJ_IP = srcIp;
+                    SBJ_PORT = srcPort;
+                    SBJ_MAC = convert2Mac(srcMac);
+                    BHV_CATEGORY = "/Attack";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = dstIp;
+                    OBJ_NAME = dstIp;
+                    OBJ_PORT = dstPort;
+                    OBJ_MAC = dstMac;
+                    PLD_TYPE = "/File";
+                    PLD_NAME = PAYLOAD;
+                    PLD_CONTENT = POSTBODY;
+                    STATUS = ATTACKSTATUS;
+                    OUTCOME = MESSAGE;
+                    REQ_USER_AGENT = REQUESTHEADER;
+                    BYTES_OUT = REPLYLEN;
+                }
+            default:
+                pack("event") {
+                    START_TIME = format2Time(log_time, "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = hostName;
+                    DS_PROCESS_NAME = ATTACKTYPE;
+                    PHRASE = simpleMapping(ATTACKSTAGE, "{1:弱点探测,2:渗透入侵,3:获取权限,4:命令与控制,5:数据盗取}", 1);
+                    EVT_CATEGORY = dictMapping("src_type",toInt(APPTYPE));
+                    EVT_TYPE = RULENAME;
+                    SEVERITY = ATTACKGRADE;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",ATTACKGRADE);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = srcIp;
+                    SBJ_IP = srcIp;
+                    SBJ_PORT = srcPort;
+                    SBJ_MAC = convert2Mac(srcMac);
+                    BHV_CATEGORY = "/Attack";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = dstIp;
+                    OBJ_NAME = dstIp;
+                    OBJ_PORT = dstPort;
+                    OBJ_MAC = dstMac;
+                    PLD_TYPE = "/File";
+                    PLD_NAME = PAYLOAD;
+                    PLD_CONTENT = POSTBODY;
+                    STATUS = ATTACKSTATUS;
+                    OUTCOME = MESSAGE;
+                    REQ_USER_AGENT = REQUESTHEADER;
+                    BYTES_OUT = REPLYLEN;
+                }
+        }
+    }
+}

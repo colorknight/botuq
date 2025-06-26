@@ -1,0 +1,479 @@
+botu("IPS/Venus/NIPS[V6]/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) (?<host>\\S+) (?<module>[^:]+): (?<detail>.*)")){
+	    temp = replaceString(detail,"\"","");
+        keyPositionSplitParse(temp, ' ', "=");
+	    switch(module){
+	        case "AV":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_TYPE = VirusName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Malware/Virus";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    SBJ_MAC = convert2Mac(SMAC);
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    OBJ_MAC = convert2Mac(DMAC);
+                    PRT_ACTION = Action;
+                    PLD_TYPE = "/File";
+                    PLD_NAME = VirusFileName;
+                    OUTCOME = Content;
+                }
+            case "IPS":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_TYPE = SecurityType;
+                    EVT_NAME = EventName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    SBJ_MAC = convert2Mac(SMAC);
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    OBJ_MAC = convert2Mac(DMAC);
+                    PRT_ACTION = Action;
+                }
+            case "P2P_EVENT":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_NAME = P2PName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                }
+            case "WEB_FILTER":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_NAME = P2PName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    REQ_URL = URL;
+                    OUTCOME = Content;
+                }
+            case "MAIL_FILTER":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_NAME = P2PName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = MailSender;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Send";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    OUTCOME = Content;
+                }
+            case "FILTER":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_NAME = P2PName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    OUTCOME = Content;
+                }
+            case "NAT":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_NAME = P2PName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Change";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                }
+            case "QOS":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    OUTCOME = Content;
+                }
+            case "STOCK":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_NAME = STOCKName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Violation";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    PRT_ACTION = Action;
+                    OUTCOME = Content;
+                }
+            case "GAME":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_NAME = GAMEName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Violation";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    PRT_ACTION = Action;
+                    OUTCOME = Content;
+                }
+            case "VOIP":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_NAME = VOIPName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Violation";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    PRT_ACTION = Action;
+                    OUTCOME = Content;
+                }
+            case "SMEDIA":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_NAME = SMEDIAName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Violation";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    PRT_ACTION = Action;
+                    OUTCOME = Content;
+                }
+            case "SESSION":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    PRT_ACTION = Action;
+                    OUTCOME = Content;
+                }
+            case "ATTACK":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    SBJ_MAC = convert2Mac(SMAC);
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    OBJ_MAC = convert2Mac(DMAC);
+                    OUTCOME = Content;
+                }
+            case "SCAN":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    BHV_CATEGORY = "/Scan";
+                    OUTCOME = Content;
+                }
+            case "CONFIG":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/System";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = UserName;
+                    SBJ_IP = SrcIP;
+                    BEHAVIOR = Operate;
+                    OUTCOME = Content;
+                }
+            case "APT":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_TYPE = DetectMethod;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    PLD_TYPE = "/File";
+                    PLD_NAME = RequestResource;
+                }
+            case "CCTUNNEL":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_TYPE = TypicalAction;
+                    EVT_NAME = EventName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = MasterIP6;
+                    SBJ_IP = MasterIP6;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = SlaveIP6;
+                    OBJ_NAME = SlaveIP6;
+                    OBJ_PORT = DstPort;
+                }
+            case "APT_CB_BLOCK":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    OUTCOME = Content;
+                }
+            case "PSM":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    OUTCOME = Content;
+                    PRT_ACTION = Action;
+                    REQ_URL = Url;
+                }
+            case "WEBSCAN":
+                pack("event") {
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    EVT_TYPE = EventName;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = Protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = DstIP;
+                    OBJ_NAME = DstIP;
+                    OBJ_PORT = DstPort;
+                    OUTCOME = Content;
+                    PRT_ACTION = Action;
+                }
+            default:
+                pack("event"){
+                    START_TIME = extractTime(GenTime);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = module;
+                    EVT_CATEGORY = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    PRT_ACTION = Action;
+                    OUTCOME = Content;
+                }
+	    }
+	}
+}

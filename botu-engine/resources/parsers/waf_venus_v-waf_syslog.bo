@@ -1,0 +1,260 @@
+botu("WAF/Webray/V-WAF/Syslog") {
+    if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) (?<deviceName>[^;]+);([^;]+);([^;]+);([^;]+);\\s*(?<logType>[^:]+):\\s*(?<detail>.*)")){
+        sev = parseSyslogSeverity(pri);
+        splitParse(detail, ';', null, null, "=");
+        switch(logType){
+            case "web_access":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user_name;
+                    SBJ_IP = src_ip;
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    PRT_ACTION = handle_action;
+                    REQ_URL = url;
+                    OUTCOME = msg;
+                }
+            case "operate":
+                if(nCat == null){
+                    nCat = "/Audit/System";
+                }
+            case "system_state":
+            case "device_health":
+                if(nCat == null){
+                    nCat = "/Audit/Status";
+                }
+            case "device_traffic":
+            case "statistic_traffic":
+            case "ipsec_traffic":
+                if(nCat == null){
+                    nCat = "/Audit/Flow";
+                }
+            case "policy_detail":
+                if(nCat == null){
+                    nCat = "/Violation";
+                }
+            case "nat":
+                if(nCat == null){
+                    nCat = "/Audit/Session/NAT";
+                }
+            case "behavior_model":
+                if(nCat == null){
+                    nCat = "/Audit";
+                }
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = nCat;
+                    N_SEVERITY = dictMapping("severity",sev);
+                    OUTCOME = detail;
+                }
+            case "wpd":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Vulnerability";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    OUTCOME = detail;
+                }
+            case "wpd":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    OUTCOME = detail;
+                }
+            case "servconn_policy":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Violation";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    OUTCOME = detail;
+                }
+            case "security_abnormal_pkt":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = name;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user_name;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                }
+            case "security_scan":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = name;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack/Scan";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user_name;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                }
+            case "security_flood":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = name;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack/Dos";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user_name;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                }
+            case "ips":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = event_type;
+                    EVT_TYPE = event_name;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user_name;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = protocol;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    PRT_ACTION = action;
+                }
+            case "AV":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = logType;
+                    EVT_TYPE = virus_name;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Malware";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user_name;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BHV_CATEGORY = "/Attack";
+                    TRANS_PROTO = protocol;
+                    APP_PROTO = app_protocol;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    PRT_ACTION = action;
+                }
+            case "waf_ruledefend":
+            case "waf_advdefend":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Violation";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src_ip;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BHV_CATEGORY = "/Access";
+                    BEHAVIOR = waf_method;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    PRT_ACTION = action;
+                    REQ_URL = url;
+                    OUTCOME = msg;
+                }
+            case "bfd":
+                pack("event"){
+                    START_TIME = extractTime(occur_time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = "/Attack";
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack/Force";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src;
+                    SBJ_IP = src;
+                    BHV_CATEGORY = "/Attack";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst;
+                    OBJ_IP = dst;
+                    PRT_ACTION = action;
+                }
+            default:
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = deviceName;
+                    DS_PROCESS_NAME = logType;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    OUTCOME = detail;
+                }
+        }
+    }
+}

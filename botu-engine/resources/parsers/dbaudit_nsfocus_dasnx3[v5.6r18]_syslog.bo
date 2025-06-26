@@ -1,0 +1,27 @@
+// 绿盟数据库安全审计
+botu("DBAudit/NsFocus/DASNX3[V5.6R18]/Syslog"){
+    if(patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>(?<time>([^:]+):\\d+:\\d+) .* (?<dvc>\\w+):\\s\\[CEF\\]:|(?<detail>.*)")){
+        splitParse(detail, '|', null, null, ":");
+        sev = parseSyslogSeverity(pri);
+        pack("event") {
+            START_TIME = extractTime(time);
+            DS_DVC_NAME = dvc;
+            EVT_CATEGORY = 规则类型;
+            EVT_TYPE = 命中规则;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/HiddenDanger";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/User";
+            SBJ_NAME = 数据库用户名;
+            SBJ_IP = 客户端IP;
+            SBJ_PORT = 客户端端口;
+            SBJ_MAC = 客户端MAC地址;
+            BHV_CATEGORY = "/Access";
+            BHV_BODY = SQL语句;
+            OBJ_TYPE = "/Service";
+            OBJ_NAME = strFormat("%s/%s", 数据库名称, field("服务名（实例名）"));
+            OBJ_IP = 服务器IP;
+            OBJ_PORT = 服务器端口;
+        }
+    }
+}

@@ -1,0 +1,46 @@
+botu("HoneyPot/JNSec/HoneyPot/Syslog") {
+    //定时日志为总结统计类日志，日志时间不准确
+    patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) trapbox (?<detail>.*)");
+    jsonParse(detail, true);
+    sev = parseSyslogSeverity(pri);
+    if(indexString(message,"{") != -1){
+        jsonParse(message, true);
+        for(i = 0; i < len(actiontags); i++){
+            pack("event") {
+                START_TIME = extractTime(time);
+                DS_DVC_NAME = src_hwcorp;
+                EVT_CATEGORY = logtype;
+                EVT_TYPE = actiontags[i];
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_IP = src_ip;
+                SBJ_NAME = src_ip;
+                BHV_CATEGORY = "/Attack";
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = dest_ip[i];
+                OBJ_NAME = dest_ip[i];
+            }
+        }
+    }else{
+        segs = strSplit(message, "\\-");
+        pack("event") {
+            START_TIME = extractTime(create_time);
+            EVT_CATEGORY = module;
+            EVT_TYPE = managestyle;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Attack";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = segs[3];
+            SBJ_IP = convert2Ip(segs[3]);
+            SBJ_PORT = segs[4];
+            TRANS_PROTO = segs[2];
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = segs[5];
+            OBJ_IP = convert2Ip(segs[5]);
+            OBJ_PORT = segs[6];
+        }
+    }
+}

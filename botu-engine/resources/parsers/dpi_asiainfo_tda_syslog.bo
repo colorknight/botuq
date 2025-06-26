@@ -1,0 +1,326 @@
+botu("DPI/Asiainfo/TDA/Syslog") {
+    if(patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<detail>.*)")){
+        sev = parseSyslogSeverity(pri);
+        patternSplitParse(detail, "\\|", null);
+        keyPositionSplitParse($8, ' ', "=");
+        if($6 == "SECURITY_RISK_DETECTION"){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                EVT_TYPE = evtCat;
+                EVT_NAME = evtSubCat;
+                SEVERITY = sev;
+                PHRASE = pAttackPhase;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = shost;
+                SBJ_IP = src;
+                SBJ_PORT = spt;
+                SBJ_MAC = convert2Mac(smac);
+                BHV_CATEGORY = "/Access";
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = dst;
+                OBJ_PORT = dpt;
+                OBJ_MAC = convert2Mac(dmac);
+                PRT_ACTION = act;
+                REQ_URL = url;
+                REQ_USER_AGENT = requestClientApplication;
+            }
+        }else if(patternParse($6, ".* settings have been changed")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = nCat;
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Resource/Configuration";
+                SBJ_NAME = "/Configuration";
+                BHV_CATEGORY = "/Update";
+            }
+        }else if(patternParse($6, "Successful log on to (?<serviceName>[^\\s]+) service")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                EVT_TYPE = cat;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                PHRASE = cs6;
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = shost;
+                SBJ_IP = src;
+                SBJ_PORT = spt;
+                SBJ_MAC = convert2Mac(smac);
+                BHV_CATEGORY = "/Login";
+                OBJ_TYPE = "/Resource/Process";
+                OBJ_IP = dst;
+                OBJ_NAME = serviceName;
+                OBJ_PORT = dpt;
+                OBJ_MAC = convert2Mac(dmac);
+                PRT_ACTION = act;
+            }
+        }else if(patternParse($6, "\\d+ unsuccessful logon attempts")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                SEVERITY = sev;
+                PHRASE = cs6;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = shost;
+                SBJ_IP = src;
+                SBJ_PORT = spt;
+                SBJ_MAC = convert2Mac(smac);
+                BHV_CATEGORY = "/Login";
+                APP_PROTO = app;
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = dst;
+                OBJ_NAME = dhost;
+                OBJ_PORT = dpt;
+                OBJ_MAC = convert2Mac(dmac);
+                STATUS = "unsuccessful";
+                PRT_ACTION = act;
+            }
+        }else if(patternParse($6, "Unregistered service running on non-standard port")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                PHRASE = cs6;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = shost;
+                SBJ_IP = src;
+                SBJ_PORT = spt;
+                SBJ_MAC = convert2Mac(smac);
+                BHV_CATEGORY = "/Access";
+                APP_PROTO = app;
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = dst;
+                OBJ_NAME = dhost;
+                OBJ_PORT = dpt;
+                OBJ_MAC = convert2Mac(dmac);
+                PRT_ACTION = act;
+            }
+        } else if(patternParse($6, "Client from .* gets Virtual Analyzer Feedback.")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = nCat;
+                N_SEVERITY = dictMapping("severity",sev);
+            }
+        } else if(patternParse($6, "Possible.*")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                PHRASE = cs6;
+                EVT_TYPE = cat;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/HiddenDanger";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = shost;
+                SBJ_IP = src;
+                SBJ_PORT = spt;
+                SBJ_MAC = convert2Mac(smac);
+                BHV_CATEGORY = "/Attack";
+                APP_PROTO = app;
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = dst;
+                OBJ_NAME = dhost;
+                OBJ_PORT = dpt;
+                OBJ_MAC = convert2Mac(dmac);
+                PRT_ACTION = act;
+                REQ_URL = url;
+                REQ_USER_AGENT = requestClientApplication;
+            }
+        }else if(patternParse($6, "CVE.*")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                PHRASE = cs6;
+                EVT_TYPE = cat;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Threat/Attack/Vulnerability";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = shost;
+                SBJ_IP = src;
+                SBJ_PORT = spt;
+                SBJ_MAC = convert2Mac(smac);
+                BHV_CATEGORY = "/Attack";
+                APP_PROTO = app;
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = dst;
+                OBJ_NAME = dhost;
+                OBJ_PORT = dpt;
+                OBJ_MAC = convert2Mac(dmac);
+                PRT_ACTION = act;
+                REQ_USER_AGENT = requestClientApplication;
+            }
+        }else if(patternParse($6, "Archive Upload")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                PHRASE = cs6;
+                EVT_TYPE = cat;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/HiddenDanger";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = shost;
+                SBJ_IP = src;
+                SBJ_PORT = spt;
+                SBJ_MAC = convert2Mac(smac);
+                BHV_CATEGORY = "/Access";
+                APP_PROTO = app;
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = dst;
+                OBJ_NAME = dhost;
+                OBJ_PORT = dpt;
+                OBJ_MAC = convert2Mac(dmac);
+                PRT_ACTION = act;
+                PLD_TYPE = "/File";
+                PLD_NAME = filePath;
+                REQ_USER_AGENT = requestClientApplication;
+            }
+        }else if(patternParse($6, "RCLONE.*")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                PHRASE = cs6;
+                EVT_TYPE = cat;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/HiddenDanger";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = shost;
+                SBJ_IP = src;
+                SBJ_PORT = spt;
+                SBJ_MAC = convert2Mac(smac);
+                BHV_CATEGORY = "/Access";
+                APP_PROTO = app;
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = dst;
+                OBJ_NAME = dhost;
+                OBJ_PORT = dpt;
+                OBJ_MAC = convert2Mac(dmac);
+                PRT_ACTION = act;
+                PLD_TYPE = "/File";
+                PLD_NAME = filePath;
+                REQ_USER_AGENT = requestClientApplication;
+            }
+
+        } else if(patternParse($6, "POSSIBLE.*")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                PHRASE = cs6;
+                EVT_TYPE = cat;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/HiddenDanger";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = shost;
+                SBJ_IP = src;
+                SBJ_PORT = spt;
+                SBJ_MAC = convert2Mac(smac);
+                BHV_CATEGORY = "/Attack";
+                APP_PROTO = app;
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = dst;
+                OBJ_NAME = dhost;
+                OBJ_PORT = dpt;
+                OBJ_MAC = convert2Mac(dmac);
+                PRT_ACTION = act;
+                REQ_URL = url;
+                REQ_USER_AGENT = requestClientApplication;
+            }
+        }else if(patternParse($6, "A .* user attempted to log on to (?<serviceName>[^\\s]+) service")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                EVT_TYPE = cat;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/HiddenDanger";
+                PHRASE = cs6;
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = shost;
+                SBJ_IP = src;
+                SBJ_PORT = spt;
+                SBJ_MAC = convert2Mac(smac);
+                BHV_CATEGORY = "/Login";
+                OBJ_TYPE = "/Resource/Process";
+                OBJ_IP = dst;
+                OBJ_NAME = serviceName;
+                OBJ_PORT = dpt;
+                OBJ_MAC = convert2Mac(dmac);
+                PRT_ACTION = act;
+            }
+        }else if(patternParse($6, ".* service responded with.*")){
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                EVT_TYPE = cat;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = shost;
+                SBJ_IP = src;
+                SBJ_PORT = spt;
+                SBJ_MAC = convert2Mac(smac);
+                BHV_CATEGORY = "/Access";
+                OBJ_TYPE = "/Resource/Process";
+                OBJ_IP = dst;
+                OBJ_NAME = app;
+                OBJ_PORT = dpt;
+                OBJ_MAC = convert2Mac(dmac);
+                PRT_ACTION = act;
+            }
+        }else{
+            pack("event") {
+                START_TIME = format2Time( rt, "MMM dd yyyy HH:mm:ss 'GMT+08:00'","'en'");
+                DS_DVC_NAME = $3;
+                DS_PROCESS_NAME = dvchost;
+                EVT_CATEGORY = $6;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = nCat;
+                N_SEVERITY = dictMapping("severity",sev);
+            }
+        }
+
+    }
+
+}

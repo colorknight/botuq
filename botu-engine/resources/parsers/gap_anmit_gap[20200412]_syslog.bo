@@ -1,0 +1,193 @@
+botu("GAP/Anmit/GAP[20200412]/Syslog"){
+   if(patternParse(MS_SRC_DATA, "(?<prefix>.*):\\s\\<(?<sev>\\d+)\\>(?<detail>.*)")){
+      splitParse(detail, ' ', '"', '"',"=");
+      pri = parseSyslogSeverity(sev);
+      switch(MODULE){
+         case "访问日志":
+            pack("event"){
+                START_TIME = extractTime(TIME);
+                DS_DVC_NAME = FW;
+                DS_PROCESS_NAME = MODULE;
+                EVT_CATEGORY = MODULE;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = USER;
+                SBJ_IP = SRC;
+                SBJ_PORT = SPT;
+                SBJ_MAC = convert2Mac(SMAC);
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = PROTO;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = DST;
+                OBJ_IP = DST;
+                OBJ_PORT = DPT;
+                OBJ_MAC = convert2Mac(DMAC);
+                OUTCOME = MSG;
+                PRT_STATUS = RESULT;
+                PRT_EFFECT = DESC;
+            }
+         case "攻击防护日志":
+            pack("event"){
+                START_TIME = extractTime(TIME);
+                DS_DVC_NAME = FW;
+                DS_PROCESS_NAME = MODULE;
+                EVT_CATEGORY = MODULE;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = USER;
+                SBJ_IP = SRC;
+                SBJ_PORT = SPT;
+                SBJ_MAC = convert2Mac(SMAC);
+                BHV_CATEGORY = "/Attack";
+                TRANS_PROTO = PROTO;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = DST;
+                OBJ_IP = DST;
+                OBJ_PORT = DPT;
+                OBJ_MAC = convert2Mac(DMAC);
+                OUTCOME = MSG;
+                PRT_ACTION = ACTION;
+                PRT_STATUS = RESULT;
+                PRT_EFFECT = DESC;
+            }
+         case "管理日志":
+            pack("event"){
+                START_TIME = extractTime(TIME);
+                DS_DVC_NAME = FW;
+                DS_PROCESS_NAME = MODULE;
+                EVT_CATEGORY = MODULE;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = USER;
+                SBJ_IP = SRC;
+                BHV_CATEGORY = "/Update";
+                OBJ_TYPE = "/Resource/Configuration";
+                OBJ_NAME = "Configuration";
+                OBJ_IP = MS_SRC_ADDRESS;
+                OUTCOME = MSG;
+                STATUS = RESULT;
+            }
+         case "内容过滤日志":
+            pack("event"){
+                START_TIME = extractTime(TIME);
+                DS_DVC_NAME = FW;
+                DS_PROCESS_NAME = MODULE;
+                EVT_CATEGORY = MODULE;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = USER;
+                SBJ_IP = SRC;
+                SBJ_PORT = SPT;
+                SBJ_MAC = convert2Mac(SMAC);
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = PROTO;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = DST;
+                OBJ_IP = DST;
+                OBJ_PORT = DPT;
+                OBJ_MAC = convert2Mac(DMAC);
+                OUTCOME = MSG;
+                PRT_ACTION = ACTION;
+            }
+         case "审计管理日志":
+            pack("event"){
+                START_TIME = extractTime(TIME);
+                DS_DVC_NAME = FW;
+                DS_PROCESS_NAME = MODULE;
+                EVT_CATEGORY = MODULE;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = USER;
+                SBJ_IP = SRC;
+                BHV_CATEGORY = "/Is";
+                OUTCOME = MSG;
+                STATUS = RESULT;
+            }
+         case "数据库同步日志":
+            pack("event"){
+                START_TIME = extractTime(TIME);
+                DS_DVC_NAME = FW;
+                DS_PROCESS_NAME = MODULE;
+                EVT_CATEGORY = MODULE;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/DB/Resource/Tablespace";
+                SBJ_NAME = SRCDB;
+                SBJ_IP = SRC;
+                SBJ_MAC = convert2Mac(SMAC);
+                BHV_CATEGORY = "/Update";
+                OBJ_TYPE = "/DB/Resource/Tablespace";
+                OBJ_NAME = DSTDB;
+                OBJ_IP = DST;
+                OUTCOME = MSG;
+            }
+         case "文件交换日志":
+            pack("event"){
+                START_TIME = extractTime(TIME);
+                DS_DVC_NAME = FW;
+                DS_PROCESS_NAME = MODULE;
+                EVT_CATEGORY = MODULE;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = SRC;
+                SBJ_IP = SRC;
+                BHV_CATEGORY = "/Upload";
+                OBJ_TYPE = "/Resource/File";
+                OBJ_NAME = FILENAME;
+                OBJ_URI = DPATH;
+                OBJ_IP = DST;
+                STATUS = RESULT;
+                OUTCOME = MSG;
+            }
+         case "系统日志":
+            pack("event"){
+                START_TIME = extractTime(TIME);
+                DS_DVC_NAME = FW;
+                DS_PROCESS_NAME = MODULE;
+                EVT_CATEGORY = MODULE;
+                EVT_TYPE = MSG;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit/System";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/Host";
+                SBJ_NAME = FW;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Is";
+                OBJ_TYPE = "/Resource/Configuration";
+                OBJ_NAME = "Configuration";
+                OUTCOME = DESC;
+                STATUS = RESULT;
+            }
+         case "系统状态日志":
+            pack("event"){
+                START_TIME = extractTime(TIME);
+                DS_DVC_NAME = FW;
+                DS_PROCESS_NAME = MODULE;
+                EVT_CATEGORY = MODULE;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit/Status";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/Host";
+                SBJ_NAME = FW;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Is";
+                OBJ_TYPE = "/Resource/Configuration";
+                OBJ_NAME = "Configuration";
+                OUTCOME = strFormat("cpu使用率%s,内存使用率%s,磁盘使用率%s,并发连接数%s,隔离通道状态%s,实时吞吐量%s,整体设备状态%s",CPU,MEM,DISK,LINKNUM,NET,NETFLOW,DEVSTATUS);
+            }
+      }
+   }
+}

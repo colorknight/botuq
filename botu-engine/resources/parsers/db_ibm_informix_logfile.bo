@@ -1,0 +1,21 @@
+// IBM InforMix
+botu("DB/IBM/InforMix/Logfile"){
+    if(patternParse(MS_SRC_DATA,"^(?<System>[^\\|]*)\\|(?<Time>[^\\|]*)\\|(?<HostName>[^\\|]*)\\|(?<UserId>[^\\|]*)\\|(?<DBServer>[^\\|]*)\\|(?<UserName>[^\\|]*)\\|(?<AuditFlag>[^:]*):(?<AuditType>[^:]*):?(?<DBName>[^:]*)?:?(?<TableId>[^:]*)?:?(?<V1>[^:]*)?:?(?<V2>[^:]*)?:?(?<V3>[^:]*)?:?(?<V4>[^:]*)?:?(?<V5>[^:]*)?:?(?<V6>[^:]*)?:?.*")){
+        inx = indexString(Time,".");
+        startTime = subString(Time,inx);
+        pack("event"){
+            START_TIME = extractTime(startTime);
+            DS_DVC_NAME = HostName;
+            EVT_CATEGORY = "/Access";
+            SEVERITY = "info";
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity","info");
+            SBJ_TYPE = "/User";
+            SBJ_NAME = UserName;
+            BHV_CATEGORY = "/Access";
+            OBJ_TYPE = "/DB/Resource/Tablespace";
+            OBJ_NAME = DBName;
+            OBJ_IP = MS_SRC_ADDRESS;
+        }
+    }
+}

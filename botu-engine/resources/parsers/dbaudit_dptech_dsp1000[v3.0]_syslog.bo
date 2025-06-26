@@ -1,0 +1,23 @@
+// 迪普数据库审计系统
+botu("DBAudit/DPtech/DSP1000[V3.0]/Syslog"){
+    if(patternParse(MS_SRC_DATA, "^[^:]+:\\s(?<detail>.*)")){
+        patternSplitParse(detail, "\\$\\s", ":");
+        pack("event") {
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+            EVT_CATEGORY = trim(策略," ");
+            SEVERITY = trim(风险等级, " ");
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = simpleMapping(type, "{1:低,3:中,5:高}", 1);
+            SBJ_TYPE = "/User";
+            SBJ_NAME = trim(用户名, " ");
+            SBJ_IP = trim(源IP, " ");
+            SBJ_PORT = trim(源端口, " ");
+            BHV_CATEGORY = "/Access";
+            BHV_BODY = trim(SQL操作, " ");
+            OBJ_TYPE = "/Service";
+            OBJ_NAME = db_name;
+            OBJ_IP = trim(目的IP, " ");
+            OBJ_PORT = trim(目的端口, " ");
+        }
+    }
+}

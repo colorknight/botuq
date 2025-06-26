@@ -1,0 +1,100 @@
+botu("EPS/NsFocus/ESS[v9.0]/Syslog") {
+	if (patternParse(MS_SRC_DATA, "([^{}])*(?<detail>.*)")) {
+	    jsonParse(detail,true);
+	    if(type == 1){
+	        sip = field("content.IP");
+	        segs = strSplit(sip, "\\$");
+	        pack("event"){
+                START_TIME = toTime(InfectedTime*1000);
+                EVT_CATEGORY = "病毒信息协议";
+                EVT_TYPE = field("content.VirusType");
+                EVT_NAME = field("content.VirusName");
+                SEVERITY = "INFO";
+                N_SEVERITY = dictMapping("severity","INFO");
+                N_EVT_CATEGORY = "/Threat/Malware/Virus";
+                SBJ_TYPE = "/Host";
+                SBJ_NAME = segs[0];
+                SBJ_IP = segs[0];
+                SBJ_HOST = field("content.ComputerName");
+                BHV_CATEGORY = "/Exist";
+                BEHAVIOR = simpleMapping(field("content.ScanType"), "{-1:其他,0:观察,1:任务执行,2:命令,3:用户出发,4:邮件监控,5:u盘监控}",-1);
+                PRT_ACTION = field("content.ActionWhenFindVirus");
+                PRT_STATUS = simpleMapping(field("content.VirusProcessResult"), "{-1:未发现，未修复,0:成功，修复,1:通知，未修复,2:隔离,3:删除,4:失败，未修复,5:需要重启，未修复,6:归档，未修复,7:无法处理，未修复}",-1);
+	        }
+	    }else if(type == 3){
+            sip = field("content.ip");
+            segs = strSplit(sip, "\\$");
+	        pack("event"){
+                START_TIME = toTime(sendtime*1000);
+                EVT_CATEGORY = "系统中心协议";
+                SEVERITY = "INFO";
+                N_SEVERITY = dictMapping("severity","INFO");
+                N_EVT_CATEGORY = "/Audit/System";
+                SBJ_TYPE = "/Resource/System";
+                SBJ_NAME = field("content.scname");
+                SBJ_IP = segs[0];
+                BHV_CATEGORY = "/Is";
+	        }
+	    }else if(type == 2){
+	        sip = field("content.ip");
+	        segs = strSplit(sip, "\\$");
+            pack("event"){
+                 START_TIME = toTime(sendtime*1000);
+                 EVT_CATEGORY = "客户端信息协议";
+                 SEVERITY = pri;
+                 N_SEVERITY = dictMapping("severity",pri);
+                 N_EVT_CATEGORY = "/Audit/System";
+                 SBJ_TYPE = "/Host";
+                 SBJ_NAME = field("content.hostname");
+                 SBJ_IP = segs[0];
+                 SBJ_MAC = convert2Mac(field("content.hostmac"));
+                 BHV_CATEGORY = "/Is";
+            }
+        }else if(type == 11){
+            sip = field("content.hostip");
+            segs = strSplit(sip, "\\$");
+            pack("event"){
+                 START_TIME = toTime(sendtime*1000);
+                 EVT_CATEGORY = "终端升级日志";
+                 SEVERITY = pri;
+                 N_SEVERITY = dictMapping("severity",pri);
+                 N_EVT_CATEGORY = "/Audit/System";
+                 SBJ_TYPE = "/Ip";
+                 SBJ_NAME = segs[0];
+                 SBJ_IP = segs[0];
+                 BHV_CATEGORY = "/Upgrade";
+            }
+        }else if(type == 12){
+            sip = field("content.hostip");
+            segs = strSplit(sip, "\\$");
+            pack("event"){
+                 START_TIME = toTime(sendtime*1000);
+                 EVT_CATEGORY = "终端补丁（漏洞）修复日志";
+                 SEVERITY = pri;
+                 N_SEVERITY = dictMapping("severity",pri);
+                 N_EVT_CATEGORY = "/Audit/System";
+                 SBJ_TYPE = "/Ip";
+                 SBJ_NAME = segs[0];
+                 SBJ_IP = segs[0];
+                 SBJ_HOST = field("content.HostName");
+                 BHV_CATEGORY = "/Upgrade";
+            }
+        }else{
+            sip = field("content.hostip");
+            segs = strSplit(sip, "\\$");
+            pack("event"){
+                 START_TIME = toTime(sendtime*1000);
+                 EVT_CATEGORY = "边界未知文件信息";
+                 SEVERITY = pri;
+                 N_SEVERITY = dictMapping("severity",pri);
+                 N_EVT_CATEGORY = "/Audit/System";
+                 SBJ_TYPE = "/Ip";
+                 SBJ_NAME = segs[0];
+                 SBJ_IP = segs[0];
+                 BHV_CATEGORY = "/Discover";
+                 PLD_TYPE = "/File";
+                 PLD_NAME = field("content.file_name");
+            }
+        }
+	}
+}

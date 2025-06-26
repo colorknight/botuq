@@ -1,0 +1,253 @@
+botu("WAF/Nsfocus/WAF-v6060/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+)\\s+(?<host>[^\\s]+)\\s+(?<dvctype>[^:]+):\\s+tag:(?<tag>[^\\s]+)\\s+(?<detail>.*)")) {
+	    patternSplitParse(detail, "\\s\\s", ":");
+		sev = parseSyslogSeverity(pri);
+        switch(tag) {
+            case "waf_log_login":
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = tag;
+                    EVT_ID = session_id;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/System";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BEHAVIOR = op_type;
+                    BHV_BODY = desc;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    OUTCOME = result;
+                }
+            case "waf_log_op":
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = tag;
+                    EVT_ID = session_id;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/System";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BEHAVIOR = op_type;
+                    BHV_BODY = desc;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    OUTCOME = result;
+                }
+            case "waf_log_system_run":
+                patternParse(detail," info:(?<info>.*)");
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = tag;
+                    EVT_TYPE = type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/System";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    BEHAVIOR = source;
+                    OUTCOME = info;
+                }
+            case "waf_log_wafstat":
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = tag;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/System";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    OUTCOME = strFormat("cpu:%S,mem:%S",cpu,mem);
+                }
+            case "waf_log_l4acl":
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = tag;
+                    EVT_TYPE = event_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/System";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src_ip;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    PRT_ACTION = Action;
+                    SOLUTION = policy_desc;
+                }
+            case "waf_log_ddos":
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = tag;
+                    EVT_TYPE = event_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack/DOS";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src_ip;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    PRT_ACTION = Action;
+                }
+            case "waf_log_deface":
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = tag;
+                    EVT_TYPE = event_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src_ip;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    PRT_ACTION = Action;
+                }
+            case "waf_log_webaccess":
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = tag;
+                    EVT_TYPE = event_type;
+                    SEVERITY = alertlevel;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",toLowerCase(alertlevel));
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src_ip;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BEHAVIOR = method;
+                    APP_PROTO = http_protocol;
+                    TECHNICAL = reason;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    OBJ_TRANS_IP = wa_host;
+                    STATUS = ser_status_code;
+                    PRT_ACTION = action;
+                    REQ_URL = url;
+                    REQ_USER_AGENT = agent;
+                    REQ_REFERER = wa_referer;
+                    REP_CONTENT_TYPE = res_content_type;
+                    REP_CONTENT_LENGTH = res_content_len;
+                }
+            case "waf_log_arp":
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = tag;
+                    EVT_TYPE = event_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src_ip;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    APP_PROTO = toUppercase(protocol_type);
+                    BEHAVIOR = method;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    STATUS = ser_status_code;
+                    REQ_URL = url;
+                    REQ_USER_AGENT = agent;
+                    REP_CONTENT_TYPE = res_content_type;
+                    REP_CONTENT_LENGTH = res_content_len;
+                }
+            case "waf_log_session":
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = strFormt("%s/%s",tag, event_type);
+                    EVT_TYPE = attack_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/Session";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src_ip;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    SBJ_MAC = convert2Mac(src_mac);
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst_ip;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    OBJ_MAC = convert2Mac(dst_mac);
+                    STATUS = status;
+                    PRT_ACTION = action;
+                }
+            case "waf_log_websec":
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = tag;
+                    EVT_TYPE = event_type;
+                    EVT_NAME = decodeBase64(alertinfo);
+                    SEVERITY = alertlevel;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",toLowerCase(alertlevel));
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src_ip;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BHV_CATEGORY = "/Access";
+                    BEHAVIOR = method;
+                    BHV_BODY = decodeBase64(http);
+                    APP_PROTO = toUppercase(protocol_type);
+                    OBJ_TYPE = "/Service/Web";
+                    OBJ_NAME = site_name;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    OBJ_HOST = domain;
+                    REQ_URL = uri;
+                    PRT_ACTION = action;
+                    OUTCOME = strFormat("block:%s,block_info:%s",block,block_info);
+                    REQ_XFF = proxy_info;
+                }
+            case "waf_log_ipblock":
+                pack("event") {
+                    START_TIME = extractTime(stat_time);
+                    EVT_CATEGORY = tag;
+                    EVT_TYPE = event_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src_ip;
+                    SBJ_IP = src_ip;
+                    SBJ_PORT = src_port;
+                    BHV_CATEGORY = "/Access";
+                    BEHAVIOR = method;
+                    BHV_BODY = alertinfo;
+                    APP_PROTO = toUppercase(protocol_type);
+                    OBJ_TYPE = "/Service/Web";
+                    OBJ_NAME = domain;
+                    OBJ_HOST = domain;
+                    OBJ_IP = dst_ip;
+                    OBJ_PORT = dst_port;
+                    STATUS = block;
+                    OUTCOME = block_info;
+                    PRT_ACTION = action;
+                    REQ_URL = url;
+                    REQ_COOKIE = http;
+                }
+            default:
+		        pack() {}
+		}
+	}
+}

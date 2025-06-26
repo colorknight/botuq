@@ -1,0 +1,33 @@
+botu("Bastion/ShenFan/SAG/Syslog"){
+    patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) ([^\\s]+) (?<host>[^\\s]+): (?<detail>.*)");
+    sev = parseSyslogSeverity(pri);
+    time = strFormat("%s %s", time2String(now(), "yyyy"), time);
+    if(patternParse(detail,"\\<AUDIT_LOG\\>.*通过账号\\[(?<account>\\w+)\\].*通过\\[(?<src>.*)\\]访问\\[(?<dst>.*)\\],用\\[(?<user>.*)\\]账号通过\\[(?<proto>\\w+)\\].*")){
+        pack("event"){
+            START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss");
+            DS_DVC_NAME = host;
+            EVT_CATEGORY = "AUDIT_LOG";
+            SEVERITY = sev;
+            N_SEVERITY = dictMapping("severity",severity);
+            N_EVT_CATEGORY = "/Audit";
+            SBJ_TYPE = "/User";
+            SBJ_NAME = user;
+            SBJ_IP = src;
+            BHV_CATEGORY = "/Access";
+            TRANS_PROTO = proto;
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = dst;
+            OBJ_IP = dst;
+        }
+    }else {
+        pack("event"){
+            START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss");
+            DS_DVC_NAME = host;
+            EVT_CATEGORY = "/Audit";
+            SEVERITY = sev;
+            N_SEVERITY = dictMapping("severity",severity);
+            N_EVT_CATEGORY = "/Audit";
+            OUTCOME = detail;
+        }
+    }
+}

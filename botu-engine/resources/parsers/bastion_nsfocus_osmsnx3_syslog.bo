@@ -1,0 +1,53 @@
+botu("Bastion/NsFocus/OSMSNX3/Syslog"){
+     splitParse(MS_SRC_DATA, ';', null, null, ":");
+     if (comment != null) {
+        pack("event"){
+            START_TIME = toTime(time);
+            EVT_CATEGORY = "/Audit";
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = 1;
+            SBJ_TYPE = "/User";
+            SBJ_NAME = user;
+            SBJ_IP = loginip;
+            BHV_CATEGORY = "/Is";
+            OUTCOME = comment;
+         }
+     } else if (login_time != null) {
+        bhv = "Login";
+        if (logout_time != null) {
+            duration = toLong(logout_time) - toLong(login_time);
+            bhv = "/Logout";
+        }
+        pack("event"){
+            START_TIME = toTime(login_time);
+            DURATION = duration;
+            EVT_CATEGORY = "Maintance";
+            EVT_ID = session_id;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = 2;
+            SBJ_TYPE = "/User";
+            SBJ_NAME = user;
+            BHV_CATEGORY = bhv;
+            APP_PROTO = protocol;
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = MS_SRC_ADDRESS;
+            OBJ_IP = dev_ip;
+         }
+     } else {
+        pack("event"){
+            START_TIME = toTime(cmd_time);
+            EVT_CATEGORY = "Warn";
+            EVT_ID = session_id;
+            N_EVT_CATEGORY = "/HiddenDanger";
+            N_SEVERITY = 3;
+            SBJ_TYPE = "/User";
+            SBJ_NAME = user;
+            BHV_CATEGORY = "/Execute";
+            APP_PROTO = protocol;
+            OBJ_TYPE = "/Resource/Process";
+            OBJ_NAME = cmd;
+            OBJ_IP = dev_ip;
+            PRT_ACTION = block;
+         }
+     }
+}

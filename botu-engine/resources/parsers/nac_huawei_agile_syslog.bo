@@ -1,0 +1,76 @@
+botu("NAC/Huawei/Agile/Syslog") {
+    if(patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+)\\s*(?<host>[^\\s]+) %*\\s*(?<version>\\d*)\\s*(?<recorder>((?!/).)*)/(?<sev>\\d+)/(?<module>[^\\(:]+)\\(*(?<brief>[^\\(:]*):\\s*(?<detail>.*)")){
+        sev = parseSyslogSeverity(pri);
+        splitParse(detail, ' ', '\"', '\"', "=");
+        switch(module){
+            case "VIOLATE":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = recorder;
+                    EVT_CATEGORY = recorder;
+                    EVT_TYPE = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = ip;
+                    SBJ_MAC = convert2Mac(mac);
+                    OUTCOME = msg;
+                }
+            case "LOGONOROFF":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = recorder;
+                    EVT_CATEGORY = recorder;
+                    EVT_TYPE = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = ip;
+                    SBJ_MAC = convert2Mac(mac);
+                    BHV_CATEGORY = simpleMapping(logtype,"{0:下线,1:上线}",0);
+                    STATUS = simpleMapping(result,"{0:身份认证失败,1:成功,2:安全认证失败,3:不涉及}",0);
+                    OUTCOME = msg;
+                }
+            case "SOFTWAREDIS":
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = recorder;
+                    EVT_CATEGORY = recorder;
+                    EVT_TYPE = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = ip;
+                    SBJ_MAC = convert2Mac(mac);
+                    STATUS = simpleMapping(result,"{0:未分配,1:已分配,2:已完成,3:已撤销}",0);
+                    OUTCOME = msg;
+                }
+            default:
+                pack("event"){
+                    START_TIME = extractTime(time);
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = recorder;
+                    EVT_CATEGORY = recorder;
+                    EVT_TYPE = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = ip;
+                    SBJ_MAC = convert2Mac(mac);
+                    STATUS = simpleMapping(result,"{0:未分配,1:已分配,2:已完成,3:已撤销}",0);
+                    OUTCOME = msg;
+                }
+        }
+    }
+}
