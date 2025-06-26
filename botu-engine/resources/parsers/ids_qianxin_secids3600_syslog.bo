@@ -6,7 +6,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
         switch(logType){
             case "LOG_APPSEC_AV":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = virustype;
@@ -39,7 +39,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
             case "LOG_APPSEC_POLICY":
                 evtType = "安全策略";
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = logType;
@@ -63,7 +63,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_IPS":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = logType;
@@ -88,7 +88,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_IDS":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = logType;
@@ -113,7 +113,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_APPSEC_TROJAN":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = logType;
@@ -136,7 +136,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_APPSEC_BOTNET":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = logType;
@@ -159,7 +159,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_DAF":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = logType;
@@ -181,7 +181,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_SMTP":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "网络审计日志";
                     EVT_TYPE = logType;
@@ -198,7 +198,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_ITM":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "系统日志";
                     EVT_TYPE = logType;
@@ -220,7 +220,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_FW_DEFEND":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = logType;
                     EVT_TYPE = dictMapping("ddos_attack_type_qianxin",type);
@@ -241,7 +241,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_HONEYPOT":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = logType;
                     EVT_TYPE = logType;
@@ -262,7 +262,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
             case "LOG_FW_BLACKLIST":
             case "LOG_FW_WHITELIST":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "其他日志";
@@ -293,7 +293,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
             case "LOG_SESSION":
                 evtCat = "其他日志";
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = evtCat;
                     EVT_TYPE = logType;
@@ -316,7 +316,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_WAF":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = logType;
                     EVT_TYPE = eventname;
@@ -344,7 +344,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
             case "LOG_AUDIT_IMAP":
                evtCat = "网络审计日志";
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = evtCat;
                     EVT_TYPE = logType;
@@ -374,7 +374,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
             case "LOG_AUDIT_RSH":
                 evtCat = "网络审计日志";
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = logType;
                     SEVERITY = sev;
@@ -398,7 +398,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_AUDIT":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "网络审计日志";
                     EVT_TYPE = logType;
@@ -429,7 +429,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
             case "LOG_PACKETLOSSALARM":
                 evtCat = "丢包告警日志";
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = evtCat;
                     EVT_TYPE = logType;
@@ -458,7 +458,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
             case "LOG_FILTER_IMAP":
                 evtCat = "网络过滤日志";
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = evtCat;
                     EVT_TYPE = logType;
@@ -482,7 +482,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_BASELINE":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "异常流量检测日志";
                     EVT_TYPE = logType;
@@ -505,7 +505,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_AUDIT_TELNET":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "网络审计日志";
                     EVT_TYPE = logType;
@@ -528,7 +528,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             case "LOG_CM":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "配置管理日志";
                     EVT_TYPE = logType;
@@ -567,7 +567,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
             case "LOG_ALERT_EVENT":
                 evtCat = "系统日志";
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = evtCat;
                     EVT_TYPE = logType;
@@ -579,7 +579,7 @@ botu("IDS/Qianxin/SecIDS3600/Syslog"){
                 }
             default:
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "/Audit";
                     EVT_TYPE = logType;

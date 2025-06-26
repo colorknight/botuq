@@ -5,7 +5,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                 case "FILTER":
                     patternSplitParse(detail, "; ?", "=");
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = type;
                         EVT_TYPE = subType;
@@ -59,7 +59,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                         dstType = "/Ip";
                      }
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = subType;
                         EVT_TYPE = evtType;
@@ -100,7 +100,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                            srcLoc = field("DstLocation(1214)");
                         }
                         pack("event"){
-                            START_TIME = extractTime(time);
+                            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                             DS_PROCESS_NAME = type;
                             EVT_CATEGORY = field("VirusCategory(1182)");
                             EVT_TYPE = field("VirusName(1085)");
@@ -147,7 +147,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                            srcLoc = field("DstLocation(1214)");
                         }
                         pack("event"){
-                            START_TIME = extractTime(time);
+                            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                             DS_PROCESS_NAME = type;
                             EVT_CATEGORY = field("VirusCategory(1182)");
                             EVT_TYPE = field("VirusName(1085)");
@@ -173,7 +173,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                         }
                     }else{
                         pack("event"){
-                            START_TIME = extractTime(time);
+                            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                             DS_PROCESS_NAME = type;
                             EVT_CATEGORY = type;
                             EVT_TYPE = subType;
@@ -188,7 +188,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                     if(subType == "ASPF_IPV4_DNS"){
                         patternSplitParse(detail, "; ?", "=");
                         pack("event"){
-                            START_TIME = extractTime(time);
+                            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                             DS_PROCESS_NAME = type;
                             EVT_CATEGORY = subType;
                             EVT_TYPE = subType;
@@ -211,7 +211,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                     }else if(subType == "ASPF_IPV6_DNS"){
                         patternSplitParse(detail, "; ?", "=");
                         pack("event"){
-                            START_TIME = extractTime(time);
+                            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                             DS_PROCESS_NAME = type;
                             EVT_CATEGORY = subType;
                             EVT_TYPE = subType;
@@ -234,7 +234,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                     }
                 case "SYSLOG":
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = dictMapping("evt_type_h3c",subType);
                         EVT_TYPE = subType;
@@ -246,7 +246,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                 case "AVC":
                     patternSplitParse(detail, "; ?", "=");
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = subType;
                         EVT_TYPE = subType;
@@ -293,7 +293,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                            srcIp = convert2Ip(field("SrcIPv6Addr(1036)"));
                         }
                         pack("event"){
-                            START_TIME = extractTime(time);
+                            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                             DS_PROCESS_NAME = type;
                             EVT_CATEGORY = subType;
                             EVT_TYPE = subType;
@@ -326,7 +326,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                            dstIp = convert2Ip(field("SrcIPv6Addr(1036)"));
                         }
                         pack("event"){
-                            START_TIME = extractTime(time);
+                            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                             DS_PROCESS_NAME = type;
                             EVT_CATEGORY = subType;
                             EVT_TYPE = subType;
@@ -347,7 +347,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                 case "CC-DEFENSE":
                     patternSplitParse(detail, "; ?", "=");
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = subType;
                         EVT_TYPE = field("RuleName(1080)");
@@ -374,7 +374,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                 case "DFILTER":
                     patternSplitParse(detail, "; ?", "=");
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = subType;
                         EVT_TYPE = field("RuleName(1080)");
@@ -399,7 +399,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                 case "FFILTER":
                     patternSplitParse(detail, "; ?", "=");
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = subType;
                         EVT_TYPE = field("RuleName(1080)");
@@ -427,7 +427,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                     patternSplitParse(detail, "; ?", "=");
                     if(subType == "IPS_WARNING"){
                         pack("event"){
-                            START_TIME = extractTime(time);
+                            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                             DS_PROCESS_NAME = type;
                             EVT_CATEGORY = type;
                             EVT_TYPE = subType;
@@ -439,7 +439,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                         }
                     }
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = subType;
                         EVT_TYPE = field("AttackName(1088)");
@@ -484,7 +484,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                        attackCat = dictMapping("attack_cat_h3c",field("ThreatFmly(1172)"));
                     }
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = subType;
                         EVT_CATEGORY = attackType;
@@ -518,7 +518,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                 case "SCD":
                     patternSplitParse(detail, "; ?", "=");
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = subType;
                         EVT_TYPE = subType;
@@ -540,7 +540,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                     patternSplitParse(detail, "; ?", "=");
                     if(subType == "UFLT_WARNING"){
                         pack("event"){
-                            START_TIME = extractTime(time);
+                            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                             DS_PROCESS_NAME = type;
                             EVT_CATEGORY = type;
                             EVT_TYPE = subType;
@@ -552,7 +552,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                         }
                     }
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = subType;
                         EVT_TYPE = subType;
@@ -579,7 +579,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                     patternSplitParse(detail, "; ?", "=");
                     if(subType == "WAF_WARNING"){
                         pack("event"){
-                            START_TIME = extractTime(time);
+                            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                             DS_PROCESS_NAME = type;
                             EVT_CATEGORY = type;
                             EVT_TYPE = subType;
@@ -591,7 +591,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                         }
                     }
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = subType;
                         EVT_CATEGORY = attackType;
@@ -625,7 +625,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                     contents = strSplit(detail, ";");
                     splitParse(contents[0], '-', null, null, "=");
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = AAAType;
                         EVT_TYPE = subType;
@@ -640,7 +640,7 @@ botu("Firewall/H3C/F5030-D/Syslog"){
                     }
                 default:
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
                         DS_PROCESS_NAME = type;
                         EVT_CATEGORY = type;
                         EVT_TYPE = subType;

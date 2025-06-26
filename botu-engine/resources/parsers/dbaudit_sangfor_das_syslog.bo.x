@@ -11,7 +11,7 @@ botu("DBAudit/Sangfor/DAS/Syslog"){
                     objName = strFormat("%s/%s/%s", db_name,data_base_manage, table_name);
                 }
                 pack("event") {
-                  START_TIME = extractTime(time);
+                  START_TIME = format2Time(time, "dd-MM-yyyy HH:mm:ss");
                   DS_DVC_NAME = dvc;
                   DS_PROCESS_NAME = log_type;
                   EVT_CATEGORY = r_type0;
@@ -37,7 +37,7 @@ botu("DBAudit/Sangfor/DAS/Syslog"){
                     objName = strFormat("%s/%s/%s", db_name,data_base_manage, table_name);
                 }
                 pack("event") {
-                  START_TIME = universalExtractTime(time);
+                  START_TIME = format2Time(time, "MMM d HH:mm:ss");
                   DS_DVC_NAME = dvc;
                   DS_PROCESS_NAME = log_type;
                   EVT_CATEGORY = log_type;

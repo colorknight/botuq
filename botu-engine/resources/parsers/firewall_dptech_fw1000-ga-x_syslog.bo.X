@@ -3,7 +3,7 @@ botu("Firewall/DPtech/FW1000-GA-X/Syslog") {
         switch(logType){
             case "SYSLOG(l)":
                 pack("event") {
-                  START_TIME = extractTime(time);
+                  START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                   DS_DVC_NAME = devname;
                   DS_PROCESS_NAME = eid;
                   EVT_CATEGORY = logType;
@@ -19,7 +19,7 @@ botu("Firewall/DPtech/FW1000-GA-X/Syslog") {
                 splitParse(props, ';', null, null, ":");
                 outcome = subString(detail,inx + 1);
                 pack("event") {
-                  START_TIME = extractTime(time);
+                  START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                   DS_DVC_NAME = devname;
                   DS_PROCESS_NAME = eid;
                   EVT_CATEGORY = logType;
@@ -38,7 +38,7 @@ botu("Firewall/DPtech/FW1000-GA-X/Syslog") {
                 splitParse(detail, ';', null, null, ":");
                 if(field("log-type(1)") == "attack-protect"){
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                         DS_DVC_NAME = devname;
                         DS_PROCESS_NAME = eid;
                         EVT_CATEGORY = module;
@@ -62,7 +62,7 @@ botu("Firewall/DPtech/FW1000-GA-X/Syslog") {
                     }
                 } else if (field("log-type(1)") == "av-protect"){
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                         DS_DVC_NAME = devname;
                         EVT_CATEGORY = module;
                         EVT_TYPE = field("av-name(15)");
@@ -87,7 +87,7 @@ botu("Firewall/DPtech/FW1000-GA-X/Syslog") {
                 }
             default:
                 pack("event") {
-                  START_TIME = extractTime(time);
+                  START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                   DS_DVC_NAME = devname;
                   DS_PROCESS_NAME = eid;
                   EVT_CATEGORY = logType;
@@ -101,7 +101,7 @@ botu("Firewall/DPtech/FW1000-GA-X/Syslog") {
     }else if(patternParse(MS_SRC_DATA,"(\\<\\d+\\>)*\\s\\d+ (?<host>[^\\s]+) (?<time>[^:]+:\\d+:\\d+ \\d+)\\s{0,}(?<devname>[^\\s]+)\\s%%-*(?<eid>[^\\s]+)\\s(?<sev>\\d+)\\s(?<logType>[^:]+):(?<action>[^\\s]+)\\s(?<detail>.*)")) {
         segs = strSplit(detail, "\\|");
         pack("event") {
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "MMM dd HH:mm:ss");
             DS_DVC_NAME = devname;
             DS_PROCESS_NAME = eid;
             EVT_CATEGORY = logType;

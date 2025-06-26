@@ -4,7 +4,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
     switch(recorder) {
          case "config":
               pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -33,7 +33,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
                 OBJ_IP = MS_SRC_ADDRESS;
             }
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -53,7 +53,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
          case "admin_config":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -68,7 +68,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
          case "linkbak":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -83,7 +83,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
          case "interface":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -101,7 +101,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
          case "license":
          case "rules_update":
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -130,7 +130,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
             percent = regExtract(msg, ".* (\\d+)%!$");
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -152,7 +152,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
             percent = regExtract(msg, ".* (\\d+)%!$");
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -168,7 +168,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "dualpower_monitor":
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -184,7 +184,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
         case "recover":
             sbj_name = regExtract(msg, "'(?<name>.*)'");
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -199,7 +199,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "pf":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -224,7 +224,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "ipsec":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -239,7 +239,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "user_auth":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -259,7 +259,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "ha":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -273,7 +273,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "ac":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -297,7 +297,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "ids":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -315,7 +315,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "streamav":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -346,7 +346,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "url_filter":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -369,7 +369,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "datafilter":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -391,7 +391,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "file_block":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -420,7 +420,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 		    if (dport == "null")
 		        dport = -1;
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -443,7 +443,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "apt":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -474,7 +474,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "ipmac":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -490,7 +490,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "ads_clean":
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -513,7 +513,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "abnormal_threat":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -528,7 +528,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "control-session":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -548,7 +548,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "IPSEVENT":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -580,7 +580,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
         case "TVD":
             if (type != "僵尸网络") {
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev;
                     DS_PROCESS_NAME = recorder;
                     EVT_CATEGORY = type;
@@ -611,7 +611,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			} else {
                 //"僵尸网络":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev;
                     DS_PROCESS_NAME = recorder;
                     EVT_CATEGORY = type;
@@ -639,7 +639,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "ADS":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -662,7 +662,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
 	    case "session":
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 DURATION = duration;
@@ -692,7 +692,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "TOPWAFEVENT":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_ID = rid;
@@ -718,7 +718,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "neighbour":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -735,7 +735,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
 			}
         case "spam":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -763,7 +763,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "nat":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -779,7 +779,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "nat_msg":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -796,7 +796,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             }
         case "sslvpn system":
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -816,7 +816,7 @@ botu("Firewall/Topsec/NGFW4000[3.2294.26036_NGFW.1_B_upt]/Syslog") {
             send = regExtract(send_bytes, "(?<send>.*)B");
             receive = regExtract(rcv_bytes, "(?<send>.*)B");
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_ID = rid;

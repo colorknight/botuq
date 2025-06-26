@@ -5,7 +5,7 @@ botu("GAP/Anmit/GAP[20200412]/Syslog"){
       switch(MODULE){
          case "访问日志":
             pack("event"){
-                START_TIME = extractTime(TIME);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = FW;
                 DS_PROCESS_NAME = MODULE;
                 EVT_CATEGORY = MODULE;
@@ -30,7 +30,7 @@ botu("GAP/Anmit/GAP[20200412]/Syslog"){
             }
          case "攻击防护日志":
             pack("event"){
-                START_TIME = extractTime(TIME);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = FW;
                 DS_PROCESS_NAME = MODULE;
                 EVT_CATEGORY = MODULE;
@@ -56,7 +56,7 @@ botu("GAP/Anmit/GAP[20200412]/Syslog"){
             }
          case "管理日志":
             pack("event"){
-                START_TIME = extractTime(TIME);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = FW;
                 DS_PROCESS_NAME = MODULE;
                 EVT_CATEGORY = MODULE;
@@ -75,7 +75,7 @@ botu("GAP/Anmit/GAP[20200412]/Syslog"){
             }
          case "内容过滤日志":
             pack("event"){
-                START_TIME = extractTime(TIME);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = FW;
                 DS_PROCESS_NAME = MODULE;
                 EVT_CATEGORY = MODULE;
@@ -99,7 +99,7 @@ botu("GAP/Anmit/GAP[20200412]/Syslog"){
             }
          case "审计管理日志":
             pack("event"){
-                START_TIME = extractTime(TIME);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = FW;
                 DS_PROCESS_NAME = MODULE;
                 EVT_CATEGORY = MODULE;
@@ -115,7 +115,7 @@ botu("GAP/Anmit/GAP[20200412]/Syslog"){
             }
          case "数据库同步日志":
             pack("event"){
-                START_TIME = extractTime(TIME);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = FW;
                 DS_PROCESS_NAME = MODULE;
                 EVT_CATEGORY = MODULE;
@@ -134,7 +134,7 @@ botu("GAP/Anmit/GAP[20200412]/Syslog"){
             }
          case "文件交换日志":
             pack("event"){
-                START_TIME = extractTime(TIME);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = FW;
                 DS_PROCESS_NAME = MODULE;
                 EVT_CATEGORY = MODULE;
@@ -154,7 +154,7 @@ botu("GAP/Anmit/GAP[20200412]/Syslog"){
             }
          case "系统日志":
             pack("event"){
-                START_TIME = extractTime(TIME);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = FW;
                 DS_PROCESS_NAME = MODULE;
                 EVT_CATEGORY = MODULE;
@@ -173,7 +173,7 @@ botu("GAP/Anmit/GAP[20200412]/Syslog"){
             }
          case "系统状态日志":
             pack("event"){
-                START_TIME = extractTime(TIME);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = FW;
                 DS_PROCESS_NAME = MODULE;
                 EVT_CATEGORY = MODULE;

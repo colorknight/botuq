@@ -8,7 +8,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
                 nCat = "/Audit";
             }
 			pack("event") {
-			    START_TIME = extractTime(time);
+			    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -37,7 +37,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
                 nCat = "/Audit";
             }
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -63,7 +63,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
                 nCat = "/Audit";
             }
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -96,7 +96,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
                 bhvcat = "/Logout";
             }
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -117,7 +117,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
 			}
         case "admin_pwd":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -144,7 +144,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
                 sbjType = "/Resource/Disk";
             }
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -159,7 +159,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
 			}
 		case "db_sec":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -185,7 +185,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
                 nCat = "/Audit";
             }
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -207,7 +207,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
 			}
         case "ddos_atk":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -229,7 +229,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
 			}
         case "bind":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -245,7 +245,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
 			}
         case "dns_Proxy":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -268,7 +268,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
 			}
 		case "eos":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -295,7 +295,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
                 objName = "License";
             }
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -316,7 +316,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
         case "lfm":
         case "wave":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -339,7 +339,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
 			}
         case "config":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -370,7 +370,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
             if (protocol == null)
                 protocol = protoid;
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -395,7 +395,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
 			}
         case "session":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				DURATION = duration;
@@ -425,7 +425,7 @@ botu("AntiDos/Topsec/TopADS[3.2294.30096]/Syslog") {
 			}
         default:
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;

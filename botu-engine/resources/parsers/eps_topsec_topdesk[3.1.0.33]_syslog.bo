@@ -10,7 +10,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.33]/Syslog") {
         switch(module){
             case "NETCFG":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = hostname;
                     DS_PROCESS_NAME = header.from.getText();
                     EVT_CATEGORY = module;
@@ -33,7 +33,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.33]/Syslog") {
             case "UFS":
             case "HARDCHANGE":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = hostname;
                     DS_PROCESS_NAME = header.from.getText();
                     EVT_CATEGORY = module;
@@ -54,7 +54,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.33]/Syslog") {
                 }
             case "BOOTRECORD":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = hostname;
                     DS_PROCESS_NAME = header.from.getText();
                     EVT_CATEGORY = module;
@@ -73,7 +73,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.33]/Syslog") {
                 }
             case "MONITORBOOT":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = hostname;
                     DS_PROCESS_NAME = header.from.getText();
                     EVT_CATEGORY = module;
@@ -92,7 +92,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.33]/Syslog") {
                 }
             case "SOFTCHANGE":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = hostname;
                     DS_PROCESS_NAME = header.from.getText();
                     EVT_CATEGORY = module;
@@ -107,7 +107,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.33]/Syslog") {
                 }
             case "SERVERSTATUSCHANGE":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = hostname;
                     DS_PROCESS_NAME = header.from.getText();
                     EVT_CATEGORY = module;

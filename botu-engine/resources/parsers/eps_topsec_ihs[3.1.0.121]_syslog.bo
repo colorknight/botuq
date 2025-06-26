@@ -12,7 +12,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
                     sbjType = "/Resource/Other";
                 }
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = agentid;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = cid;
@@ -31,7 +31,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
             case "AUDIT":
                 if(action == "修改密码"){
                     pack("event"){
-                        START_TIME = extractTime(logtime);
+                        START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
                         DS_PROCESS_NAME = trigger_name;
                         EVT_CATEGORY = logtype;
                         EVT_TYPE = cid;
@@ -52,7 +52,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
                     }
                 }else {
                     pack("event"){
-                        START_TIME = extractTime(logtime);
+                        START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
                         DS_PROCESS_NAME = trigger_name;
                         EVT_CATEGORY = logtype;
                         EVT_TYPE = cid;
@@ -75,7 +75,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
             case "BOOTRECORD":
                 patternParse(subject,".*\\<计算机\\>(?<host>.*)\\<\\/计算机\\>.*");
                 pack("event"){
-                    START_TIME = extractTime(object_name);
+                    START_TIME = format2Time(object_name, "yyyy/MM/dd HH:mm:ss");
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = cid;
@@ -93,7 +93,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
             case "MONITORBOOT":
                 patternParse(objectinfo,".*\\<客户端IP\\>(?<hostIp>.*)\\<\\/客户端IP\\>\\<开机时间\\>(?<time>.*)\\<\\/开机时间\\>.*");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = cid;
@@ -111,7 +111,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
                 }
             case "PNP":
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = cid;
@@ -135,7 +135,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
             case "WHITELIST":
                 patternParse(subject,".*\\<计算机\\>(?<host>.*)\\<\\/计算机\\>\\<用户账号\\>(?<user>.*)\\<\\/用户账号\\>.*");
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = cid;
@@ -165,7 +165,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
         switch(logtype){
             case "USER":
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = agentid;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = cid;
@@ -187,7 +187,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
             case "USERIP":
                 patternParse(objectinfo,".*\\<IP\\>(?<hostIp>.*)\\<\\/IP\\>.*");
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = agentid;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = cid;
@@ -208,7 +208,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
                 }
             case "ADP":
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = cid;
@@ -231,7 +231,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
             case "OSAUTH":
                 patternParse(objectinfo,".*\\<登录IP\\>(?<dstIp>.*)\\<\\/登录IP\\>\\<登录终端\\>(?<protol>.*)\\<\\/登录终端\\>.*");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy/MM/dd HH:mm:ss");
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = cid;
@@ -254,7 +254,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
              case "UDEV":
                 patternParse(objectinfo,".*\\<插入时间\\>(?<time>.*)\\<\\/插入时间\\>.*");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy/MM/dd HH:mm:ss");
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = cid;
@@ -278,7 +278,7 @@ botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
              case "UFS":
                 patternParse(subject,".*\\<计算机\\>(?<host>.*)\\<\\/计算机\\>\\<用户账号\\>(?<user>.*)\\<\\/用户账号\\>.*");
                  pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = cid;

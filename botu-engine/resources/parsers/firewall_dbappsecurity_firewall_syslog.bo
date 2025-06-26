@@ -5,7 +5,7 @@ botu("Firewall/DBAPPSecurity/Firewall/Syslog") {
         sev = parseSyslogSeverity(pri);
         pack("event") {
             DS_DVC_NAME = dvcName;
-            START_TIME = extractTime(logTime);
+            START_TIME = format2Time(strFormat("%s %s", time2String(now(), "yyyy"), logTime), "yyyy MMM dd HH:mm:ss");
             EVT_CATEGORY = "/Audit";
             SEVERITY = sev;
             N_EVT_CATEGORY = "/Audit";

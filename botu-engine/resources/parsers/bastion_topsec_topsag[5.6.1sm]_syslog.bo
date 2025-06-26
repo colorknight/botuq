@@ -36,7 +36,7 @@ botu("Bastion/Topsec/TopSAG[5.6.1sm]/Syslog") {
             nCat = "/Audit";
         }
         pack("event") {
-            START_TIME = extractTime(atime);
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             EVT_CATEGORY = cat;
             N_EVT_CATEGORY = nCat;
             N_SEVERITY = 2;

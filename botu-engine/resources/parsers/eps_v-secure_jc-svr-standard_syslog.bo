@@ -4,25 +4,46 @@ botu("EPS/V-Secure/JC-SVR-Standard/Syslog") {
         splitParse(detail, ' ', '"', '"', "=");
         sev = parseSyslogSeverity(pri);
         if(virus_name != null){
-            pack("event") {
-                START_TIME = extractTime(time);
-                DS_PROCESS_NAME = devid;
-                EVT_CATEGORY = virus_type;
-                EVT_TYPE = virus_name;
-                SEVERITY = sev;
-                N_EVT_CATEGORY = "/Threat/Malware";
-                N_SEVERITY = dictMapping("severity",sev);
-                SBJ_TYPE = "/Ip";
-                SBJ_NAME = dev_name;
-                SBJ_IP = ip;
-                BHV_CATEGORY = "/exists";
-                OBJ_TYPE = "/Malware/Virus";
-                OBJ_NAME = virus_name;
-                STATUS = op_result;
+            switch(event_type){
+                case "闪电查杀":
+                    pack("event") {
+                        START_TIME = ToTime(time);
+                        DS_PROCESS_NAME = devid;
+                        EVT_CATEGORY = virus_type;
+                        EVT_TYPE = virus_name;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Threat/Malware";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = dev_name;
+                        SBJ_IP = ip;
+                        BHV_CATEGORY = "/exists";
+                        OBJ_TYPE = "/Malware/Virus";
+                        OBJ_NAME = virus_name;
+                        STATUS = op_result;
+                    }
+                case "自定义查杀": {
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = devid;
+                        EVT_CATEGORY = virus_type;
+                        EVT_TYPE = virus_name;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Threat/Malware";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = dev_name;
+                        SBJ_IP = ip;
+                        BHV_CATEGORY = "/exists";
+                        OBJ_TYPE = "/Malware/Virus";
+                        OBJ_NAME = virus_name;
+                        STATUS = op_result;
+                    }
+                }
             }
         }else if(status != null){
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_PROCESS_NAME = devid;
                 EVT_CATEGORY = "/Audit";
                 SEVERITY = sev;
@@ -36,7 +57,7 @@ botu("EPS/V-Secure/JC-SVR-Standard/Syslog") {
             }
         }else if(user_type != null){
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 EVT_CATEGORY = "/Audit";
                 SEVERITY = sev;
                 N_EVT_CATEGORY = "/Audit/System";
@@ -49,7 +70,7 @@ botu("EPS/V-Secure/JC-SVR-Standard/Syslog") {
             }
         }else{
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 EVT_CATEGORY = "/Audit";
                 SEVERITY = sev;
                 N_EVT_CATEGORY = "/Audit/System";

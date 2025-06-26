@@ -5,7 +5,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
         switch(tag) {
             case "waf_log_login":
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = tag;
                     EVT_ID = session_id;
                     SEVERITY = sev;
@@ -25,7 +25,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
                 }
             case "waf_log_op":
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = tag;
                     EVT_ID = session_id;
                     SEVERITY = sev;
@@ -44,7 +44,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
             case "waf_log_system_run":
                 patternParse(detail," info:(?<info>.*)");
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = tag;
                     EVT_TYPE = type;
                     SEVERITY = sev;
@@ -55,7 +55,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
                 }
             case "waf_log_wafstat":
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = tag;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit/System";
@@ -64,7 +64,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
                 }
             case "waf_log_l4acl":
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = tag;
                     EVT_TYPE = event_type;
                     SEVERITY = sev;
@@ -84,7 +84,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
                 }
             case "waf_log_ddos":
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = tag;
                     EVT_TYPE = event_type;
                     SEVERITY = sev;
@@ -102,7 +102,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
                 }
             case "waf_log_deface":
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = tag;
                     EVT_TYPE = event_type;
                     SEVERITY = sev;
@@ -120,7 +120,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
                 }
             case "waf_log_webaccess":
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = tag;
                     EVT_TYPE = event_type;
                     SEVERITY = alertlevel;
@@ -148,7 +148,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
                 }
             case "waf_log_arp":
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = tag;
                     EVT_TYPE = event_type;
                     SEVERITY = sev;
@@ -172,7 +172,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
                 }
             case "waf_log_session":
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = strFormt("%s/%s",tag, event_type);
                     EVT_TYPE = attack_type;
                     SEVERITY = sev;
@@ -194,7 +194,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
                 }
             case "waf_log_websec":
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = tag;
                     EVT_TYPE = event_type;
                     EVT_NAME = decodeBase64(alertinfo);
@@ -221,7 +221,7 @@ botu("WAF/Nsfocus/WAF-v6060/Syslog") {
                 }
             case "waf_log_ipblock":
                 pack("event") {
-                    START_TIME = extractTime(stat_time);
+                    START_TIME = format2Time(stat_time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = tag;
                     EVT_TYPE = event_type;
                     SEVERITY = sev;

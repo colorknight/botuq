@@ -9,7 +9,7 @@ botu("IDS/Nsfocus/NIDS[5.6R10F02SP6]/Syslog") {
             switch(log_type) {
                 case "ips":
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_CATEGORY = log_type;
                         EVT_NAME = event;
                         SEVERITY = danger_degree;
@@ -30,7 +30,7 @@ botu("IDS/Nsfocus/NIDS[5.6R10F02SP6]/Syslog") {
                     }
                 case "av":
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_CATEGORY = log_type;
                         EVT_NAME = event;
                         SEVERITY = danger_degree;
@@ -52,7 +52,7 @@ botu("IDS/Nsfocus/NIDS[5.6R10F02SP6]/Syslog") {
                     }
                 case "url":
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_CATEGORY = log_type;
                         EVT_ID = evtid;
                         EVT_NAME = evtname;
@@ -72,7 +72,7 @@ botu("IDS/Nsfocus/NIDS[5.6R10F02SP6]/Syslog") {
                     }
                 case "rep":
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_CATEGORY = log_type;
                         EVT_ID = evtid;
                         EVT_NAME = evtname;
@@ -92,7 +92,7 @@ botu("IDS/Nsfocus/NIDS[5.6R10F02SP6]/Syslog") {
                     }
                 case "br":
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_CATEGORY = log_type;
                         EVT_ID = evtid;
                         EVT_NAME = evtname;
@@ -113,7 +113,7 @@ botu("IDS/Nsfocus/NIDS[5.6R10F02SP6]/Syslog") {
                     }
                 case "fw_log":
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = log_type;
                         EVT_NAME = "应用识别日志";
@@ -139,7 +139,7 @@ botu("IDS/Nsfocus/NIDS[5.6R10F02SP6]/Syslog") {
                     }
                 case "2":
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = device_type;
                         EVT_NAME = "配置日志";
                         EVT_CATEGORY = log_type;
@@ -157,7 +157,7 @@ botu("IDS/Nsfocus/NIDS[5.6R10F02SP6]/Syslog") {
             }
         } else if (event != null) {
              pack("event") {
-                 START_TIME = extractTime(time);
+                 START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                  EVT_CATEGORY = event;
                  SEVERITY = danger_degree;
                  N_SEVERITY = dictMapping("severity",danger_degree);

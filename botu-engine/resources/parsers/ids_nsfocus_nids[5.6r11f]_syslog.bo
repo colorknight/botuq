@@ -399,7 +399,7 @@ botu("IDS/Nsfocus/NIDS[5.6R11F]/Syslog") {
             }
         } else if (module != null) {
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 EVT_NAME = event;
                 EVT_CATEGORY = type;
                 EVT_TYPE = module;
@@ -411,7 +411,7 @@ botu("IDS/Nsfocus/NIDS[5.6R11F]/Syslog") {
         }else{
             splitParse(MS_SRC_DATA, ';', '"', '"', "=");
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 EVT_NAME = event;
                 EVT_CATEGORY = log_type;
                 N_EVT_CATEGORY = "/Audit";

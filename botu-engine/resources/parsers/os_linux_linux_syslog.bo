@@ -6,7 +6,7 @@ botu("OS/Linux/Linux/Syslog") {
                 pack("event") {
                     DS_DVC_NAME =host;
                     DS_PROCESS_NAME = process;
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     EVT_CATEGORY = "/Audit";
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -24,7 +24,7 @@ botu("OS/Linux/Linux/Syslog") {
                 pack("event") {
                     DS_DVC_NAME =host;
                     DS_PROCESS_NAME = process;
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     EVT_CATEGORY = "/Audit";
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -41,7 +41,7 @@ botu("OS/Linux/Linux/Syslog") {
             pack("event") {
                 DS_DVC_NAME =host;
                 DS_PROCESS_NAME = process;
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 EVT_CATEGORY = "/Audit";
                 SEVERITY = sev;
                 N_EVT_CATEGORY = "/Audit";
@@ -57,7 +57,7 @@ botu("OS/Linux/Linux/Syslog") {
            pack("event") {
                DS_DVC_NAME =host;
                DS_PROCESS_NAME = process;
-               START_TIME = extractTime(time);
+               START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                EVT_CATEGORY = "/Audit";
                SEVERITY = sev;
                N_EVT_CATEGORY = "/Audit";
@@ -72,7 +72,7 @@ botu("OS/Linux/Linux/Syslog") {
            req = replaceString(request,"\"","");
            ary = strSplit(req, " ");
            pack("event"){
-               START_TIME = extractTime(time);
+               START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                EVT_CATEGORY = tag;
                SEVERITY = sev;
                N_EVT_CATEGORY = "/Audit";
@@ -105,7 +105,7 @@ botu("OS/Linux/Linux/Syslog") {
              agent = replaceString($10,"\"","");
            }
            pack("event"){
-               START_TIME = extractTime(time);
+               START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                EVT_CATEGORY = tag;
                SEVERITY = sev;
                N_EVT_CATEGORY = "/Audit";

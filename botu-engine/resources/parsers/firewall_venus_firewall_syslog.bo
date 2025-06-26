@@ -10,7 +10,7 @@ botu("Firewall/VENUS/Firewall/Syslog") {
                 nCat = "/Violation";
             }
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 EVT_CATEGORY = type;
                 EVT_TYPE = PolicyID;
                 SEVERITY = sev;
@@ -43,7 +43,7 @@ botu("Firewall/VENUS/Firewall/Syslog") {
          case "IPSECVPN":
          case "L2TPVPN":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = type;
                 SEVERITY = sev;
@@ -56,7 +56,7 @@ botu("Firewall/VENUS/Firewall/Syslog") {
          case "URL":
          case "SESSIONPOLICY":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = type;
                 SEVERITY = sev;
@@ -78,7 +78,7 @@ botu("Firewall/VENUS/Firewall/Syslog") {
          case "FLOOD":
          case "DDOS":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = type;
                 SEVERITY = sev;
@@ -99,7 +99,7 @@ botu("Firewall/VENUS/Firewall/Syslog") {
             }
          case "SCAN":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = type;
                 SEVERITY = sev;
@@ -116,7 +116,7 @@ botu("Firewall/VENUS/Firewall/Syslog") {
             }
          case "AV":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = type;
                 SEVERITY = sev;
@@ -137,7 +137,7 @@ botu("Firewall/VENUS/Firewall/Syslog") {
          case "IPS":
          case "WEB_SECURITY":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = type;
                 SEVERITY = sev;
@@ -157,7 +157,7 @@ botu("Firewall/VENUS/Firewall/Syslog") {
             }
          case "ANTIARP":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = type;
                 SEVERITY = sev;
@@ -175,7 +175,7 @@ botu("Firewall/VENUS/Firewall/Syslog") {
             }
          case "BLACKLIST":
              pack("event"){
-                 START_TIME = extractTime(time);
+                 START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                  DS_DVC_NAME = host;
                  EVT_CATEGORY = type;
                  SEVERITY = sev;

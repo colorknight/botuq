@@ -40,8 +40,8 @@ botu("Bastion/DPtech/OSP1000[v3.0]/Syslog") {
         }
     // 运维告警
     } else if (patternParse(MS_SRC_DATA,".*\\[(?<user>[^\\]]+)\\]\\(通过账号\\[(?<account>[^\\]]+)\\]登录\\)在\\[(?<bTime>[^\\]]+)\\]到\\[(?<eTime>[^\\]]+)\\].*\\[(?<sip>[^\\]]+)\\]访问\\[(?<dip>[^\\]]+)\\].*\\[(?<role>[^\\]]+)\\]账号通过\\[(?<appProto>[^\\]]+)\\]协议访问\\[(?<name>[^\\]]+)\\].*\\[(?<sev>[^\\]]+)\\].*")) {
-        bT = extractTime(bTime);
-        eT = extractTime(eTime);
+        bT = format2Time(bTime, "yyyy-MM-dd HH:mm:ss");
+        eT = format2Time(eTime, "yyyy-MM-dd HH:mm:ss");
         pack("event") {
             START_TIME = bTime;
             DURATION = diffTime(bT, eT);

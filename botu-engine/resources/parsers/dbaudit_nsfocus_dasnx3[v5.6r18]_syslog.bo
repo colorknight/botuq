@@ -4,7 +4,7 @@ botu("DBAudit/NsFocus/DASNX3[V5.6R18]/Syslog"){
         splitParse(detail, '|', null, null, ":");
         sev = parseSyslogSeverity(pri);
         pack("event") {
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "MMM d HH:mm:ss");
             DS_DVC_NAME = dvc;
             EVT_CATEGORY = 规则类型;
             EVT_TYPE = 命中规则;

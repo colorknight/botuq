@@ -5,7 +5,7 @@ botu("Audit/Topsec/TA-NET[3.2294.3419.1_net_upt-3524.1_net]/Syslog") {
         case "HTTP上传":
         case "HTTP":
 			pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_PROCESS_NAME = dev_name;
                 DURATION = toLong(toDouble(i_http_resp_time));
                 EVT_CATEGORY = s_protocolgroup;
@@ -38,7 +38,7 @@ botu("Audit/Topsec/TA-NET[3.2294.3419.1_net_upt-3524.1_net]/Syslog") {
 	    case "SSL":
 	    case "HTTPS":
 			pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_PROCESS_NAME = dev_name;
                 EVT_CATEGORY = s_protocolgroup;
                 EVT_TYPE = s_protocol;
@@ -60,7 +60,7 @@ botu("Audit/Topsec/TA-NET[3.2294.3419.1_net_upt-3524.1_net]/Syslog") {
 			}
 		case "SSH":
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_PROCESS_NAME = dev_name;
                 EVT_CATEGORY = s_protocolgroup;
                 EVT_TYPE = s_protocol;
@@ -313,7 +313,7 @@ botu("Audit/Topsec/TA-NET[3.2294.3419.1_net_upt-3524.1_net]/Syslog") {
                 }
             }else{
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = dev_name;
                     EVT_CATEGORY = s_protocolgroup;
                     EVT_TYPE = s_protocol;

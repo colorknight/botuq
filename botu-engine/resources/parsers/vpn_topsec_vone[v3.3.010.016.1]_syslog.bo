@@ -4,7 +4,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
     switch(type) {
         case "vpn":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -15,7 +15,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
         case "user_auth":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -32,7 +32,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "sv_pf":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = type;
 				EVT_CATEGORY = type;
@@ -53,7 +53,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "sv_wf":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = type;
 				EVT_CATEGORY = type;
@@ -73,7 +73,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "sv_netacc":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = type;
 				EVT_CATEGORY = type;
@@ -89,7 +89,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "sv_cifs":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = type;
 				EVT_CATEGORY = type;
@@ -106,7 +106,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "sv_system":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = type;
 				EVT_CATEGORY = type;
@@ -122,7 +122,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "secure":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -140,7 +140,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "pf":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = type;
 				EVT_CATEGORY = type;
@@ -163,7 +163,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "avse":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = type;
 				EVT_CATEGORY = subtype;
@@ -185,7 +185,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "ac":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -209,7 +209,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "mgmt":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = type;
 				EVT_CATEGORY = type;
@@ -225,7 +225,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "conn":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -250,7 +250,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "dpi":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -270,7 +270,7 @@ botu("VPN/Topsec/Vone[v3.3.010.016.1]/Syslog") {
 			}
 	    case "system":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;

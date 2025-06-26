@@ -3,7 +3,7 @@ botu("EPS/InfoGo/ASM6000/Warn") {
     if (patternParse(MS_SRC_DATA, "^(?<time>.*)\\s[^\\s]+\\s[^:]+: classid:(?<classid>[^,]*),\\slevel:(?<level>[^,]*),\\sdevid:(?<devid>[^,]*),\\sdevip:(?<devip>[^,]*),\\sdevname:(?<devname>[^,]*),\\scontent:(?<content>.*)")) {
         catid = subString(classid,0,1);
         pack("event") {
-            START_TIME = extractTime(time, "en");
+            START_TIME = format2Time(strFormat("%s %s", time2String(now(), "yyyy"), time), "yyyy MMM dd HH:mm:ss");
             EVT_CATEGORY = simpleMapping(catid,"{1:系统类报警,2:网络类报警,3:终端报警}",null);
             EVT_TYPE = classid;
             EVT_NAME = dictMapping("etn_eps_infogo_asm_warn", classid);

@@ -5,7 +5,7 @@ botu("VulnScanner/Sangfor/YJ[3.0.10]/Syslog") {
         switch(behavior){
             case "登录":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     EVT_CATEGORY = behavior;
                     SEVERITY = sev;
@@ -21,7 +21,7 @@ botu("VulnScanner/Sangfor/YJ[3.0.10]/Syslog") {
                 }
             case "资产操作":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     EVT_CATEGORY = behavior;
                     SEVERITY = sev;
@@ -37,7 +37,7 @@ botu("VulnScanner/Sangfor/YJ[3.0.10]/Syslog") {
                 }
             case "日志操作":
                  pack("event"){
-                     START_TIME = extractTime(time);
+                     START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                      DS_DVC_NAME = host;
                      EVT_CATEGORY = behavior;
                      SEVERITY = sev;
@@ -53,7 +53,7 @@ botu("VulnScanner/Sangfor/YJ[3.0.10]/Syslog") {
                  }
             default:
                  pack("event"){
-                     START_TIME = extractTime(time);
+                     START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                      DS_DVC_NAME = host;
                      EVT_CATEGORY = behavior;
                      SEVERITY = sev;

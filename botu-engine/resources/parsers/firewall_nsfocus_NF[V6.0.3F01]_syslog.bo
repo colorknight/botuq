@@ -2,7 +2,7 @@ botu("Firewall/Nsfocus/NF[V6.0.3F01]/Syslog") {
 	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>time:(?<time>.*);danger_degree:(?<dangerDegree>\\d+);breaking_sighn:(?<breakingSighn>\\d+);event:\\[(?<ruleId>\\d+)\\](?<msg>.*);src_addr:(?<srcIp>.*);src_port:(?<sport>\\d+);dst_addr:(?<dip>.*);dst_port:(?<dport>\\d+);proto:(?<proto>.*);user:(?<user>.*);{0,}")) {
 		sev = parseSyslogSeverity(pri);
         pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             EVT_CATEGORY = "IPS/AV/URL";
             EVT_TYPE = event;
             EVT_ID = ruleId;
@@ -25,7 +25,7 @@ botu("Firewall/Nsfocus/NF[V6.0.3F01]/Syslog") {
 	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>rule_id:(?<ruleId>\\d+);time:(?<time>.*);module:(?<module>.*);src_intf:(?<srcIntf>.*);dst_intf:(?<dstIntf>.*);action:(?<action>.*);proto:(?<proto>.*);src_addr:(?<srcAddr>.*);src_port:(?<sport>\\d+);dst_addr:(?<dstAddr>.*);dst_port:(?<dstPort>\\d+);src_addr_nat:(?<srcAddrNat>.*);src_port_nat:(?<srcPortNat>.*);dst_addr_nat:(?<dstAddrNat>.*);dst_port_nat:(?<dstPortNat>.*);info:(?<info>.*);user:(?<user>.*);{0,}")) {
         sev = parseSyslogSeverity(pri);
         pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             DS_PROCESS_NAME = module;
             EVT_CATEGORY = "Firewall";
             EVT_ID = ruleId;
@@ -48,7 +48,7 @@ botu("Firewall/Nsfocus/NF[V6.0.3F01]/Syslog") {
 	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>module:(?<module>.*);type:(?<type>.*);level:(?<level>.*);time:(?<time>\\d+);clientIp:(?<clientIp>.*);locationInfo:(?<locationInfo>.*);description:(?<description>.*);{0,}")) {
         sev = parseSyslogSeverity(pri);
         pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             DS_PROCESS_NAME = module;
             EVT_CATEGORY = "VPN";
             SEVERITY = sev;
@@ -60,7 +60,7 @@ botu("Firewall/Nsfocus/NF[V6.0.3F01]/Syslog") {
 	}else if (patternParse(MS_SRC_DATA, "time(?<time>.*);module: (?<module>[^\\s]+) (?<decodeMsg>.*);{0,}")) {
         sev = parseSyslogSeverity(pri);
         pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             DS_PROCESS_NAME = module;
             EVT_CATEGORY = "/Audit";
             SEVERITY = "info";
@@ -71,7 +71,7 @@ botu("Firewall/Nsfocus/NF[V6.0.3F01]/Syslog") {
 	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>user:(?<user>.*);loginip:(?<loginip>.*);time:(?<time>.*);type:(?<type>.*);(?<msg>.*);{0,}")) {
         sev = parseSyslogSeverity(pri);
         pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = ToTime(time);
             EVT_CATEGORY = "/Audit";
             SEVERITY = sev;
             N_EVT_CATEGORY = "/Audit";

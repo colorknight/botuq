@@ -5,7 +5,7 @@ botu("Bastion/Venus/OSM-VIRT/Syslog") {
         switch(log_type){
             case "002":
                 pack("event") {
-                    START_TIME = extractTime(log_time);
+                    START_TIME = format2Time(log_time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev_name;
                     EVT_CATEGORY = login_type;
                     SEVERITY = sev;
@@ -24,7 +24,7 @@ botu("Bastion/Venus/OSM-VIRT/Syslog") {
                 }
             case "003":
                 pack("event") {
-                    START_TIME = extractTime(log_time);
+                    START_TIME = format2Time(log_time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev_name;
                     EVT_CATEGORY = login_type;
                     SEVERITY = sev;
@@ -39,7 +39,7 @@ botu("Bastion/Venus/OSM-VIRT/Syslog") {
                 }
             default:
                 pack("event") {
-                    START_TIME = extractTime(log_time);
+                    START_TIME = format2Time(log_time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev_name;
                     EVT_CATEGORY = login_type;
                     SEVERITY = sev;

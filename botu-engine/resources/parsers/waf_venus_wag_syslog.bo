@@ -8,7 +8,7 @@ botu("WAF/Venus/WAG/Syslog") {
             case "网页爬虫":
                 splitParse(Content, ';', '"', '"', "=");
                 pack("event"){
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = "WAG";
                     EVT_CATEGORY = Evt_type;
@@ -32,7 +32,7 @@ botu("WAF/Venus/WAG/Syslog") {
                 }
             case "安全审计":
                 pack("event"){
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = "WAG";
                     EVT_CATEGORY = Evt_type;
@@ -54,7 +54,7 @@ botu("WAF/Venus/WAG/Syslog") {
                 }
             case "其他事件":
                 pack("event"){
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = "WAG";
                     EVT_CATEGORY = Evt_type;
@@ -77,7 +77,7 @@ botu("WAF/Venus/WAG/Syslog") {
             case "敏感文件访问":
                 splitParse(Content, ';', '"', '"', "=");
                 pack("event"){
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = "WAG";
                     EVT_CATEGORY = Evt_type;
@@ -101,7 +101,7 @@ botu("WAF/Venus/WAG/Syslog") {
                 }
             case "木马攻击":
                 pack("event"){
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = "WAG";
                     EVT_CATEGORY = Evt_type;
@@ -126,7 +126,7 @@ botu("WAF/Venus/WAG/Syslog") {
         }
     }else{
         pack("event"){
-            START_TIME = extractTime(GenTime);
+            START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
             DS_DVC_NAME = host;
             DS_PROCESS_NAME = module;
             EVT_CATEGORY = Evt_type;

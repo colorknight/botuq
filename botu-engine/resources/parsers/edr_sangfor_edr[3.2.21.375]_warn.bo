@@ -5,7 +5,7 @@ botu("EDR/Sangfor/EDR[3.2.21.375]/Warn") {
         switch(type) {
             case "nofile_attack":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = ToTime(time);
                     DS_PROCESS_NAME = type;
                     EVT_ID = _id;
                     EVT_CATEGORY = type;
@@ -23,7 +23,7 @@ botu("EDR/Sangfor/EDR[3.2.21.375]/Warn") {
                 }
             case "Webshell":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = ToTime(time);
                     DS_PROCESS_NAME = type;
                     EVT_ID = _id;
                     EVT_CATEGORY = type;
@@ -43,7 +43,7 @@ botu("EDR/Sangfor/EDR[3.2.21.375]/Warn") {
                 }
             case "blscan":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = ToTime(time);
                     DS_PROCESS_NAME = type;
                     EVT_ID = _id;
                     EVT_CATEGORY = type;
@@ -58,7 +58,7 @@ botu("EDR/Sangfor/EDR[3.2.21.375]/Warn") {
                 }
             case "virus":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = ToTime(time);
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = type;
                     EVT_TYPE = virus_name;
@@ -77,7 +77,7 @@ botu("EDR/Sangfor/EDR[3.2.21.375]/Warn") {
                 }
             case "anti_bfa":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = ToTime(time);
                     DURATION = duration;
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = type;
@@ -97,7 +97,7 @@ botu("EDR/Sangfor/EDR[3.2.21.375]/Warn") {
                 }
             case "leak":
                 pack("event") {
-                    START_TIME = extractTime(found_time);
+                    START_TIME = ToTime(found_time);
                     DS_PROCESS_NAME = type;
                     EVT_ID = _id;
                     EVT_CATEGORY = type;
@@ -116,7 +116,7 @@ botu("EDR/Sangfor/EDR[3.2.21.375]/Warn") {
                 }
             case "flux":
                 pack("event") {
-                    START_TIME = extractTime(s);
+                    START_TIME = ToTime(s);
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = event_type;
                     EVT_NAME = j;
@@ -135,7 +135,7 @@ botu("EDR/Sangfor/EDR[3.2.21.375]/Warn") {
                 }
             case "Botnet":
                 pack("event") {
-                    START_TIME = extractTime(found_time);
+                    START_TIME = ToTime(found_time);
                     DS_PROCESS_NAME = type;
                     EVT_ID = _id;
                     EVT_CATEGORY = type;

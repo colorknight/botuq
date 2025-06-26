@@ -97,7 +97,7 @@ botu("EDR/Venus/ESM-DISC/Syslog") {
                evtType = "Hotfix策略事件";
             }
             pack("event"){
-                START_TIME = extractTime(occurtime);
+                START_TIME = format2Time(occurtime, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = logType;
                 EVT_TYPE = evtType;
@@ -135,7 +135,7 @@ botu("EDR/Venus/ESM-DISC/Syslog") {
                evtType = "邮件";
             }
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = logType;
                 EVT_TYPE = evtType;
@@ -151,7 +151,7 @@ botu("EDR/Venus/ESM-DISC/Syslog") {
             }
         case "Policy_Audit_File":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = logType;
                 EVT_TYPE = "文件审计";
@@ -165,7 +165,7 @@ botu("EDR/Venus/ESM-DISC/Syslog") {
             }
         case "Policy_Audit_Web":
             pack("event"){
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = logType;
                 EVT_TYPE = "网站审计";
@@ -208,7 +208,7 @@ botu("EDR/Venus/ESM-DISC/Syslog") {
                evtType = "Ping控制";
             }
             pack("event"){
-                START_TIME = extractTime(logtime);
+                START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = logType;
                 EVT_TYPE = evtType;
@@ -222,7 +222,7 @@ botu("EDR/Venus/ESM-DISC/Syslog") {
             }
         case "Policy_Firewall_AttackControl":
             pack("event"){
-                START_TIME = extractTime(logtime);
+                START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = logType;
                 EVT_TYPE = evtType;
@@ -236,7 +236,7 @@ botu("EDR/Venus/ESM-DISC/Syslog") {
             }
         default:
             pack("event"){
-                START_TIME = extractTime(logtime);
+                START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = host;
                 EVT_CATEGORY = logType;
                 EVT_TYPE = evtType;

@@ -3,7 +3,7 @@ botu("VPN/Topsec/SSLVPN/Syslog") {
     switch(type) {
         case "ipsec vpn ddns log":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -14,7 +14,7 @@ botu("VPN/Topsec/SSLVPN/Syslog") {
 			}
         case "ipsec vpn vdc log":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -25,7 +25,7 @@ botu("VPN/Topsec/SSLVPN/Syslog") {
 			}
 	    case "sslvpn-system-log":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -43,7 +43,7 @@ botu("VPN/Topsec/SSLVPN/Syslog") {
 			}
 	    case "wf-log":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -65,7 +65,7 @@ botu("VPN/Topsec/SSLVPN/Syslog") {
 			}
 	    case "alarm-log":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -76,7 +76,7 @@ botu("VPN/Topsec/SSLVPN/Syslog") {
 			}
 	    case "na-log":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -98,7 +98,7 @@ botu("VPN/Topsec/SSLVPN/Syslog") {
 			}
 	    case "user-auth-login":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -112,7 +112,7 @@ botu("VPN/Topsec/SSLVPN/Syslog") {
 			}
 	    case "virus-operate-log":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -127,7 +127,7 @@ botu("VPN/Topsec/SSLVPN/Syslog") {
 			}
 	    case "webalize-log":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -150,7 +150,7 @@ botu("VPN/Topsec/SSLVPN/Syslog") {
 			}
         default:
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;

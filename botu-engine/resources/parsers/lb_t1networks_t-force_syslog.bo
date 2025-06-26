@@ -2,7 +2,7 @@ botu("LB/T1Networks/T-Force/Syslog"){
     if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>\\w+\\s+\\d+ \\d+:\\d+:\\d+) (?<host>\\S+) (?<module>[^:]+): (?<detail>.*)")) {
         sev = parseSyslogSeverity(pri);
         pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "MMM dd HH:mm:ss");
             DS_DVC_NAME = host;
             DS_PROCESS_NAME = module;
             EVT_CATEGORY = module;

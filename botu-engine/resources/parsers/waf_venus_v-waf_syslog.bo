@@ -5,7 +5,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
         switch(logType){
             case "web_access":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = logType;
@@ -51,7 +51,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
                     nCat = "/Audit";
                 }
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = logType;
@@ -62,7 +62,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
                 }
             case "wpd":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = logType;
@@ -73,7 +73,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
                 }
             case "wpd":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = logType;
@@ -84,7 +84,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
                 }
             case "servconn_policy":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = logType;
@@ -95,7 +95,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
                 }
             case "security_abnormal_pkt":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = type;
@@ -116,7 +116,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
                 }
             case "security_scan":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = type;
@@ -137,7 +137,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
                 }
             case "security_flood":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = type;
@@ -158,7 +158,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
                 }
             case "ips":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = event_type;
@@ -181,7 +181,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
                 }
             case "AV":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = logType;
@@ -205,7 +205,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
             case "waf_ruledefend":
             case "waf_advdefend":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = logType;
@@ -246,7 +246,7 @@ botu("WAF/Webray/V-WAF/Syslog") {
                 }
             default:
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = deviceName;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = logType;

@@ -4,7 +4,7 @@ botu("Switch/H3c/S5120V3-28P-LI[6329]/Syslog") {
         pack("event") {
             DS_DVC_NAME = Sysname;
             DS_PROCESS_NAME = MODULE;
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
             EVT_CATEGORY = "/Audit";
             EVT_TYPE = MNEMONIC;
             SEVERITY = sev;

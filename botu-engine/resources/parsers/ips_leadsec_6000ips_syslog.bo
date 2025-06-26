@@ -12,7 +12,7 @@ botu("IPS/LeadSec/IPS/Syslog") {
                 dip = DstIP6;
             }
             pack("event") {
-                START_TIME = extractTime(GenTime);
+                START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                 EVT_CATEGORY = evtcat;
                 EVT_TYPE = SecurityType;
                 EVT_NAME = EventName;
@@ -39,7 +39,7 @@ botu("IPS/LeadSec/IPS/Syslog") {
             }
         case "RUN_INFO":
             pack("event") {
-                START_TIME = extractTime(GenTime);
+                START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                 EVT_CATEGORY = evtcat;
                 N_EVT_CATEGORY = "/Audit/Status";
                 N_SEVERITY = 1;

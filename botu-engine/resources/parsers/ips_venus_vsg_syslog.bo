@@ -5,7 +5,7 @@ botu("IPS/Venus/VSG/Syslog") {
 	    switch(module){
 	        case "AV":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -35,7 +35,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "IPS":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -58,32 +58,9 @@ botu("IPS/Venus/VSG/Syslog") {
                     OBJ_MAC = convert2Mac(DMAC);
                     PRT_ACTION = Action;
                 }
-            case "ATTACK":
-                pack("event") {
-                    START_TIME = extractTime(GenTime);
-                    DS_DVC_NAME = host;
-                    DS_PROCESS_NAME = module;
-                    EVT_CATEGORY = module;
-                    SEVERITY = sev;
-                    N_EVT_CATEGORY = "/Threat/Attack";
-                    N_SEVERITY = dictMapping("severity",sev);
-                    SBJ_TYPE = "/Ip";
-                    SBJ_NAME = SrcIP;
-                    SBJ_IP = SrcIP;
-                    SBJ_PORT = SrcPort;
-                    SBJ_MAC = convert2Mac(SMAC);
-                    BHV_CATEGORY = "/Attack";
-                    TRANS_PROTO = Protocol;
-                    OBJ_TYPE = "/Ip";
-                    OBJ_IP = DstIP;
-                    OBJ_NAME = DstIP;
-                    OBJ_PORT = DstPort;
-                    OBJ_MAC = convert2Mac(DMAC);
-                    PRT_ACTION = Action;
-                }
             case "VSP":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -106,7 +83,7 @@ botu("IPS/Venus/VSG/Syslog") {
             case "ACCESS_PROTO":
             case "ACCESS_SNMP":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -131,7 +108,7 @@ botu("IPS/Venus/VSG/Syslog") {
             case "DELAY_MON":
             case "BAND_MON":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -141,7 +118,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "P2P_EVENT":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -162,7 +139,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "WEB_FILTER":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -185,7 +162,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "MAIL_FILTER":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -207,7 +184,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "FILTER":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy MM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -229,7 +206,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "NAT":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -250,7 +227,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "QOS":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -271,7 +248,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "STOCK":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -294,7 +271,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "GAME":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -317,7 +294,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "VOIP":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -340,7 +317,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "SMEDIA":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -363,7 +340,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "SESSION":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -385,7 +362,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "ATTACK":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy MM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -408,7 +385,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "SCAN":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -423,7 +400,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "CONFIG":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -438,7 +415,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "APT":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -459,7 +436,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "CCTUNNEL":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -481,7 +458,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "APT_CB_BLOCK":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -502,7 +479,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "PSM":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -525,7 +502,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             case "WEBSCAN":
                 pack("event") {
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -548,7 +525,7 @@ botu("IPS/Venus/VSG/Syslog") {
                 }
             default:
                 pack("event"){
-                    START_TIME = extractTime(GenTime);
+                    START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;

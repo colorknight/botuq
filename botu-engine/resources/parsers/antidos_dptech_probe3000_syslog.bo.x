@@ -3,7 +3,7 @@ botu("AntiDos/DPtech/Probe3000/Syslog") {
         splitParse(detail, ';', null, null, ":");
         op = regExtract(User, "[^\\)]+\\) ([^\\.]+)");
         pack("event") {
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "MMM d HH:mm:ss yyyy");
             DS_DVC_NAME = devname;
             DS_PROCESS_NAME = procName;
             EVT_CATEGORY = "OPERLOG";
@@ -34,7 +34,7 @@ botu("AntiDos/DPtech/Probe3000/Syslog") {
                 dip = convert2Ip(toLong(dip,16));
                 attackName = regExtract(field("attack-name"), "[^)]+\\)(.*)");
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM d HH:mm:ss yyyy");
                     DS_DVC_NAME = devname;
                     DS_PROCESS_NAME = procName;
                     EVT_CATEGORY = logtype;
@@ -63,7 +63,7 @@ botu("AntiDos/DPtech/Probe3000/Syslog") {
             case "av-protect":
                 avName = regExtract(field("av-name"), "[^)]+\\)(.*)");
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM d HH:mm:ss yyyy");
                     DS_DVC_NAME = devname;
                     DS_PROCESS_NAME = procName;
                     EVT_CATEGORY = logtype;

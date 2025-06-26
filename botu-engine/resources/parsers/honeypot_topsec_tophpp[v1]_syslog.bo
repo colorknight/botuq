@@ -2,7 +2,7 @@ botu("Honeypot/Topsec/TopHPP[V1]/Syslog"){
     splitParse(MS_SRC_DATA, ',', null, null, "=");
     if(attack_brief != null){
         pack("event"){
-            START_TIME = extractTime(timestamp);
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             EVT_CATEGORY = type;
             EVT_TYPE = attack_brief;
             SEVERITY = severity;

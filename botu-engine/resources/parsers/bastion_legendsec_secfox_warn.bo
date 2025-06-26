@@ -70,7 +70,7 @@ botu("Bastion/LegendSec/SecFox/Warn") {
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
                     N_SEVERITY = dictMapping("severity",sev);
-                    DURATION = diffTime(extractTime(startTime), extractTime(endTime));
+                    DURATION = diffTime(format2Time(startTime,"yyyy-MM-dd HH:mm:ss"), format2Time(endTime,"yyyy-MM-dd HH:mm:ss"));
                     SBJ_TYPE = "/User";
                     SBJ_NAME = user;
                     SBJ_IP = sourceIP;
@@ -90,7 +90,7 @@ botu("Bastion/LegendSec/SecFox/Warn") {
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
                     N_SEVERITY = dictMapping("severity",sev);
-                    DURATION = diffTime(extractTime(startTime), extractTime(endTime));
+                    DURATION = diffTime(format2Time(startTime,"yyyy-MM-dd HH:mm:ss"), format2Time(endTime,"yyyy-MM-dd HH:mm:ss"));
                     SBJ_TYPE = "/User";
                     SBJ_NAME = user;
                     SBJ_IP = sourceIP;

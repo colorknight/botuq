@@ -15,7 +15,7 @@ botu("Firewall/ChinaTelecom/StoneOS[v5.5]/Syslog") {
                 pack("event") {
                     DS_DVC_NAME = dev;
                     DS_PROCESS_NAME = eventType;
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = "/Audit";
                     EVT_TYPE = type;
                     SEVERITY = sev;
@@ -28,7 +28,7 @@ botu("Firewall/ChinaTelecom/StoneOS[v5.5]/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_CATEGORY = "/Attack";
                         EVT_TYPE = type;
                         SEVERITY = sev;
@@ -48,7 +48,7 @@ botu("Firewall/ChinaTelecom/StoneOS[v5.5]/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_CATEGORY = "/Attack";
                         EVT_TYPE = type;
                         SEVERITY = sev;
@@ -68,7 +68,7 @@ botu("Firewall/ChinaTelecom/StoneOS[v5.5]/Syslog") {
                      pack("event") {
                          DS_DVC_NAME = dev;
                          DS_PROCESS_NAME = eventType;
-                         START_TIME = extractTime(time);
+                         START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                          EVT_CATEGORY = "/Attack";
                          EVT_TYPE = type;
                          SEVERITY = sev;
@@ -88,7 +88,7 @@ botu("Firewall/ChinaTelecom/StoneOS[v5.5]/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_CATEGORY = "/Audit";
                         EVT_TYPE = type;
                         SEVERITY = sev;
@@ -100,7 +100,7 @@ botu("Firewall/ChinaTelecom/StoneOS[v5.5]/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_CATEGORY = "/Audit";
                         EVT_TYPE = type;
                         SEVERITY = sev;
@@ -112,7 +112,7 @@ botu("Firewall/ChinaTelecom/StoneOS[v5.5]/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_CATEGORY = "/Audit";
                         EVT_TYPE = type;
                         SEVERITY = sev;
@@ -126,7 +126,7 @@ botu("Firewall/ChinaTelecom/StoneOS[v5.5]/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_CATEGORY = threatType;
                         EVT_TYPE = dictMapping("threat_type_hillstone",subType);
                         SEVERITY = sev;
@@ -149,7 +149,7 @@ botu("Firewall/ChinaTelecom/StoneOS[v5.5]/Syslog") {
                      pack("event") {
                          DS_DVC_NAME = dev;
                          DS_PROCESS_NAME = eventType;
-                         START_TIME = extractTime(time);
+                         START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                          EVT_CATEGORY = "/Audit";
                          EVT_TYPE = type;
                          SEVERITY = sev;
@@ -162,7 +162,7 @@ botu("Firewall/ChinaTelecom/StoneOS[v5.5]/Syslog") {
                  pack("event") {
                      DS_DVC_NAME = dev;
                      DS_PROCESS_NAME = eventType;
-                     START_TIME = extractTime(time);
+                     START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                      EVT_CATEGORY = "/Audit";
                      EVT_TYPE = type;
                      SEVERITY = sev;
@@ -174,7 +174,7 @@ botu("Firewall/ChinaTelecom/StoneOS[v5.5]/Syslog") {
                 pack("event") {
                      DS_DVC_NAME = dev;
                      DS_PROCESS_NAME = eventType;
-                     START_TIME = extractTime(time);
+                     START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                      EVT_CATEGORY = "/Audit";
                      EVT_TYPE = type;
                      SEVERITY = sev;

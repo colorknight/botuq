@@ -5,7 +5,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
         switch(日志类型) {
             case "NAT日志":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = 日志类型;
                     EVT_TYPE = NAT类型;
@@ -27,7 +27,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "WAF应用防护日志":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = 日志类型;
                     EVT_TYPE = 攻击类型;
@@ -49,7 +49,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "IPS防护日志":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = 日志类型;
                     EVT_TYPE = 攻击类型;
@@ -72,7 +72,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "DOS攻击日志":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = 日志类型;
                     EVT_TYPE = 攻击类型;
@@ -91,7 +91,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "病毒查杀":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = 日志类型;
                     EVT_TYPE = 病毒类型;
@@ -114,7 +114,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "网站访问":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = 日志类型;
                     EVT_TYPE = 应用名称;
@@ -134,7 +134,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "服务控制或应用控制":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = strFormat("%s/%s", 日志类型, 应用类型);
                     EVT_TYPE = 应用名称;
@@ -155,7 +155,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "系统操作":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = 日志类型;
                     SEVERITY = sev;
@@ -170,7 +170,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "用户认证":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     DURATION = 登录时长;
                     SEVERITY = sev;
@@ -184,7 +184,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "僵尸网络日志":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = 日志类型;
                     EVT_TYPE = 攻击类型;
@@ -206,7 +206,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "SSL VPN用户行为日志":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = 日志类型;
                     SEVERITY = 严重级别;
@@ -221,7 +221,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "流量审计":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     DURATION = 登录时长;
                     EVT_TYPE = 操作;
@@ -236,7 +236,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "失陷主机日志":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = 日志类型;
                     EVT_TYPE = 攻击类型;
@@ -258,7 +258,7 @@ botu("Firewall/Sangfor/NGAF[7.1]/Syslog") {
                 }
             case "WEB应用防护":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = 日志类型;
                     EVT_TYPE = 攻击类型;

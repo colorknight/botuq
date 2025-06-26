@@ -6,7 +6,7 @@ botu("UTM/Venus/UTM/Syslog") {
             case "pf":
             case "pf6":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy/MM/dd HH:mm:ss");
                     DS_DVC_NAME = dname;
                     DS_PROCESS_NAME = mod;
                     EVT_CATEGORY = mod;

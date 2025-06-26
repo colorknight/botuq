@@ -5,7 +5,7 @@ botu("EPS/Qianxin/SkyLar[6s]/Warn") {
         switch(log_name) {
             case "logcenter:skylar-client_process_running":
                 pack("event") {
-                    START_TIME = extractTime(field("content.time_event"));
+                    START_TIME = format2Time(field("content.time_event"), "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = devname;
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
@@ -28,7 +28,7 @@ botu("EPS/Qianxin/SkyLar[6s]/Warn") {
                 }
             case "logcenter:skylar-client_file_operations":
                 pack("event") {
-                    START_TIME = extractTime(field("content.time_event"));
+                    START_TIME = format2Time(field("content.time_event"), "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     DS_DVC_NAME = devname;
                     SEVERITY = sev;
@@ -51,7 +51,7 @@ botu("EPS/Qianxin/SkyLar[6s]/Warn") {
                 }
             case "logcenter:skylar-client_registry_changes":
                 pack("event") {
-                    START_TIME = extractTime(field("content.time_event"));
+                    START_TIME = format2Time(field("content.time_event"), "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     DS_DVC_NAME = devname;
                     SEVERITY = sev;
@@ -74,7 +74,7 @@ botu("EPS/Qianxin/SkyLar[6s]/Warn") {
                 }
             case "logcenter:skylar-client_processsocket":
                 pack("event") {
-                    START_TIME = extractTime(field("content.time"));
+                    START_TIME = format2Time(field("content.time"), "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     DS_DVC_NAME = devname;
                     SEVERITY = sev;
@@ -100,7 +100,7 @@ botu("EPS/Qianxin/SkyLar[6s]/Warn") {
                 }
             case "logcenter:skylar-client_udisk":
                 pack("event") {
-                    START_TIME = extractTime(field("content.time_event"));
+                    START_TIME = format2Time(field("content.time_event"), "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     DS_DVC_NAME = devname;
                     SEVERITY = sev;
@@ -129,7 +129,7 @@ botu("EPS/Qianxin/SkyLar[6s]/Warn") {
 	    switch(log_name) {
 	        case "病毒分析":
                  pack("event") {
-                     START_TIME = extractTime(create_time);
+                     START_TIME = format2Time(create_time, "yyyy-MM-dd HH:mm:ss");
                      EVT_CATEGORY = log_name;
                      EVT_TYPE = field("content.type");
                      SEVERITY = sev;

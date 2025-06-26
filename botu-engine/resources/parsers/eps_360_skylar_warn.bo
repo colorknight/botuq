@@ -5,7 +5,7 @@ botu("EPS/360/SkyLar/Warn") {
         switch(log_name) {
             case "漏洞管理":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     EVT_TYPE = field("content.type");
                     SEVERITY = sev;
@@ -25,7 +25,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "体检分":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -43,7 +43,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "系统修复":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/HiddenDanger";
@@ -62,7 +62,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "插件":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -81,7 +81,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "xp盾甲":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Threat/Attack";
@@ -100,7 +100,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "病毒分析":
                  pack("event") {
-                     START_TIME = extractTime(create_time);
+                     START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                      EVT_CATEGORY = log_name;
                      EVT_TYPE = field("content.type");
                      SEVERITY = sev;
@@ -124,7 +124,7 @@ botu("EPS/360/SkyLar/Warn") {
                  }
             case "违规外联":
                  pack("event") {
-                     START_TIME = extractTime(create_time);
+                     START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                      EVT_CATEGORY = log_name;
                      SEVERITY = sev;
                      N_EVT_CATEGORY = "/Violation";
@@ -143,7 +143,7 @@ botu("EPS/360/SkyLar/Warn") {
                  }
             case "进程违规运行":
                  pack("event") {
-                     START_TIME = extractTime(create_time);
+                     START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                      EVT_CATEGORY = log_name;
                      SEVERITY = sev;
                      N_EVT_CATEGORY = "/Violation";
@@ -162,7 +162,7 @@ botu("EPS/360/SkyLar/Warn") {
                  }
             case "使用违规互联网出口":
                  pack("event") {
-                     START_TIME = extractTime(create_time);
+                     START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                      EVT_CATEGORY = log_name;
                      SEVERITY = sev;
                      N_EVT_CATEGORY = "/Violation";
@@ -182,7 +182,7 @@ botu("EPS/360/SkyLar/Warn") {
                  }
             case "外设使用":
                  pack("event") {
-                     START_TIME = extractTime(create_time);
+                     START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                      EVT_CATEGORY = log_name;
                      SEVERITY = sev;
                      N_EVT_CATEGORY = "/Audit";
@@ -201,7 +201,7 @@ botu("EPS/360/SkyLar/Warn") {
                }
             case "桌面加固":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -219,7 +219,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "账号登录登出":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -238,7 +238,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "文件审计":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -257,7 +257,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "打印审计":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -277,7 +277,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "邮件审计":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -303,12 +303,12 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "进程审计":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
                     N_SEVERITY = dictMapping("severity",sev);
-                    DURATION = extractTime(field("content.endtime")).getTime()-extractTime(field("content.starttime")).getTime();
+                    DURATION = format2Time(field("content.endtime"), "yyyy-MM-dd HH:mm:ss").getTime()-format2Time(field("content.starttime"), "yyyy-MM-dd HH:mm:ss").getTime();
                     EVT_ID = log_id;
                     SBJ_TYPE = "/Ip";
                     SBJ_NAME = ip;
@@ -324,7 +324,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "安全U盘审计":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -348,7 +348,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "开关机审计":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -364,7 +364,7 @@ botu("EPS/360/SkyLar/Warn") {
                 }
             case "网络访问审计":
                 pack("event") {
-                    START_TIME = extractTime(create_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     EVT_CATEGORY = log_name;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";

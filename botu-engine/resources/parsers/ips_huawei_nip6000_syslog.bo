@@ -7,7 +7,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
             case "POLICY":
                 if(brief == "POLICYACCFAIL"){
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_DVC_NAME = host;
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = module;
@@ -24,7 +24,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                       nCat = "/Violation";
                     }
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_DVC_NAME = host;
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = module;
@@ -48,7 +48,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
             case "SECLOG":
                 splitParse(info, ',','"','"',"=");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -76,7 +76,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                     patternParse(info, ".*\\((?<msg>[^()]+)\\)");
                     splitParse(msg, ',', null, null, "=");
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_DVC_NAME = host;
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = module;
@@ -102,7 +102,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                 patternParse(info, ".*\\((?<msg>[^()]+)\\)");
                 splitParse(msg, ',', null, null, "=");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -129,7 +129,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                     bhvCat = "/LogOut";
                 }
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -148,7 +148,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                 srcSegs = strSplit(src, ":");
                 dstSegs = strSplit(dst, ":");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -173,7 +173,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                 srcSegs = strSplit(src, ":");
                 dstSegs = strSplit(trim(dst, " "), ":");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -197,7 +197,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                 if(brief == "CMD"){
                     splitParse(msg, ',', null, null, ":");
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_DVC_NAME = host;
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = module;
@@ -212,7 +212,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                     }
                 }
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -227,7 +227,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                 patternParse(info, ".*\\((?<msg>[^()]+)\\)");
                 splitParse(msg, ',', null, null, "=");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = brief;
@@ -253,7 +253,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                 patternParse(info, ".*\\((?<msg>[^()]+)\\)");
                 splitParse(msg, ',', null, null, "=");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = brief;
@@ -278,7 +278,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                 patternParse(info, ".*\\((?<msg>[^()]+)\\)");
                 splitParse(msg, ',', null, null, "=");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = brief;
@@ -305,7 +305,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                     src = strSplit(source, ":");
                     dst = strSplit(destination, ":");
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_DVC_NAME = host;
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = brief;
@@ -325,7 +325,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                     }
                }else{
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_DVC_NAME = host;
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = module;
@@ -349,7 +349,7 @@ botu("IPS/Huawei/NIP6000/Syslog") {
                 }
             default:
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;

@@ -1,7 +1,7 @@
 botu("EPS/KOAL/NetDefense[5.1]/Syslog") {
     splitParse(MS_SRC_DATA, ' ', '"', '"', "=");
 	pack("event") {
-		START_TIME = extractTime(time);
+		START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 		EVT_CATEGORY = logtype;
 		EVT_TYPE = event;
 		SEVERITY = 6;

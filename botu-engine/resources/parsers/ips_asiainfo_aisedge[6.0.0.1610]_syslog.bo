@@ -50,7 +50,7 @@ botu("IPS/Asiainfo/AisEdge[6.0.0.1610]/Syslog") {
                     dstPort = destination_port;
                 }
                 pack("event") {
-                    START_TIME = extractTime(start_time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = field("host name");
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = logType;
@@ -72,7 +72,7 @@ botu("IPS/Asiainfo/AisEdge[6.0.0.1610]/Syslog") {
                 }
             case "VPN log":
                 pack("event") {
-                    START_TIME = extractTime(log_time);
+                    START_TIME = format2Time(log_time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = hostname;
                     DS_PROCESS_NAME = logType;
                     EVT_CATEGORY = logType;

@@ -3,7 +3,7 @@ botu("WAF/DPtech/WAF3000/Syslog") {
         switch(logType){
             case "SYSLOG":
                 pack("event") {
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = deviceType;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "/Audit";
@@ -16,7 +16,7 @@ botu("WAF/DPtech/WAF3000/Syslog") {
                 splitParse(detail, ';', null, null, ":");
                 if(module == "WEB"){
                     pack("event"){
-                        START_TIME = extractTime(logTime);
+                        START_TIME = format2Time(logTime, "yyyy-MM-dd HH:mm:ss");
                         DS_DVC_NAME = deviceType;
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = "/Audit";
@@ -31,7 +31,7 @@ botu("WAF/DPtech/WAF3000/Syslog") {
                     }
                 }else{
                     pack("event") {
-                        START_TIME = extractTime(logTime);
+                        START_TIME = format2Time(logTime, "yyyy-MM-dd HH:mm:ss");
                         DS_DVC_NAME = deviceType;
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = "/Audit";
@@ -45,7 +45,7 @@ botu("WAF/DPtech/WAF3000/Syslog") {
                 patternSplitParse(detail, ";``", ":");
                 if(module == "AUDIT"){
                     pack("event") {
-                        START_TIME = extractTime(logTime);
+                        START_TIME = format2Time(logTime, "yyyy-MM-dd HH:mm:ss");
                         DS_DVC_NAME = deviceType;
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = "/Audit";
@@ -71,7 +71,7 @@ botu("WAF/DPtech/WAF3000/Syslog") {
                 }else if(module == "WEBPAGE-DEFEND"){
                     patternSplitParse(detail, ";``", ":");
                     pack("event") {
-                        START_TIME = extractTime(logTime);
+                        START_TIME = format2Time(logTime, "yyyy-MM-dd HH:mm:ss");
                         DS_DVC_NAME = deviceType;
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = "/Threat/Info/Interpolation";
@@ -86,7 +86,7 @@ botu("WAF/DPtech/WAF3000/Syslog") {
                 }else if(module == "WEBATTACK"){
                     patternSplitParse(detail, ";``", ":");
                     pack("event") {
-                        START_TIME = extractTime(logTime);
+                        START_TIME = format2Time(logTime, "yyyy-MM-dd HH:mm:ss");
                         DS_DVC_NAME = deviceType;
                         DS_PROCESS_NAME = module;
                         EVT_CATEGORY = dictMapping("attack_type_dptech",att_level2);

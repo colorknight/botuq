@@ -20,7 +20,7 @@ botu("ACM/DPtech/UAG3000/Syslog") {
                     nCat = "/Audit/Status";
                 }
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "/Status";
@@ -36,7 +36,7 @@ botu("ACM/DPtech/UAG3000/Syslog") {
                 }
             case "SNMP":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "/Audit/System";
@@ -50,7 +50,7 @@ botu("ACM/DPtech/UAG3000/Syslog") {
                 }
             case "ifmd":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "/Status";
@@ -70,7 +70,7 @@ botu("ACM/DPtech/UAG3000/Syslog") {
                     bhv = "/Logout";
                 }
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = "/Audit/System";
@@ -96,7 +96,7 @@ botu("ACM/DPtech/UAG3000/Syslog") {
             case "attack-protect":
                 attackName = regExtract(field("attack-name(11)"), "[^)]+\\)(.*)");
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM d HH:mm:ss yyyy");
                     DS_DVC_NAME = dev;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = attackName;
@@ -123,7 +123,7 @@ botu("ACM/DPtech/UAG3000/Syslog") {
             case "av-protect":
                 avName = regExtract(field("av-name(15)"), "[^)]+\\)(.*)");
                 pack("event") {
-                    START_TIME = format2Time(time, );
+                    START_TIME = format2Time(time, "MMM d HH:mm:ss yyyy");
                     DS_DVC_NAME = dev;
                     EVT_CATEGORY = logtype;
                     EVT_TYPE = avName;

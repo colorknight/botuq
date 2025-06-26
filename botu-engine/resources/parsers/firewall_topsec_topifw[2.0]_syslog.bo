@@ -6,7 +6,7 @@ botu("Firewall/Topsec/TopIFW[2.0]/Syslog"){
                 ary = strSplit(subType, "-");
                 splitParse(detail, ' ', null, null, "=");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = type;
@@ -31,7 +31,7 @@ botu("Firewall/Topsec/TopIFW[2.0]/Syslog"){
         switch(type){
             case "config":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = type;
@@ -46,7 +46,7 @@ botu("Firewall/Topsec/TopIFW[2.0]/Syslog"){
                 }
             case "event":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = type;
@@ -68,7 +68,7 @@ botu("Firewall/Topsec/TopIFW[2.0]/Syslog"){
         switch(type){
             case "idslog":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = type;
@@ -97,7 +97,7 @@ botu("Firewall/Topsec/TopIFW[2.0]/Syslog"){
                 ary = strSplit(subType, "-");
                 splitParse(detail, ' ', null, null, "=");
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = type;
                     EVT_CATEGORY = type;

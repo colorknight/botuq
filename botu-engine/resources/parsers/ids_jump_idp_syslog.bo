@@ -2,7 +2,7 @@ botu("IDS/Jump/IDP/Syslog") {
 	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\> (?<time>[^:]+:\\d+:\\d+) SECURITY INSTRUCTION type (?<type>[^\\s]+).*name (?<name>.*) smac (?<smac>[^\\s]+) dmac (?<dmac>[^\\s]+) prot (?<prot>[^\\s]+) sip (?<sip>[^\\s]+) sport (?<sport>[^\\s]+) dip (?<dip>[^\\s]+) dport (?<dport>[^\\s]+) times (?<times>[^\\s]+)")) {
 	    sev = parseSyslogSeverity(pri);
 	    pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             DS_PROCESS_NAME = "SECURITY";
             EVT_CATEGORY = type;
             EVT_TYPE = name;
@@ -24,7 +24,7 @@ botu("IDS/Jump/IDP/Syslog") {
 	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\> (?<time>[^:]+:\\d+:\\d+) ADMIN CONFIG user (?<user>[^\\s]+) ip (?<ip>[^\\s]+) module (?<module>[^\\s]+) cmd (?<cmd>.*) result (?<result>[^\\s]+)")) {
 	    sev = parseSyslogSeverity(pri);
 	    pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             DS_PROCESS_NAME = module;
             EVT_CATEGORY = "ADMIN";
             EVT_TYPE = "CONFIG";
@@ -41,7 +41,7 @@ botu("IDS/Jump/IDP/Syslog") {
 	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\> (?<time>[^:]+:\\d+:\\d+).*ADMIN LOGIN user (?<user>[^\\s]+) ip (?<ip>[^\\s]+) action (?<action>[^\\s]+) result (?<result>[^\\s]+)")) {
 	    sev = parseSyslogSeverity(pri);
 	    pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             DS_PROCESS_NAME = module;
             EVT_CATEGORY = "ADMIN";
             EVT_TYPE = "LOGIN";
@@ -59,7 +59,7 @@ botu("IDS/Jump/IDP/Syslog") {
 	}else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\> (?<time>[^:]+:\\d+:\\d+).*SYSTEM.*")) {
 	    sev = parseSyslogSeverity(pri);
 	    pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             DS_PROCESS_NAME = module;
             EVT_CATEGORY = "/Audit";
             SEVERITY = sev;

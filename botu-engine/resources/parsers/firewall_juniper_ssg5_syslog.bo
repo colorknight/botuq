@@ -5,7 +5,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
             case "00515":
                 if(patternParse(msg, ".*to system by (?<loginName>\\w+).* from (?<sip>[^:]+):(?<sport>\\d+)[^\\(]+\\((?<time>[^\\)]+).*")) {
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -22,7 +22,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
                 } else {
                     patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -37,7 +37,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
             case "00518":
                 if(patternParse(msg, ".*login name (?<loginName>\\w+)[^\\(]+\\((?<time>[^\\)]+).*")) {
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -53,7 +53,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
                 } else {
                     patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -68,7 +68,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
             case "00519":
                 if(patternParse(msg, ".*login name (?<loginName>\\w+)[^\\(]+\\((?<time>[^\\)]+).*")) {
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -84,7 +84,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
                 } else {
                     patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         EVT_ID = evtId;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -99,7 +99,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
             case "00527":
                 patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -112,7 +112,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
             case "00528":
                 if(patternParse(msg, ".*for admin user '(?<loginName>\\w+)' at host (?<sip>[^:]+)[^\\(]+\\((?<time>[^\\)]+).*")) {
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -128,7 +128,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
                 } else {
                     patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -143,7 +143,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
             case "00531":
                 patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -156,7 +156,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
             case "00019":
                 patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit";
@@ -169,7 +169,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
             case "00528":
                 if(patternParse(msg, ".*for admin user '(?<loginName>\\w+)' at host (?<sip>\\d+\\.\\d+\\.\\d+\\.\\d+)\\. \\((?<time>[^\\)]+).*")) {
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -185,7 +185,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
                 } else {
                     patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -200,7 +200,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
             case "00027":
                 if(patternParse(msg, "Login attempt by (?<role>\\w+) (?<loginName>\\w+) from (?<sip>\\d+\\.\\d+\\.\\d+\\.\\d+) [^\\(]+\\((?<time>[^\\)]+).*")) {
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -216,7 +216,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
                 } else {
                     patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
                     pack("event") {
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                         DS_PROCESS_NAME = module;
                         SEVERITY = sev;
                         N_EVT_CATEGORY = "/Audit";
@@ -232,7 +232,7 @@ botu("Firewall/Juniper/SSG5/Syslog") {
                 splitParse(msg, ' ', '"', '"', "=");
                 patternParse(msg, ".*reason=(?<reason>.*)");
                 pack("event") {
-                    START_TIME = extractTime(start_time);
+                    START_TIME = format2Time(start_time, "yyyy-MM-dd HH:mm:ss");
                     DS_PROCESS_NAME = module;
                     SEVERITY = sev;
                     N_EVT_CATEGORY = "/Audit/Session";

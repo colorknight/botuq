@@ -1,7 +1,8 @@
 botu("EPS/Topsec/TopEDR[1.13.15]/Warn") {
     if (patternParse(MS_SRC_DATA, "^(?<time>\\w+\\s+\\d+\\s+\\d+:\\d+:\\d+)\\s(?<ip>[^\\s]+)\\s(?<outcome>.*)")) {
         pack("event") {
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(strFormat("%s %s", time2String(now(), "yyyy"), time), "yyyy MMM dd HH:mm:ss");
+
             EVT_CATEGORY = "基本信息";
             SEVERITY = 1;
             N_EVT_CATEGORY = "/Audit";

@@ -3,7 +3,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
     switch(recorder) {
         case "config":
             pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -22,7 +22,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
             }
         case "mgmt":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -43,7 +43,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
 			}
         case "linkbak":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -61,7 +61,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
             if (protocol == null)
                 protocol = protoid;
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -86,7 +86,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
 			}
         case "ha":
             pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -113,7 +113,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
                 objName = "Firmware";
             }
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -131,7 +131,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
             }
          case "interface":
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -148,7 +148,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
             }
         case "neighbour":
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -172,7 +172,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
         case "ac":
         case "info_sync":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -195,7 +195,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
 			}
         case "eos":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -217,7 +217,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
         case "wideip_module":
         case "gslb_wideip_module":
             pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -236,7 +236,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
         case "statistics":
         case "poap_agent":
             pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -255,7 +255,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
             }
         case "dns_Proxy":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -287,7 +287,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
                 sbjType = "/Resource/Disk";
             }
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -302,7 +302,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
 			}
 		case "db_sec":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -324,7 +324,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
 
         case "db_sec_match":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -346,7 +346,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
 			}
         case "control-session":
             pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -366,7 +366,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
             }
         case "DDoS_atk":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -393,7 +393,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
                 bhvcat = "/Logout";
             }
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -414,7 +414,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
 			}
         case "admin_pwd":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -432,7 +432,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
 			}
         case "session":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				DURATION = duration;
@@ -465,7 +465,7 @@ botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
                 msg = action;
             }
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;

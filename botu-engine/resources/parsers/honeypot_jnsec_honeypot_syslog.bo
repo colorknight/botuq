@@ -7,7 +7,7 @@ botu("HoneyPot/JNSec/HoneyPot/Syslog") {
         jsonParse(message, true);
         for(i = 0; i < len(actiontags); i++){
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(strFormat("%s %s", time2String(now(), "yyyy"), time), "yyyy MMM dd HH:mm:ss");
                 DS_DVC_NAME = src_hwcorp;
                 EVT_CATEGORY = logtype;
                 EVT_TYPE = actiontags[i];
@@ -26,7 +26,7 @@ botu("HoneyPot/JNSec/HoneyPot/Syslog") {
     }else{
         segs = strSplit(message, "\\-");
         pack("event") {
-            START_TIME = extractTime(create_time);
+            START_TIME = format2Time(create_time, "MMM dd HH:mm:ss");
             EVT_CATEGORY = module;
             EVT_TYPE = managestyle;
             SEVERITY = sev;

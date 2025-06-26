@@ -5,7 +5,7 @@ botu("NAC/Huawei/Agile/Syslog") {
         switch(module){
             case "VIOLATE":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = recorder;
                     EVT_CATEGORY = recorder;
@@ -21,7 +21,7 @@ botu("NAC/Huawei/Agile/Syslog") {
                 }
             case "LOGONOROFF":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = recorder;
                     EVT_CATEGORY = recorder;
@@ -39,7 +39,7 @@ botu("NAC/Huawei/Agile/Syslog") {
                 }
             case "SOFTWAREDIS":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = recorder;
                     EVT_CATEGORY = recorder;
@@ -56,7 +56,7 @@ botu("NAC/Huawei/Agile/Syslog") {
                 }
             default:
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = recorder;
                     EVT_CATEGORY = recorder;

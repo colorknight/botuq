@@ -2,7 +2,7 @@ botu("DLP/Topsec/DLP[3.2294]/Syslog") {
 	splitParse(MS_SRC_DATA, '#', null, null, "=");
 	pack("event") {
 		DS_PROCESS_NAME = PROCESS;
-		START_TIME = extractTime(TIME);
+		START_TIME = format2Time(TIME, "yyyy-MM-dd HH:mm:ss");
 		EVT_NAME = "数据防泄漏策略匹配";
 		EVT_ID = INCIDENT_ID;
 		EVT_CATEGORY = PolicyName;

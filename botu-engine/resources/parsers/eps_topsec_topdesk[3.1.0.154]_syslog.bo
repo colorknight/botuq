@@ -5,7 +5,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
             case "PORT_WL":
                 patternParse(subject,"<用户帐号>(?<user>.*)</用户帐号><计算机名称>(?<srcHost>.*)</计算机名称>");
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
@@ -36,7 +36,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
                     subType = "/Resource/Other";
                 }
                 pack("event"){
-                     START_TIME = extractTime(logtime);
+                     START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                      DS_DVC_NAME = host;
                      DS_PROCESS_NAME = trigger_name;
                      EVT_CATEGORY = logtype;
@@ -54,7 +54,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
             case "OSAUTH":
                 patternParse(subject,"<用户帐号>(?<account>.*)</用户帐号>.*");
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
@@ -80,7 +80,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
             case "SERVERSTATECHANGE":
                 patternParse(objectinfo,"<状态变更>(?<subName>.*)：(?<action>.*)</状态变更>");
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     EVT_CATEGORY = logtype;
                     SEVERITY = loglevel;
@@ -103,7 +103,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
                     subType = "/Resource/Other";
                 }
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     EVT_CATEGORY = logtype;
                     N_EVT_CATEGORY = "/Audit";
@@ -118,7 +118,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
                 }
             case "DEVMONITOR":
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
@@ -142,7 +142,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
                 }
             case "AntiVirusProduct":
                 pack("event"){
-                    START_TIME = extractTime(logtime);
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = trigger_name;
                     EVT_CATEGORY = logtype;
@@ -166,7 +166,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
                 patternParse(objectinfo,"<域名>(?<objIp>.*)</域名>");
                 patternParse(subject,"<用户帐号>(?<userName>.*)</用户帐号>");
                 pack("event"){
-                     START_TIME = extractTime(logtime);
+                     START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                      DS_DVC_NAME = host;
                      DS_PROCESS_NAME = trigger_name;
                      EVT_CATEGORY = logtype;
@@ -190,7 +190,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
                 }
             case "LOGON":
                 pack("event"){
-                     START_TIME = extractTime(logtime);
+                     START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                      DS_DVC_NAME = host;
                      DS_PROCESS_NAME = trigger_name;
                      EVT_CATEGORY = logtype;
@@ -214,7 +214,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
             case "SERVICE":
                 patternParse(objectinfo,"<Service><用户账号>(?<user>.*)</用户账号>.*<服务名称>(?<objName>.*)</服务名称>.*");
                 pack("event"){
-                     START_TIME = extractTime(logtime);
+                     START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                      DS_DVC_NAME = host;
                      DS_PROCESS_NAME = trigger_name;
                      EVT_CATEGORY = logtype;
@@ -239,7 +239,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
                 patternParse(subject,"<用户帐号>(?<user>.*)</用户帐号><计算机名称>(?<userHost>.*)</计算机名称>");
                 patternParse(objectinfo,"<文件>(?<filename>.*)</文件>");
                 pack("event"){
-                     START_TIME = extractTime(logtime);
+                     START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                      DS_DVC_NAME = host;
                      DS_PROCESS_NAME = trigger_name;
                      EVT_CATEGORY = logtype;
@@ -264,7 +264,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
             case "TIMECHANGED":
                 patternParse(subject,"<用户>(?<user>.*)</用户>");
                 pack("event"){
-                     START_TIME = extractTime(logtime);
+                     START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                      DS_DVC_NAME = host;
                      DS_PROCESS_NAME = trigger_name;
                      EVT_CATEGORY = logtype;
@@ -288,7 +288,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
             case "DATABASE":
                  patternParse(subject,"<用户>(?<user>.*)</用户>");
                  pack("event"){
-                      START_TIME = extractTime(logtime);
+                      START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                       DS_DVC_NAME = host;
                       EVT_CATEGORY = logtype;
                       SEVERITY = loglevel;
@@ -305,7 +305,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
              case "INTERNET":
                   patternParse(subject,"<用户>(?<user>.*)</用户>");
                   pack("event"){
-                       START_TIME = extractTime(logtime);
+                       START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                        DS_DVC_NAME = host;
                        DS_PROCESS_NAME = trigger_name;
                        EVT_CATEGORY = logtype;
@@ -326,7 +326,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
             case "NETCONFIG":
                 patternParse(subject,"<用户账号>(?<user>.*)</用户账号><计算机名称>(?<hostName>.*)</计算机名称>");
                 pack("event"){
-                     START_TIME = extractTime(logtime);
+                     START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                      DS_DVC_NAME = host;
                      DS_PROCESS_NAME = trigger_name;
                      EVT_CATEGORY = logtype;
@@ -349,7 +349,7 @@ botu("EPS/Topsec/TopDesk[3.1.0.154]/Syslog"){
             case "NETCFG":
                 patternParse(subject,"<计算机>(?<hostName>.*)</计算机><用户账号>(?<user>.*)</用户账号>");
                 pack("event"){
-                     START_TIME = extractTime(logtime);
+                     START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
                      DS_DVC_NAME = host;
                      DS_PROCESS_NAME = trigger_name;
                      EVT_CATEGORY = logtype;

@@ -5,7 +5,7 @@ botu("NAC/Venus/NAC-6000[v3.0]/Syslog") {
 		    case "1":
 		        if(mod == "webui"){
                     pack("event"){
-                        START_TIME = extractTime(date);
+                        START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
                         DS_DVC_NAME = dname;
                         DS_PROCESS_NAME = mod;
                         EVT_CATEGORY = "/Audit";
@@ -20,7 +20,7 @@ botu("NAC/Venus/NAC-6000[v3.0]/Syslog") {
                     }
 		        }else if(mod == "hostname"){
                     pack("event"){
-                        START_TIME = extractTime(date);
+                        START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
                         DS_DVC_NAME = dname;
                         DS_PROCESS_NAME = mod;
                         EVT_CATEGORY = "/Audit";
@@ -39,7 +39,7 @@ botu("NAC/Venus/NAC-6000[v3.0]/Syslog") {
                     }
 		        }else{
                     pack("event"){
-                        START_TIME = extractTime(date);
+                        START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
                         DS_DVC_NAME = dname;
                         DS_PROCESS_NAME = mod;
                         EVT_CATEGORY = "/Audit";
@@ -52,7 +52,7 @@ botu("NAC/Venus/NAC-6000[v3.0]/Syslog") {
 		        }
             case "3":
                 pack("event"){
-                    START_TIME = extractTime(date);
+                    START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
                     DS_DVC_NAME = dname;
                     DS_PROCESS_NAME = mod;
                     EVT_CATEGORY = "/Audit";
@@ -64,7 +64,7 @@ botu("NAC/Venus/NAC-6000[v3.0]/Syslog") {
                 }
             case "7":
                 pack("event"){
-                    START_TIME = extractTime(date);
+                    START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
                     DS_DVC_NAME = dname;
                     DS_PROCESS_NAME = mod;
                     EVT_CATEGORY = "/Audit";
@@ -77,7 +77,7 @@ botu("NAC/Venus/NAC-6000[v3.0]/Syslog") {
                 }
             case "5":
                 pack("event"){
-                    START_TIME = extractTime(date);
+                    START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
                     DS_DVC_NAME = dname;
                     DS_PROCESS_NAME = mod;
                     EVT_CATEGORY = "/Audit";
@@ -97,7 +97,7 @@ botu("NAC/Venus/NAC-6000[v3.0]/Syslog") {
             case "4":
                 if(ip == "''"){
                      pack("event"){
-                         START_TIME = extractTime(date);
+                         START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
                          DS_DVC_NAME = dname;
                          DS_PROCESS_NAME = mod;
                          EVT_CATEGORY = "/Audit";
@@ -113,7 +113,7 @@ botu("NAC/Venus/NAC-6000[v3.0]/Syslog") {
                      }
                 }else{
                      pack("event"){
-                         START_TIME = extractTime(date);
+                         START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
                          DS_DVC_NAME = dname;
                          DS_PROCESS_NAME = mod;
                          EVT_CATEGORY = "/Audit";
@@ -132,7 +132,7 @@ botu("NAC/Venus/NAC-6000[v3.0]/Syslog") {
             case "5":
             case "6":
                  pack("event"){
-                     START_TIME = extractTime(date);
+                     START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
                      DS_DVC_NAME = dname;
                      DS_PROCESS_NAME = mod;
                      EVT_CATEGORY = "/Audit";
@@ -151,7 +151,7 @@ botu("NAC/Venus/NAC-6000[v3.0]/Syslog") {
                  }
             case "2":
                  pack("event"){
-                     START_TIME = extractTime(date);
+                     START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
                      DS_DVC_NAME = dname;
                      DS_PROCESS_NAME = mod;
                      EVT_CATEGORY = "/Audit";

@@ -4,7 +4,7 @@ botu("OS/Microsoft/Windows/Eventlog/Syslog"){
         switch(type){
             case "Security-Auditing":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = ComputerName;
                     EVT_CATEGORY = type;
                     EVT_TYPE = EventCode;
@@ -17,7 +17,7 @@ botu("OS/Microsoft/Windows/Eventlog/Syslog"){
                 }
             default:
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = ComputerName;
                     EVT_CATEGORY = type;
                     EVT_TYPE = EventCode;
@@ -31,7 +31,7 @@ botu("OS/Microsoft/Windows/Eventlog/Syslog"){
     }else if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>(?<time>\\w+\\s+\\d+ \\d+:\\d+:\\d+) (?<ComputerName>\\S+) (?<detail>.*)")){
         sev = parseSyslogSeverity(pri);
         pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "MMM dd HH:mm:ss");
             DS_DVC_NAME = ComputerName;
             EVT_CATEGORY = "/Audit";
             SEVERITY = sev;
@@ -45,7 +45,7 @@ botu("OS/Microsoft/Windows/Eventlog/Syslog"){
         switch(module){
             default:
                 pack("event"){
-                    START_TIME = universalExtractTime(time);
+                    START_TIME = universalformat2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     EVT_CATEGORY = module;
                     SEVERITY = sev;

@@ -8,7 +8,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
             case "MODULE_SERVER_AWARE":
                 evtType = "服务器内联防护";
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -31,7 +31,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
                 }
             case "ATTACK":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -56,7 +56,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
             case "SCAN":
             case "ANTIARP":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -80,7 +80,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
                 }
             case "IPS":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -116,7 +116,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
             case "NETMEDIA":
                evtType = "网络多媒体";
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = SecName;
@@ -143,7 +143,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
                 }
             case "WEB_FILTER":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = SecName;
@@ -170,7 +170,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
                 }
             case "MAIL_FILTER":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = SecName;
@@ -197,7 +197,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
                 }
             case "SENSITIVE_INFO":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = SecName;
@@ -227,7 +227,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
                 }
             case "AV":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = SecName;
@@ -260,7 +260,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
                 }
             case "WEBSCAN":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -285,7 +285,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
                 }
             case "APT":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -319,7 +319,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
             case "IF_INFO":
                 evtType = "接口日志";
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -330,7 +330,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
                 }
             case "SESSION":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;
@@ -351,7 +351,7 @@ botu("IPS/DataCloudSec/IPS/Syslog") {
                 }
             case "CONFIG":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = module;
                     EVT_CATEGORY = module;

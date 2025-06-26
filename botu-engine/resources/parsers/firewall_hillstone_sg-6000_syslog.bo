@@ -20,7 +20,7 @@ botu("Firewall/Hillstone/SG-6000/Syslog") {
                 pack("event") {
                     DS_DVC_NAME = dev;
                     DS_PROCESS_NAME = eventType;
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     EVT_CATEGORY = "/Audit";
                     EVT_TYPE = type;
                     SEVERITY = sev;
@@ -33,7 +33,7 @@ botu("Firewall/Hillstone/SG-6000/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                         EVT_CATEGORY = "/Attack";
                         EVT_TYPE = type;
                         SEVERITY = sev;
@@ -54,7 +54,7 @@ botu("Firewall/Hillstone/SG-6000/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                         EVT_CATEGORY = "/Attack";
                         EVT_TYPE = type;
                         SEVERITY = sev;
@@ -75,7 +75,7 @@ botu("Firewall/Hillstone/SG-6000/Syslog") {
                      pack("event") {
                          DS_DVC_NAME = dev;
                          DS_PROCESS_NAME = eventType;
-                         START_TIME = extractTime(time);
+                         START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                          EVT_CATEGORY = "/Attack";
                          EVT_TYPE = type;
                          SEVERITY = sev;
@@ -96,7 +96,7 @@ botu("Firewall/Hillstone/SG-6000/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                         EVT_CATEGORY = "/Audit";
                         EVT_TYPE = type;
                         SEVERITY = sev;
@@ -108,7 +108,7 @@ botu("Firewall/Hillstone/SG-6000/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                         EVT_CATEGORY = "/Audit";
                         EVT_TYPE = type;
                         SEVERITY = sev;
@@ -129,7 +129,7 @@ botu("Firewall/Hillstone/SG-6000/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                         EVT_CATEGORY = strFormat("%s-%s",field("threat type"),dictMapping("threat_type_hillstone",field("threat subtype")));
                         EVT_TYPE = field("threat name");
                         SEVERITY = sev;
@@ -154,7 +154,7 @@ botu("Firewall/Hillstone/SG-6000/Syslog") {
                     pack("event") {
                         DS_DVC_NAME = dev;
                         DS_PROCESS_NAME = eventType;
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                         EVT_CATEGORY = field("威胁类型");
                         EVT_TYPE = field("威胁名称");
                         EVT_TYPE = dictMapping("threat_type_hillstone",field("威胁子类型"));
@@ -180,7 +180,7 @@ botu("Firewall/Hillstone/SG-6000/Syslog") {
                      pack("event") {
                          DS_DVC_NAME = dev;
                          DS_PROCESS_NAME = eventType;
-                         START_TIME = extractTime(time);
+                         START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                          EVT_CATEGORY = "/Audit";
                          EVT_TYPE = type;
                          SEVERITY = sev;
@@ -193,7 +193,7 @@ botu("Firewall/Hillstone/SG-6000/Syslog") {
                  pack("event") {
                      DS_DVC_NAME = dev;
                      DS_PROCESS_NAME = eventType;
-                     START_TIME = extractTime(time);
+                     START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                      EVT_CATEGORY = "/Audit";
                      EVT_TYPE = type;
                      SEVERITY = sev;
@@ -205,7 +205,7 @@ botu("Firewall/Hillstone/SG-6000/Syslog") {
                 pack("event") {
                      DS_DVC_NAME = dev;
                      DS_PROCESS_NAME = eventType;
-                     START_TIME = extractTime(time);
+                     START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                      EVT_CATEGORY = "/Audit";
                      EVT_TYPE = type;
                      SEVERITY = sev;

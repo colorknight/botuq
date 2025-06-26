@@ -9,10 +9,11 @@ botu("EPS/360/SkyLar[v10.0]/Warn") {
 	        patternSplitParse(data, ", ?", "=");
 	    }
 		sev = parseSyslogSeverity(pri);
+		startTime = strFormat("%s %s", time2String(now(), "yyyy"), startTime);
         switch(type) {
             case "gnac_alarm":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy MMM d HH:mm:ss");
                     EVT_CATEGORY = type;
                     SEVERITY = "alarm";
                     N_EVT_CATEGORY = "/Audit";
@@ -32,7 +33,7 @@ botu("EPS/360/SkyLar[v10.0]/Warn") {
             case "visitor_past_log":
             case "vis_user_past_log":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy MMM d HH:mm:ss");
                     EVT_CATEGORY = type;
                     SEVERITY = "info";
                     N_EVT_CATEGORY = "/Audit";
@@ -48,7 +49,7 @@ botu("EPS/360/SkyLar[v10.0]/Warn") {
                 }
             case "alarm_allow_net":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy MMM d HH:mm:ss");
                     EVT_CATEGORY = type;
                     SEVERITY = ALARM_LEVEL;
                     N_EVT_CATEGORY = "/Audit";
@@ -66,7 +67,7 @@ botu("EPS/360/SkyLar[v10.0]/Warn") {
                 }
             case "alarm_antivirus_software":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy MMM d HH:mm:ss");
                     EVT_CATEGORY = type;
                     N_EVT_CATEGORY = "/Audit";
                     SEVERITY = ALARM_LEVEL;
@@ -82,7 +83,7 @@ botu("EPS/360/SkyLar[v10.0]/Warn") {
             case "alarm_device":
                 prtStatus = ALARM_DEVICE_MODE;
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy MMM d HH:mm:ss");
                     EVT_CATEGORY = type;
                     N_EVT_CATEGORY = "/Audit";
                     SEVERITY = ALARM_LEVEL;
@@ -101,7 +102,7 @@ botu("EPS/360/SkyLar[v10.0]/Warn") {
                 }
             case "alarm_dlp_scanf_log":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy MMM d HH:mm:ss");
                     EVT_CATEGORY = type;
                     EVT_TYPE = VIOLATE_TYPE;
                     EVT_ID = RULE;
@@ -122,7 +123,7 @@ botu("EPS/360/SkyLar[v10.0]/Warn") {
             case "website_alarm":
             case "website_audit":
                 pack("event"){
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy MMM d HH:mm:ss");
                     EVT_CATEGORY = type;
                     SEVERITY = ALARM_LEVEL;
                     N_EVT_CATEGORY = "/Audit";
@@ -138,7 +139,7 @@ botu("EPS/360/SkyLar[v10.0]/Warn") {
                 }
             default:
                 pack("event") {
-                    START_TIME = extractTime(startTime);
+                    START_TIME = format2Time(startTime, "yyyy MMM d HH:mm:ss");
                     EVT_CATEGORY = type;
                     N_EVT_CATEGORY = "/Audit";
                     SEVERITY = "info";

@@ -2,7 +2,7 @@ botu("VPN/Qianxin/SSLVPN/Syslog") {
 	if (patternParse(MS_SRC_DATA, "(?<time>[^:]+:\\d+:\\d+) (?<hostName>[^\\s]+) \\|(?<detail>.*)")) {
         ary = strSplit(detail, "\\|");
         pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "yyyyMMdd HH:mm:ss");
             DS_DVC_NAME = hostName;
             EVT_CATEGORY = ary[2];
             EVT_TYPE = ary[3];

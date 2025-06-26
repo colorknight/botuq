@@ -11,7 +11,7 @@ botu("VPN/Venus/SAG6000[V3.0]/Syslog") {
                   behavior = act;
                 }
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = dname;
                     DS_PROCESS_NAME = mod;
                     EVT_CATEGORY = "管理日志";
@@ -30,7 +30,7 @@ botu("VPN/Venus/SAG6000[V3.0]/Syslog") {
                 }
            case "2":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = dname;
                     DS_PROCESS_NAME = mod;
                     EVT_CATEGORY = "系统日志";
@@ -42,7 +42,7 @@ botu("VPN/Venus/SAG6000[V3.0]/Syslog") {
                 }
            case "3":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = dname;
                     DS_PROCESS_NAME = mod;
                     EVT_CATEGORY = "防火墙日志";
@@ -54,7 +54,7 @@ botu("VPN/Venus/SAG6000[V3.0]/Syslog") {
                 }
            case "4":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = dname;
                     DS_PROCESS_NAME = mod;
                     EVT_CATEGORY = "用户认证日志";
@@ -73,7 +73,7 @@ botu("VPN/Venus/SAG6000[V3.0]/Syslog") {
                 }
            case "5":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = dname;
                     DS_PROCESS_NAME = mod;
                     EVT_CATEGORY = "IPSEC VPN日志";
@@ -85,7 +85,7 @@ botu("VPN/Venus/SAG6000[V3.0]/Syslog") {
                 }
            case "6":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = dname;
                     DS_PROCESS_NAME = mod;
                     EVT_CATEGORY = "资源访问日志";
@@ -105,7 +105,7 @@ botu("VPN/Venus/SAG6000[V3.0]/Syslog") {
                 }
            case "7":
                 pack("event"){
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                     DS_DVC_NAME = dname;
                     DS_PROCESS_NAME = mod;
                     EVT_CATEGORY = "VPDN日志";
@@ -117,7 +117,7 @@ botu("VPN/Venus/SAG6000[V3.0]/Syslog") {
                 }
            case "8":
                 pack("event"){
-                   START_TIME = extractTime(time);
+                   START_TIME = format2Time(time, "MMM dd HH:mm:ss");
                    DS_DVC_NAME = dname;
                    DS_PROCESS_NAME = mod;
                    EVT_CATEGORY = "集群配置日志";

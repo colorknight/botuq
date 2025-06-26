@@ -3,7 +3,7 @@ botu("IDS/Topsec/TopSentry[3.3.005.662u]/Syslog") {
 	switch(recorder) {
 		case "IPSEVENT":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = strFormat("%s/%s", type, recorder);
 				EVT_CATEGORY = recorder;
@@ -35,7 +35,7 @@ botu("IDS/Topsec/TopSentry[3.3.005.662u]/Syslog") {
 		        nCat = "/Violation";
 		    }
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = fw;
 				DS_PROCESS_NAME = strFormat("%s/%s", type, recorder);
 				EVT_CATEGORY = recorder;
@@ -57,7 +57,7 @@ botu("IDS/Topsec/TopSentry[3.3.005.662u]/Syslog") {
 			}
 		case "IPSAV":
 			pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = fw;
                 DS_PROCESS_NAME = strFormat("%s/%s", type, recorder);
                 EVT_CATEGORY = recorder;
@@ -84,7 +84,7 @@ botu("IDS/Topsec/TopSentry[3.3.005.662u]/Syslog") {
                 nCat = "/Violation";
             }
 			pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = fw;
                 DS_PROCESS_NAME = strFormat("%s/%s", type, recorder);
                 EVT_CATEGORY = recorder;
@@ -109,7 +109,7 @@ botu("IDS/Topsec/TopSentry[3.3.005.662u]/Syslog") {
             }
 		case "config":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = fw;
                 N_EVT_CATEGORY = "/Audit/System";
 				DS_PROCESS_NAME = strFormat("%s/%s", type, recorder);
@@ -127,7 +127,7 @@ botu("IDS/Topsec/TopSentry[3.3.005.662u]/Syslog") {
 			}
 		case "IPSFLOW_IP":
 			pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = fw;
                 DS_PROCESS_NAME = strFormat("%s/%s", type, recorder);
                 EVT_CATEGORY = recorder;
@@ -146,7 +146,7 @@ botu("IDS/Topsec/TopSentry[3.3.005.662u]/Syslog") {
             }
 	    case "IPSFLOW_AR":
             pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = fw;
                 DS_PROCESS_NAME = strFormat("%s/%s", type, recorder);
                 EVT_CATEGORY = recorder;

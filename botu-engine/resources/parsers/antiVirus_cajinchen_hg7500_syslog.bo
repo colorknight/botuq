@@ -41,7 +41,7 @@ botu("AntiVirus/CAJinChen/HG7500/Syslog"){
         srcArr = strSplit(src, ":");
         dstArr = strSplit(dst, ":");
         pack("event"){
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             DS_DVC_NAME = fw;
             DS_PROCESS_NAME = id;
             EVT_CATEGORY = category;

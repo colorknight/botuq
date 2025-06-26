@@ -5,7 +5,7 @@ botu("AntiVirus/Antiy/AVL_SDK/Syslog"){
         switch(LOGTYPE){
             case "CLIENT":
                     pack("event"){
-                        START_TIME = extractTime(time);
+                        START_TIME = format2Time(strFormat("%s %s", time2String(now(), "yyyy"), time), "yyyy MMM d HH:mm:ss");
                         DS_DVC_NAME = host;
                         DS_PROCESS_NAME = LOGTYPE;
                         EVT_CATEGORY = "/Audit";
@@ -19,7 +19,7 @@ botu("AntiVirus/Antiy/AVL_SDK/Syslog"){
                     }
             case "PATCH":
                     pack("event"){
-                        START_TIME = extractTime(PUB_DATE);
+                        START_TIME = format2Time(PUB_DATE, "yyyy-MM-dd");
                         DS_DVC_NAME = host;
                         DS_PROCESS_NAME = LOGTYPE;
                         EVT_CATEGORY = "/Audit";
@@ -32,7 +32,7 @@ botu("AntiVirus/Antiy/AVL_SDK/Syslog"){
                     }
             case "SCAN":
                     pack("event"){
-                        START_TIME = extractTime(CREATE_TIME);
+                        START_TIME = format2Time(CREATE_TIME, "yyyy-MM-dd");
                         DS_DVC_NAME = host;
                         DS_PROCESS_NAME = LOGTYPE;
                         EVT_CATEGORY = TYPE;
@@ -50,7 +50,7 @@ botu("AntiVirus/Antiy/AVL_SDK/Syslog"){
                     }
             case "DEFEND":
                      pack("event"){
-                         START_TIME = extractTime(DEFEND_TIME);
+                         START_TIME = format2Time(DEFEND_TIME, "yyyy-MM-dd HH:mm:ss");
                          DS_DVC_NAME = host;
                          DS_PROCESS_NAME = LOGTYPE;
                          EVT_CATEGORY = "/Audit";
@@ -65,7 +65,7 @@ botu("AntiVirus/Antiy/AVL_SDK/Syslog"){
                      }
             case "POLICY":
                      pack("event"){
-                         START_TIME = extractTime(DEFEND_TIME);
+                         START_TIME = format2Time(DEFEND_TIME, "yyyy-MM-dd HH:mm:ss");
                          DS_DVC_NAME = host;
                          DS_PROCESS_NAME = LOGTYPE;
                          EVT_CATEGORY = "/Audit";
@@ -80,7 +80,7 @@ botu("AntiVirus/Antiy/AVL_SDK/Syslog"){
                      }
             case "AUDIT":
                      pack("event"){
-                         START_TIME = extractTime(OPERATING_TIME);
+                         START_TIME = format2Time(OPERATING_TIME, "yyyy-MM-dd HH:mm:ss");
                          DS_DVC_NAME = host;
                          DS_PROCESS_NAME = LOGTYPE;
                          EVT_CATEGORY = "/Audit";
@@ -94,7 +94,7 @@ botu("AntiVirus/Antiy/AVL_SDK/Syslog"){
                      }
             case "BASELINE":
                      pack("event"){
-                         START_TIME = extractTime(SAMPLE_TIME);
+                         START_TIME = format2Time(SAMPLE_TIME, "yyyy-MM-dd HH:mm:ss");
                          DS_DVC_NAME = host;
                          DS_PROCESS_NAME = LOGTYPE;
                          EVT_CATEGORY = "/Audit";
@@ -106,7 +106,7 @@ botu("AntiVirus/Antiy/AVL_SDK/Syslog"){
                      }
             case "FAULT":
                      pack("event"){
-                         START_TIME = extractTime(FAULT_TIME);
+                         START_TIME = format2Time(FAULT_TIME, "yyyy-MM-dd HH:mm:ss");
                          DS_DVC_NAME = host;
                          DS_PROCESS_NAME = LOGTYPE;
                          EVT_CATEGORY = "/Audit";

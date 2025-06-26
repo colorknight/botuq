@@ -6,7 +6,7 @@ botu("WAF/DBAPPSecurity/WAF-2000GT/Syslog") {
             patternParse(HTTP,"/(?<status>\\d+)");
             pack("event") {
                 DS_DVC_NAME = host;
-                START_TIME = extractTime(发生时间);
+                START_TIME = format2Time(发生时间, "yyyy-MM-dd HH:mm:ss");
                 EVT_CATEGORY = 事件;
                 EVT_TYPE = 触发规则;
                 EVT_ID = 访问唯一编号;
@@ -35,7 +35,7 @@ botu("WAF/DBAPPSecurity/WAF-2000GT/Syslog") {
 		} else if(NULL != happentime){
             pack("event") {
                 DS_DVC_NAME = host;
-                START_TIME = extractTime(happentime);
+                START_TIME = format2Time(happentime,  "yyyy-MM-dd HH:mm:ss");
                 EVT_TYPE = tag_id;
                 EVT_ID = msg_id;
                 SEVERITY = severity_id;

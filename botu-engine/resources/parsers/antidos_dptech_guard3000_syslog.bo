@@ -5,7 +5,7 @@ botu("AntiDos/DPtech/Guard3000/Syslog") {
         switch(cat) {
             case "ALARM":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev;
                     DS_PROCESS_NAME = cat;
                     EVT_CATEGORY = field("Type");
@@ -27,7 +27,7 @@ botu("AntiDos/DPtech/Guard3000/Syslog") {
             case "SIP-LIST":
                 json = jsonParse(TOPIPData);
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev;
                     DS_PROCESS_NAME = cat;
                     EVT_CATEGORY = field("Type");
@@ -49,7 +49,7 @@ botu("AntiDos/DPtech/Guard3000/Syslog") {
                 }
             case "TRAFFIC":
                 pack("event") {
-                    START_TIME = extractTime(time);
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                     DS_DVC_NAME = dev;
                     DS_PROCESS_NAME = cat;
                     EVT_CATEGORY = field("Traffic Type");

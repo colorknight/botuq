@@ -3,10 +3,11 @@ botu("WAF/Sangfor/WAF1000/Syslog") {
 	    sev = parseSyslogSeverity(pri);
 	    temp = replaceString(detail,", ",",");
         splitParse(temp, ',', null, null, ":");
+        logTime = strFormat("%s %s", time2String(now(), "yyyy"), logTime);
         switch(日志类型){
             case "WEB应用防护":
                 pack("event"){
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = 日志类型;
                     EVT_CATEGORY = 日志类型;
@@ -28,7 +29,7 @@ botu("WAF/Sangfor/WAF1000/Syslog") {
                 }
             case "服务控制或应用控制":
                 pack("event"){
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = 日志类型;
                     EVT_CATEGORY = 应用类型;
@@ -49,7 +50,7 @@ botu("WAF/Sangfor/WAF1000/Syslog") {
                 }
             case "IPS防护日志":
                 pack("event"){
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = 日志类型;
                     EVT_CATEGORY = 攻击类型;
@@ -71,7 +72,7 @@ botu("WAF/Sangfor/WAF1000/Syslog") {
                 }
             case "病毒查杀":
                 pack("event"){
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = 日志类型;
                     EVT_CATEGORY = 病毒类型;
@@ -94,7 +95,7 @@ botu("WAF/Sangfor/WAF1000/Syslog") {
                 }
             case "DOS攻击日志":
                 pack("event"){
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = 日志类型;
                     EVT_CATEGORY = 日志类型;
@@ -113,7 +114,7 @@ botu("WAF/Sangfor/WAF1000/Syslog") {
                 }
             case "网站访问":
                 pack("event"){
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = 日志类型;
                     EVT_CATEGORY = 日志类型;
@@ -133,7 +134,7 @@ botu("WAF/Sangfor/WAF1000/Syslog") {
                 }
             case "系统操作":
                 pack("event"){
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = 日志类型;
                     EVT_CATEGORY = 日志类型;
@@ -148,7 +149,7 @@ botu("WAF/Sangfor/WAF1000/Syslog") {
                 }
             case "僵尸网络日志":
                 pack("event"){
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = 日志类型;
                     EVT_CATEGORY = 日志类型;
@@ -170,7 +171,7 @@ botu("WAF/Sangfor/WAF1000/Syslog") {
                 }
             case "SSL VPN用户行为日志":
                 pack("event"){
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = 日志类型;
                     EVT_CATEGORY = 日志类型;
@@ -185,7 +186,7 @@ botu("WAF/Sangfor/WAF1000/Syslog") {
                 }
             case "用户认证":
                 pack("event"){
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = 日志类型;
                     EVT_CATEGORY = 日志类型;
@@ -199,7 +200,7 @@ botu("WAF/Sangfor/WAF1000/Syslog") {
                 }
             default:
                 pack("event"){
-                    START_TIME = extractTime(logTime);
+                    START_TIME = format2Time(logTime, "yyyy MMM dd HH:mm:ss");
                     DS_DVC_NAME = host;
                     DS_PROCESS_NAME = 日志类型;
                     EVT_CATEGORY = 日志类型;

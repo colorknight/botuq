@@ -3,7 +3,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
     switch(type) {
         case "管理员配置日志":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -22,7 +22,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
 			}
         case "管理员登录日志":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -43,7 +43,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
 			}
         case "管理员密码修改日志":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -62,7 +62,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
         case "管理员增删日志":
             patternParse(description, "(?<method>[^ ]+) (?<role>[^ ]+) name (?<account>[^ ]+) success");
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -94,7 +94,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
                 objName = "Rule";
             }
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -121,7 +121,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
             }
             percent = regExtract(msg, ".* (\\d+)%!$");
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -137,7 +137,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
 			}
         case "服务监控日志":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -152,7 +152,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
 			}
         case "主机扫描日志":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -177,7 +177,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
 			}
         case "漏洞信息日志":
 			pack("event") {
-                START_TIME = extractTime(time);
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = strFormat("%s/%s", type, VulnType);
@@ -203,7 +203,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
 			}
         case "基线配置核查日志":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -224,7 +224,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
 			}
         case "黑名单日志":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -240,7 +240,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
 			}
         case "域名解析日志":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -259,7 +259,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
         case "任务站点日志":
             patternParse(scanStieName, "(?<appProto>[^:]+)://(?<domainName>[^/]+)/");
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -282,7 +282,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
 			}
         case "任务管理日志":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -298,7 +298,7 @@ botu("VulnScanner/Topsec/TopScanner[3.2294.1031_ICS.1]/Syslog") {
 			}
         case "分布式配置日志":
 			pack("event") {
-				START_TIME = extractTime(time);
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
