@@ -3,7 +3,7 @@ botu("AntiDos/Topsec/TopADS[3.2262.2219]/Syslog") {
 	switch(type) {
 		case "ads_attack_flow":
 			pack("event") {
-				START_TIME = format2Time(time "yyyy-MM-dd HH:mm:ss");
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -105,7 +105,7 @@ botu("AntiDos/Topsec/TopADS[3.2262.2219]/Syslog") {
 		case "ads_learn_single_attr":
 		    // 统计类日志
 			pack("event") {
-				START_TIME = format2Time(time_begin "yyyy-MM-dd HH:mm:ss");
+				START_TIME = format2Time(time_begin, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -116,7 +116,7 @@ botu("AntiDos/Topsec/TopADS[3.2262.2219]/Syslog") {
 		case "ads_learn_topn":
 		    // 统计类日志
 			pack("event") {
-				START_TIME = format2Time(time_begin "yyyy-MM-dd HH:mm:ss");
+				START_TIME = format2Time(time_begin, "yyyy-MM-dd HH:mm:ss");
                 DS_DVC_NAME = dev;
                 DS_PROCESS_NAME = recorder;
                 EVT_CATEGORY = type;
@@ -150,7 +150,7 @@ botu("AntiDos/Topsec/TopADS[3.2262.2219]/Syslog") {
 		case "ads src topn model log":
 		    // 统计类日志
 			pack("event") {
-				START_TIME = format2Time(time_begin "yyyy-MM-dd HH:mm:ss");
+				START_TIME = format2Time(time_begin, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;
@@ -162,7 +162,7 @@ botu("AntiDos/Topsec/TopADS[3.2262.2219]/Syslog") {
 		case "ads ipgeo model log":
 		    // 统计类日志
 			pack("event") {
-				START_TIME = format2Time(time_begin "yyyy-MM-dd HH:mm:ss");
+				START_TIME = format2Time(time_begin, "yyyy-MM-dd HH:mm:ss");
 				DS_DVC_NAME = dev;
 				DS_PROCESS_NAME = recorder;
 				EVT_CATEGORY = type;

@@ -3,7 +3,7 @@ botu("AntiDos/DPtech/Probe3000/Syslog") {
         splitParse(detail, ';', null, null, ":");
         op = regExtract(User, "[^\\)]+\\) ([^\\.]+)");
         pack("event") {
-            START_TIME = format2Time(time, "MMM d HH:mm:ss yyyy");
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
             DS_DVC_NAME = devname;
             DS_PROCESS_NAME = procName;
             EVT_CATEGORY = "OPERLOG";

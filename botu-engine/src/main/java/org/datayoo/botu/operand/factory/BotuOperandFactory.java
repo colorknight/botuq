@@ -23,6 +23,8 @@ import org.datayoo.botu.operand.function.inside.PackMap;
 import org.datayoo.botu.operand.function.parse.*;
 import org.datayoo.botu.operand.function.string.*;
 import org.datayoo.botu.operand.function.time.*;
+import org.datayoo.botu.operand.function.xml.ToXmlElement;
+import org.datayoo.botu.operand.function.xml.XPath;
 import org.datayoo.moql.Operand;
 import org.datayoo.moql.operand.constant.*;
 import org.datayoo.moql.operand.expression.arithmetic.*;
@@ -84,6 +86,10 @@ public abstract class BotuOperandFactory {
         Time2String.class.getName());
     functionFactory.forceRegistFunction(ToTime.FUNCTION_NAME,
         ToTime.class.getName());
+    functionFactory.forceRegistFunction(ToXmlElement.FUNCTION_NAME,
+            ToXmlElement.class.getName());
+    functionFactory.forceRegistFunction(XPath.FUNCTION_NAME,
+            XPath.class.getName());
     functionFactory.forceRegistFunction(DiffTime.FUNCTION_NAME,
         DiffTime.class.getName());
     functionFactory.forceRegistFunction(Convert2Ip.FUNCTION_NAME,
@@ -124,6 +130,7 @@ public abstract class BotuOperandFactory {
     functionFactory.forceRegistFunction(Escape.FUNCTION_NAME,
         Escape.class.getName());
     functionFactory.forceRegistFunction(Now.FUNCTION_NAME, Now.class.getName());
+    functionFactory.forceRegistFunction(NowYear.FUNCTION_NAME, NowYear.class.getName());
     functionFactory.forceRegistFunction(ParseEmailAccount.FUNCTION_NAME,
         ParseEmailAccount.class.getName());
     functionFactory.forceRegistFunction(ParseEmailDomain.FUNCTION_NAME,
@@ -138,6 +145,8 @@ public abstract class BotuOperandFactory {
         ToFloat.class.getName());
     functionFactory.forceRegistFunction(ToInt.FUNCTION_NAME,
         ToInt.class.getName());
+    functionFactory.forceRegistFunction(ToLong.FUNCTION_NAME,
+            ToLong.class.getName());
     functionFactory.forceRegistFunction(ToLowercase.FUNCTION_NAME,
         ToLowercase.class.getName());
     functionFactory.forceRegistFunction(ToUppercase.FUNCTION_NAME,
