@@ -1,0 +1,37 @@
+botu("CUTM/Asiainfo/DeepSecurity[10.0]/Syslog") {
+    if(patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>\\w+\\s+\\d+ \\d+:\\d+:\\d+) (?<host>[^\\s]+) .*: (?<detail>.*)")){
+        sev = parseSyslogSeverity(pri);
+        keyPositionSplitParse(detail, ' ', "=");
+        time = strFormat("%s %s", time2String(now(), "yyyy"), time);
+        switch(TITLE) {
+            case "Events Retrieved":
+            case "Syslog Configuration Created":
+            case "System Settings Saved":
+            case "Policy Sent":
+            case "User Timed Out":
+            case "User Signed":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss");
+                    DS_DVC_NAME =host;
+                    DS_PROCESS_NAME = TITLE;
+                    EVT_CATEGORY = TITLE;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/System";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    BHV_CATEGORY = "/Audit";
+                }
+            default:
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss");
+                    DS_DVC_NAME =host;
+                    DS_PROCESS_NAME = TITLE;
+                    EVT_CATEGORY = TITLE;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/System";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    BHV_CATEGORY = "/Audit";
+                }
+        }
+    }
+
+}

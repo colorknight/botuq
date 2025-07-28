@@ -1,0 +1,300 @@
+botu("APT/Webray/TopAPT[RayEye_1.8.21]/Json"){
+     if(patternParse(MS_SRC_DATA,"(?<info>((?!\\{).)*)(?<detail>\\{.*\\})")){
+        jsonParse(detail,false);
+        if(detailJo.kill_chain != null){
+            switch(detailJo.kill_chain){
+                case "security-defect":
+                    phrase = "other";
+                    break;
+                case "scan-detect":
+                    phrase = "infoDetect";
+                    break;
+                case "attempt-detect":
+                    phrase = "weapon";
+                    break;
+                case "infected":
+                    phrase = "paymentDelivery";
+                    break;
+                case "malware-download":
+                    phrase = "invasion";
+                    break;
+                case "remote-control":
+                    phrase = "installTool";
+                    break;
+                case "internal-penertration":
+                    phrase = "commandControl";
+                    break;
+                case "actions-objectives":
+                    phrase = "maliciousActivity";
+                    break;
+                case "attempt-attack":
+                    phrase = "invasion";
+                    break;
+                default:
+                    phrase = "kill_chain";
+                    break;
+            }
+        }
+        if(detailJo.dns != null){
+            pack("event"){
+                DS_DVC_NAME = detailJo.hostname;
+                START_TIME = toTime(detailJo.timestamp);
+                EVT_ID = rid;
+                EVT_CATEGORY = "dns";
+                EVT_NAME = detailJo.category;
+                EVT_TYPE = detailJo.classtype;
+                SEVERITY = detailJo.severity;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = dictMapping("severity",detailJo.severity);
+                PHRASE = phrase;
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = detailJo.src_ip;
+                SBJ_IP = detailJo.src_ip;
+                SBJ_PORT = detailJo.src_port;
+                SBJ_LOCATION = strFormat("%s/%s",detailJo.src_ip_country,detailJo.src_ip_city);
+                BHV_CATEGORY = "/Attack";
+                TRANS_PROTO = detailJo.proto;
+                APP_PROTO = detailJo.app_proto;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = detailJo.dst_ip;
+                OBJ_IP = detailJo.dst_ip;
+                OBJ_PORT = detailJo.dst_port;
+                OBJ_LOCATION = strFormat("%s/%s", detailJo.dst_ip_country, detailJo.dst_ip_city);
+                OUTCOME = detailJo.message;
+                CONFIDENCE = detailJo.reliability;
+                //PLD_CONTENT = decodeBase64(detailJo.payload);
+            }
+        }else if(detailJo.http != null){
+            pack("event"){
+                DS_DVC_NAME = detailJo.hostname;
+                START_TIME = toTime(detailJo.timestamp);
+                EVT_ID = detailJo.rid;
+                EVT_CATEGORY = "http";
+                EVT_NAME = detailJo.category;
+                EVT_TYPE = detailJo.classtype;
+                SEVERITY = detailJo.severity;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = dictMapping("severity",detailJo.severity);
+                PHRASE = phrase;
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = detailJo.attacker;
+                SBJ_IP = detailJo.attacker;
+                SBJ_PORT = detailJo.attacker_port;
+                SBJ_LOCATION = strFormat("%s/%s",detailJo.attacker_country,detailJo.attacker_city);
+                BHV_CATEGORY = "/Attack";
+                BEHAVIOR = detailJo.http.method;
+                TRANS_PROTO = detailJo.proto;
+                APP_PROTO = detailJo.app_proto;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = detailJo.dst_ip;
+                OBJ_IP = detailJo.dst_ip;
+                OBJ_PORT = detailJo.dst_port;
+                OBJ_LOCATION = strFormat("%s/%s", detailJo.dst_ip_country, detailJo.dst_ip_city);
+                OUTCOME = detailJo.message;
+                REQ_URL = detailJo.http.uri;
+                REQ_USER_AGENT = detailJo.http.user_agent;
+                REQ_REFERER = detailJo.http.referrer;
+                REQ_XFF = detailJo.http.xff;
+                REP_HTTP_SERVER = detailJo.Server;
+                REP_CONTENT_TYPE = detailJo.Content-Type;
+                REP_CONTENT_LENGTH = detailJo.Content-Length;
+                CONFIDENCE = detailJo.reliability;
+                //PLD_CONTENT = decodeBase64(detailJo.payload);
+            }
+        }else if(detailJo.icmp != null){
+            pack("event"){
+                DS_DVC_NAME = detailJo.hostname;
+                START_TIME = toTime(detailJo.timestamp);
+                EVT_ID = detailJo.rid;
+                EVT_CATEGORY = "icmp";
+                EVT_NAME = detailJo.category;
+                EVT_TYPE = detailJo.classtype;
+                SEVERITY = detailJo.severity;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = dictMapping("severity",detailJo.severity);
+                PHRASE = phrase;
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = detailJo.src_ip;
+                SBJ_IP = detailJo.src_ip;
+                SBJ_PORT = detailJo.src_port;
+                SBJ_LOCATION = strFormat("%s/%s",detailJo.src_ip_country,detailJo.src_ip_city);
+                BHV_CATEGORY = "/Attack";
+                TRANS_PROTO = detailJo.proto;
+                APP_PROTO = detailJo.app_proto;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = detailJo.dst_ip;
+                OBJ_IP = detailJo.dst_ip;
+                OBJ_PORT = detailJo.dst_port;
+                OBJ_LOCATION = strFormat("%s/%s", detailJo.dst_ip_country, detailJo.dst_ip_city);
+                OUTCOME = detailJo.message;
+                CONFIDENCE = detailJo.reliability;
+                //PLD_CONTENT = decodeBase64(detailJo.payload);
+                PACKETS_IN = detailJo.icmp.upstream_pktnum;
+                PACKETS_OUT = detailJo.icmp.downstream_pktnum;
+            }
+        }else if(detailJo.email != null){
+            pack("event"){
+                DS_DVC_NAME = detailJo.hostname;
+                START_TIME = toTime(detailJo.timestamp);
+                EVT_ID = detailJo.rid;
+                EVT_CATEGORY = "mail&file";
+                EVT_NAME = detailJo.category;
+                EVT_TYPE = detailJo.classtype;
+                SEVERITY = detailJo.severity;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",detailJo.severity);
+                PHRASE = phrase;
+                SBJ_TYPE = "/User";
+                //SBJ_NAME = parseEmailAccount(detailJo.email.from);
+                SBJ_NAME = detailJo.email.from;
+                SBJ_SUBO_TYPE = "/Resource/Account";
+                SBJ_SUBO = detailJo.email.from;
+                SBJ_IP = detailJo.attacker;
+                SBJ_PORT = detailJo.attacker_port;
+                SBJ_LOCATION = strFormat("%s/%s",detailJo.attacker_country,detailJo.attacker_city);
+                BHV_CATEGORY = "/Send";
+                TRANS_PROTO = detailJo.proto;
+                APP_PROTO = detailJo.app_proto;
+                OBJ_TYPE = "/User";
+                //OBJ_NAME = parseEmailAccount(detailJo.email.to);
+                OBJ_NAME = detailJo.email.to;
+                OBJ_SUBO_TYPE = "/Resource/Account";
+                OBJ_SUBO = detailJo.email.to;
+                OBJ_IP = detailJo.dst_ip;
+                OBJ_PORT = detailJo.dst_port;
+                OBJ_LOCATION = strFormat("%s/%s", detailJo.dst_ip_country, detailJo.dst_ip_city);
+                OUTCOME = detailJo.message;
+                CONFIDENCE = reliability;
+                PLD_EXT_NAME = detailJo.file.package;
+                PLD_SIG = detailJo.file.sha256;
+                //PLD_CONTENT = decodeBase64(detailJo.payload);
+                CC = detailJo.cc;
+                BCC = detailJo.bcc;
+                SUBJECT = detailJo.subject;
+                ATTACHE = detailJo.file.filename;
+            }
+        }else if(detailJo.conn != null){
+            if(detailJo.ssl.server_name != null){
+                technical = "ssl";
+            }
+            pack("event"){
+                DS_DVC_NAME = detailJo.hostname;
+                START_TIME = toTime(detailJo.timestamp);
+                DURATION = toLong(toDouble(detailJo.conn.duration));
+                EVT_ID = detailJo.rid;
+                EVT_CATEGORY = "ssl&conn";
+                EVT_NAME = detailJo.category;
+                EVT_TYPE = detailJo.classtype;
+                SEVERITY = detailJo.severity;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = dictMapping("severity",detailJo.severity);
+                PHRASE = phrase;
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = detailJo.src_ip;
+                SBJ_IP = detailJo.src_ip;
+                SBJ_PORT = detailJo.src_port;
+                SBJ_LOCATION = strFormat("%s/%s",detailJo.src_ip_country,detailJo.src_ip_city);
+                BHV_CATEGORY = "/Attack";
+                TECHNICAL = detailJo.technical;
+                TRANS_PROTO = detailJo.proto;
+                APP_PROTO = detailJo.app_proto;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = detailJo.dst_ip;
+                OBJ_IP = detailJo.dst_ip;
+                OBJ_PORT = detailJo.dst_port;
+                OBJ_LOCATION = strFormat("%s/%s", detailJo.dst_ip_country, detailJo.dst_ip_city);
+                OUTCOME = detailJo.message;
+                CONFIDENCE = detailJo.reliability;
+                //PLD_CONTENT = decodeBase64(detailJo.payload);
+                PACKETS_IN = detailJo.conn.orig_pkts;
+                PACKETS_OUT = detailJo.con.resp_pkts;
+                BYTES_IN = detailJo.conn.orig_bytes;
+                BYTES_OUT = detailJo.conn.resp_bytes;
+            }
+        }else if(detailJo.file != null){
+            pack("event"){
+                DS_DVC_NAME = detailJo.hostname;
+                START_TIME = toTime(detailJo.timestamp);
+                EVT_CATEGORY = detailJo.family;
+                EVT_NAME = detailJo.category;
+                EVT_TYPE = detailJo.classtype;
+                SEVERITY = detailJo.severity;
+                N_EVT_CATEGORY = "/Threat/Malware";
+                N_SEVERITY = dictMapping("severity",detailJo.severity);
+                PHRASE = phrase;
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = detailJo.src_ip;
+                SBJ_IP = detailJo.src_ip;
+                SBJ_PORT = detailJo.src_port;
+                SBJ_LOCATION = strFormat("%s/%s",detailJo.src_ip_country,detailJo.src_ip_city);
+                BHV_CATEGORY = "/Attack";
+                TRANS_PROTO = detailJo.proto;
+                APP_PROTO = detailJo.app_proto;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = detailJo.dst_ip;
+                OBJ_IP = detailJo.dst_ip;
+                OBJ_PORT = detailJo.dst_port;
+                OBJ_LOCATION = strFormat("%s/%s", detailJo.dst_ip_country, detailJo.dst_ip_city);
+                OUTCOME = detailJo.message;
+                CONFIDENCE = detailJo.reliability;
+                //PLD_CONTENT = decodeBase64(detailJo.payload);
+            }
+        }else if(detailJo.user != null){
+             pack("event"){
+                 DS_DVC_NAME = detailJo.hostname;
+                 START_TIME = toTime(detailJo.timestamp);
+                 EVT_CATEGORY = "/Login";
+                 EVT_TYPE = detailJo.classtype;
+                 SEVERITY = detailJo.severity;
+                 N_EVT_CATEGORY = "/HiddenDanger";
+                 N_SEVERITY = dictMapping("severity",detailJo.severity);
+                 PHRASE = phrase;
+                 SBJ_TYPE = "/User";
+                 SBJ_NAME = detailJo.user.username;
+                 SBJ_IP = detailJo.src_ip;
+                 SBJ_PORT = detailJo.src_port;
+                 SBJ_LOCATION = strFormat("%s/%s",detailJo.src_ip_country,detailJo.src_ip_city);
+                 BHV_CATEGORY = "/Login";
+                 TRANS_PROTO = detailJo.proto;
+                 APP_PROTO = detailJo.app_proto;
+                 OBJ_TYPE = "/Ip";
+                 OBJ_NAME = detailJo.dst_ip;
+                 OBJ_IP = detailJo.dst_ip;
+                 OBJ_PORT = detailJo.dst_port;
+                 OBJ_LOCATION = strFormat("%s/%s", detailJo.dst_ip_country, detailJo.dst_ip_city);
+                 OUTCOME = detailJo.message;
+                 STATUS = attack_status;
+                 CONFIDENCE = detailJo.reliability;
+                 //PLD_CONTENT = decodeBase64(detailJo.payload);
+             }
+        }else{
+             pack("event"){
+                 DS_DVC_NAME = detailJo.hostname;
+                 START_TIME = toTime(detailJo.timestamp);
+                 EVT_CATEGORY = "/Audit";
+                 EVT_TYPE = detailJo.classtype;
+                 SEVERITY = detailJo.severity;
+                 N_EVT_CATEGORY = "/Audit";
+                 N_SEVERITY = dictMapping("severity",detailJo.severity);
+                 PHRASE = phrase;
+                 SBJ_TYPE = "/Ip";
+                 SBJ_NAME = detailJo.attacker;
+                 SBJ_IP = detailJo.attacker;
+                 SBJ_PORT = detailJo.src_port;
+                 SBJ_LOCATION = strFormat("%s/%s",detailJo.src_ip_country,detailJo.src_ip_city);
+                 BHV_CATEGORY = "/Attack";
+                 TRANS_PROTO = detailJo.proto;
+                 APP_PROTO = detailJo.app_proto;
+                 OBJ_TYPE = "/Ip";
+                 OBJ_NAME = detailJo.dst_ip;
+                 OBJ_IP = detailJo.dst_ip;
+                 OBJ_PORT = detailJo.dst_port;
+                 OBJ_LOCATION = strFormat("%s/%s", detailJo.dst_ip_country, detailJo.dst_ip_city);
+                 OUTCOME = detailJo.message;
+                 STATUS = attack_status;
+                 CONFIDENCE = detailJo.reliability;
+                 //PLD_CONTENT = decodeBase64(detailJo.payload);
+             }
+        }
+     }
+}

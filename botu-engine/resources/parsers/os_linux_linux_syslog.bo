@@ -1,0 +1,127 @@
+botu("OS/Linux/Linux/Syslog") {
+       //<77>Sep 11 00:01:01 localhost run-parts(/etc/cron.hourly)[1792 starting 0anacron
+      if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+)\\s(?<host>[^\\s]+)\\s(?<process>[^\\[\\s]+)\\[\\d+\\]: (?<msg>.*)")){
+            sev = parseSyslogSeverity(pri);
+            if(patternParse(msg,".*from (?<srcIp>[^\\s]+) .*")){
+                pack("event") {
+                    DS_DVC_NAME =host;
+                    DS_PROCESS_NAME = process;
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                    EVT_CATEGORY = "/Audit";
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = srcIp;
+                    SBJ_IP = srcIp;
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Host";
+                    OBJ_IP = MS_SRC_ADDRESS;
+                    OBJ_NAME = host;
+                    OUTCOME = msg;
+                }
+            }else{
+                pack("event") {
+                    DS_DVC_NAME =host;
+                    DS_PROCESS_NAME = process;
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                    EVT_CATEGORY = "/Audit";
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Host";
+                    SBJ_IP = MS_SRC_ADDRESS;
+                    SBJ_NAME = host;
+                    OUTCOME = msg;
+                }
+            }
+      }else if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+)\\s(?<host>[^\\s]+)\\s(?<process>[^\\[\\s]+): (?<msg>.*)")){
+      //<30>Sep 13 13:01:01 bak-server-120 systemd: Started Session 2567 of user root.
+            sev = parseSyslogSeverity(pri);
+            pack("event") {
+                DS_DVC_NAME =host;
+                DS_PROCESS_NAME = process;
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                EVT_CATEGORY = "/Audit";
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Host";
+                SBJ_IP = MS_SRC_ADDRESS;
+                SBJ_NAME = host;
+                OUTCOME = msg;
+            }
+      }else if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+)\\s(?<host>[^\\s]+)\\s(?<process>[^\\[\\s]+)\\[\\d+([^\\s]+) (?<msg>.*)")){
+            //<77>Aug 13 00:01:01 KYSumc01 run-parts(/etc/cron.hourly)[8545 starting 0anacron
+           sev = parseSyslogSeverity(pri);
+           pack("event") {
+               DS_DVC_NAME =host;
+               DS_PROCESS_NAME = process;
+               START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+               EVT_CATEGORY = "/Audit";
+               SEVERITY = sev;
+               N_EVT_CATEGORY = "/Audit";
+               N_SEVERITY = dictMapping("severity",sev);
+               SBJ_TYPE = "/Host";
+               SBJ_IP = MS_SRC_ADDRESS;
+               SBJ_NAME = host;
+               OUTCOME = msg;
+           }
+     }else if(patternParse(MS_SRC_DATA,"\\<(?<pre>.*)\\>(?<time>[^:]+:\\d+:\\d+)\\s(?<host>.*?)\\s(?<tag>.*?)\\s(?<recordTime>[^:]+:\\d+:\\d+)\\s\\[(?<sev>.*?)\\](?<detail>.*)")){
+           splitParse(detail,',','"','"',": ");
+           req = replaceString(request,"\"","");
+           ary = strSplit(req, " ");
+           pack("event"){
+               START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+               EVT_CATEGORY = tag;
+               SEVERITY = sev;
+               N_EVT_CATEGORY = "/Audit";
+               N_SEVERITY = dictMapping("severity",sev);
+               SBJ_TYPE = "/Ip";
+               SBJ_IP = client;
+               BHV_CATEGORY = "/Access";
+               BEHAVIOR = ary[0];
+               OBJ_TYPE = "/Uri";
+               OBJ_NAME = host;
+               REQ_REFERER = referrer;
+          }
+    }else if(patternParse(MS_SRC_DATA,"\\<(?<pre>.*)\\>(?<time>[^:]+:\\d+:\\d+)\\s(?<host>.*?)\\s(?<tag>.*?)\\s(?<detail>.*)")){
+          //nginx access
+          sev = parseSyslogSeverity(pre);
+          splitParse(detail,' ','"','"',null);
+           if($3 == "-"){
+                sbjType = "/Ip";
+                sbjName = $1;
+           }else {
+                sbjType = "/User";
+                sbjName = $3;
+           }
+           request = replaceString($6,"\"","");
+           ary = strSplit(request, " ");
+           if($9 == "-"){
+              refer = $9;
+           }
+           if($10 == "-"){
+             agent = replaceString($10,"\"","");
+           }
+           pack("event"){
+               START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+               EVT_CATEGORY = tag;
+               SEVERITY = sev;
+               N_EVT_CATEGORY = "/Audit";
+               N_SEVERITY = dictMapping("severity",sev);
+               SBJ_TYPE = sbjType;
+               SBJ_NAME = sbjName;
+               SBJ_IP = $1;
+               BHV_CATEGORY = "/Access";
+               BEHAVIOR = ary[0];
+               TRANS_PROTO = arr[2];
+               OBJ_TYPE = "/Uri";
+               OBJ_NAME = MS_SRC_ADDRESS;
+               REQ_REFERER = refer;
+               STATUS = $7;
+               REQ_USER_AGENT = agent;
+               BYTES_IN = $8;
+          }
+     }
+}

@@ -1,0 +1,159 @@
+botu("EDR/Sangfor/EDR[3.2.21.375]/Warn") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) (?<host>.*): (?<type>.*) : \\[(?<detail>.*)\\]")) {
+		sev = parseSyslogSeverity(pri);
+        jsonParse(detail,true);
+        switch(type) {
+            case "nofile_attack":
+                pack("event") {
+                    START_TIME = ToTime(time);
+                    DS_PROCESS_NAME = type;
+                    EVT_ID = _id;
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = event_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = host;
+                    SBJ_IP = iplist;
+                    BHV_CATEGORY = "/Discovery";
+                    OBJ_TYPE = "/Malcode/File";
+                    PRT_STATUS = state;
+                    OUTCOME = threat_name;
+                }
+            case "Webshell":
+                pack("event") {
+                    START_TIME = ToTime(time);
+                    DS_PROCESS_NAME = type;
+                    EVT_ID = _id;
+                    EVT_CATEGORY = type;
+                    EVT_NAME = event_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    PHRASE = "webshell";
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = host_name;
+                    SBJ_IP = MS_SRC_ADDRESS;
+                    BHV_CATEGORY = "/Discovery";
+                    OBJ_TYPE = "/Malcode/File";
+                    OBJ_NAME = file_path;
+                    PRT_STATUS = state;
+                    OUTCOME = threat_name;
+                }
+            case "blscan":
+                pack("event") {
+                    START_TIME = ToTime(time);
+                    DS_PROCESS_NAME = type;
+                    EVT_ID = _id;
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = event_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = iplist;
+                    SBJ_IP = iplist;
+                    BHV_CATEGORY = "/Is";
+                }
+            case "virus":
+                pack("event") {
+                    START_TIME = ToTime(time);
+                    DS_PROCESS_NAME = type;
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = virus_name;
+                    N_EVT_CATEGORY = "/Threat/Malcode/Virus";
+                    EVT_TYPE = event_type;
+                    PHRASE = "antivirus";
+                    SEVERITY = sev;
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = host_name;
+                    SBJ_IP = iplist;
+                    BHV_CATEGORY = "/Discovery";
+                    OBJ_TYPE = virus_type;
+                    OBJ_NAME = threat_file;
+                    PRT_STATUS = state;
+                }
+            case "anti_bfa":
+                pack("event") {
+                    START_TIME = ToTime(time);
+                    DURATION = duration;
+                    DS_PROCESS_NAME = type;
+                    EVT_CATEGORY = type;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    EVT_TYPE = event_type;
+                    SEVERITY = sev;
+                    N_SEVERITY = dictMapping("severity",sev);
+                    PHRASE = "invasion";
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = att_src;
+                    SBJ_IP = att_src;
+                    BHV_CATEGORY = "/Attack";
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = host_name;
+                    OBJ_IP = iplist;
+                    PRT_STATUS = state;
+                }
+            case "leak":
+                pack("event") {
+                    START_TIME = ToTime(found_time);
+                    DS_PROCESS_NAME = type;
+                    EVT_ID = _id;
+                    EVT_CATEGORY = type;
+                    N_EVT_CATEGORY = "/Vulnerability";
+                    EVT_TYPE = event_type;
+                    SEVERITY = sev;
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = host;
+                    SBJ_IP = MS_SRC_ADDRESS;
+                    BHV_CATEGORY = "/Discovery";
+                    OBJ_TYPE = "/Malcode/Loopholes";
+                    OBJ_NAME = patch_name;
+                    OBJ_URI = patch_url;
+                    PRT_STATUS = state;
+                }
+            case "flux":
+                pack("event") {
+                    START_TIME = ToTime(s);
+                    DS_PROCESS_NAME = type;
+                    EVT_CATEGORY = event_type;
+                    EVT_NAME = j;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = a;
+                    SBJ_IP = c;
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Resource";
+                    OBJ_NAME = v;
+                    OBJ_IP = f;
+                    OBJ_PORT = g;
+                    PRT_ACTION = k;
+                }
+            case "Botnet":
+                pack("event") {
+                    START_TIME = ToTime(found_time);
+                    DS_PROCESS_NAME = type;
+                    EVT_ID = _id;
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = event_type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Malware";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    PHRASE = "antivirus";
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = host_name;
+                    SBJ_IP = iplist;
+                    BHV_CATEGORY = "/Discovery";
+                    OBJ_TYPE = "/Malcode/Botnet";
+                    OBJ_NAME = threat_file;
+                    PRT_STATUS = state;
+                }
+            default:
+                pack() {}
+	    }
+	}
+}

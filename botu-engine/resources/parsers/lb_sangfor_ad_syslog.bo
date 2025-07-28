@@ -1,0 +1,67 @@
+botu("LB/Sangfor/AD/Syslog"){
+    if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>\\w+\\s+\\d+ \\d+:\\d+:\\d+) (?<host>\\S+) : LINKD: \\[ (?<deviceName>.*) \\](?<detail>.*)")) {
+        sev = parseSyslogSeverity(pri);
+        pack("event"){
+            START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+            EVT_CATEGORY = "LINKD";
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/Host";
+            SBJ_NAME = deviceName ;
+            BHV_CATEGORY = "/Is";
+            OUTCOME = detail;
+        }
+    }else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>\\w+\\s+\\d+ \\d+:\\d+:\\d+) (?<host>\\S+) : DNS_MONITOR: DNS服务器\\[(?<deviceIp>.*)\\](?<detail>.*)")) {
+          sev = parseSyslogSeverity(pri);
+          pack("event"){
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                EVT_NAME = detail;
+                EVT_CATEGORY = "DNS_MONITOR";
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Host";
+                SBJ_NAME =  deviceIp;
+                SBJ_IP =  deviceIp;
+                BHV_CATEGORY = "/Is";
+                OUTCOME = detail;
+          }
+    }else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>\\w+\\s+\\d+ \\d+:\\d+:\\d+) (?<host>\\S+) : SYS: (?<detail>.*)")) {
+           sev = parseSyslogSeverity(pri);
+           pack("event"){
+               START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+               EVT_NAME = detail;
+               EVT_CATEGORY = "SYS";
+               SEVERITY = sev;
+               N_EVT_CATEGORY = "/Audit";
+               N_SEVERITY = dictMapping("severity",sev);
+               SBJ_TYPE = "/Host";
+               SBJ_NAME = MS_SRC_NAME;
+               SBJ_IP = MS_SRC_ADDRESS;
+               BHV_CATEGORY = "/Is";
+               OUTCOME = detail;
+           }
+    }else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>\\w+\\s+\\d+ \\d+:\\d+:\\d+) (?<host>\\S+) : (?<detail>.*)")) {
+        sev = parseSyslogSeverity(pri);
+        splitParse(detail, ',', '"', '"', "=");
+         pack("event"){
+             START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+             EVT_NAME = trim($5," ");
+             EVT_CATEGORY = trim($3," ");
+             SEVERITY = sev;
+             N_EVT_CATEGORY = "/Audit";
+             N_SEVERITY = dictMapping("severity",sev);
+             SBJ_TYPE = "/User";
+             SBJ_NAME = trim($1," ");
+             SBJ_IP = trim($2," ");
+             BHV_CATEGORY = trim($3," ");
+             OBJ_TYPE = "/Resource/Other";
+             OBJ_HOST = host;
+             OBJ_IP = MS_SRC_ADDRESS;
+             OUTCOME = trim($5," ");
+         }
+    }else {
+        pack(){}
+    }
+}

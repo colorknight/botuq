@@ -1,0 +1,48 @@
+botu("IPS/LeadSec/IPS/Syslog") {
+    patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>(?<time>\\w+\\s+\\d+\\s\\d+:\\d+:\\d+) (?<devname>[^\\s]+) (?<evtcat>\\w+):(?<msg>.*)");
+    splitParse(msg, ' ', '"', '"', "=");
+    switch(evtcat) {
+        case "IPS":
+            sip = SrcIP;
+            if (SrcIP6 != null) {
+                sip = SrcIP6;
+            }
+            dip = DstIP;
+            if (DstIP6 != null) {
+                dip = DstIP6;
+            }
+            pack("event") {
+                START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
+                EVT_CATEGORY = evtcat;
+                EVT_TYPE = SecurityType;
+                EVT_NAME = EventName;
+                EVT_ID = EventID;
+                SEVERITY = EventLevel;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = toInt(EventLevel) + 1;
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = SrcPort;
+                SBJ_INTERFACE = InInterface;
+                SBJ_MAC = SMAC;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = Protocol;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = DstPort;
+                OBJ_INTERFACE = OutInterface;
+                OBJ_MAC = DMAC;
+                PRT_ACTION = Action;
+                OUTCOME = Content;
+            }
+        case "RUN_INFO":
+            pack("event") {
+                START_TIME = format2Time(GenTime, "yyyy-MM-dd HH:mm:ss");
+                EVT_CATEGORY = evtcat;
+                N_EVT_CATEGORY = "/Audit/Status";
+                N_SEVERITY = 1;
+            }
+    }
+}

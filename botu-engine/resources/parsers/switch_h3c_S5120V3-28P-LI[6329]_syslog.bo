@@ -1,0 +1,16 @@
+botu("Switch/H3c/S5120V3-28P-LI[6329]/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+\\s\\d+)\\s(?<Sysname>\\S+) %%(?<vendor>\\d+)(?<MODULE>[^/]+)/\\d+/(?<MNEMONIC>[^\\d+]+): (?<content>.*)")) {
+        sev = parseSyslogSeverity(pri);
+        pack("event") {
+            DS_DVC_NAME = Sysname;
+            DS_PROCESS_NAME = MODULE;
+            START_TIME = format2Time(time, "MMM dd HH:mm:ss yyyy");
+            EVT_CATEGORY = "/Audit";
+            EVT_TYPE = MNEMONIC;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            OUTCOME = content;
+        }
+    }
+}

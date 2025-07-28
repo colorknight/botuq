@@ -1,0 +1,173 @@
+botu("NAC/Venus/NAC-6000[v3.0]/Syslog") {
+	if (patternParse(MS_SRC_DATA, "([^=]+):(?<detail>.*)")) {
+		splitParse(detail, ' ', '"', '"', "=");
+		switch(logtype){
+		    case "1":
+		        if(mod == "webui"){
+                    pack("event"){
+                        START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                        DS_DVC_NAME = dname;
+                        DS_PROCESS_NAME = mod;
+                        EVT_CATEGORY = "/Audit";
+                        N_EVT_CATEGORY = "/Audit";
+                        SEVERITY = pri;
+                        N_SEVERITY = dictMapping("severity",pri);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = user;
+                        SBJ_IP = from;
+                        BEHAVIOR = act;
+                        OUTCOME = dsp_msg;
+                    }
+		        }else if(mod == "hostname"){
+                    pack("event"){
+                        START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                        DS_DVC_NAME = dname;
+                        DS_PROCESS_NAME = mod;
+                        EVT_CATEGORY = "/Audit";
+                        N_EVT_CATEGORY = "/Audit";
+                        SEVERITY = pri;
+                        N_SEVERITY = dictMapping("severity",pri);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = user;
+                        SBJ_IP = MS_SRC_ADDRESS;
+                        BHV_CATEGORY = "Update";
+                        BEHAVIOR = act;
+                        OBJ_TYPE = "/Resource/Configuration";
+                        OBJ_NAME = hostname;
+                        OUTCOME = dsp_msg;
+                        STATUS = result;
+                    }
+		        }else{
+                    pack("event"){
+                        START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                        DS_DVC_NAME = dname;
+                        DS_PROCESS_NAME = mod;
+                        EVT_CATEGORY = "/Audit";
+                        N_EVT_CATEGORY = "/Audit";
+                        SEVERITY = pri;
+                        N_SEVERITY = dictMapping("severity",pri);
+                        BEHAVIOR = act;
+                        OUTCOME = dsp_msg;
+                    }
+		        }
+            case "3":
+                pack("event"){
+                    START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                    DS_DVC_NAME = dname;
+                    DS_PROCESS_NAME = mod;
+                    EVT_CATEGORY = "/Audit";
+                    N_EVT_CATEGORY = "/Audit";
+                    SEVERITY = pri;
+                    N_SEVERITY = dictMapping("severity",pri);
+                    OUTCOME = dsp_msg;
+                    STATUS = result;
+                }
+            case "7":
+                pack("event"){
+                    START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                    DS_DVC_NAME = dname;
+                    DS_PROCESS_NAME = mod;
+                    EVT_CATEGORY = "/Audit";
+                    N_EVT_CATEGORY = "/Audit";
+                    SEVERITY = pri;
+                    N_SEVERITY = dictMapping("severity",pri);
+                    BHV_CATEGORY = act;
+                    OUTCOME = dsp_msg;
+                    STATUS = result;
+                }
+            case "5":
+                pack("event"){
+                    START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                    DS_DVC_NAME = dname;
+                    DS_PROCESS_NAME = mod;
+                    EVT_CATEGORY = "/Audit";
+                    N_EVT_CATEGORY = "/Audit";
+                    SEVERITY = pri;
+                    N_SEVERITY = dictMapping("severity",pri);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    BEHAVIOR = act;
+                    OBJ_TYPE = "/Resource";
+                    OBJ_IP = ip;
+                    OBJ_NAME = ip;
+                    OBJ_MAC = convert2Mac(mac);
+                    OUTCOME = dsp_msg;
+                    STATUS = result;
+                }
+            case "4":
+                if(ip == "''"){
+                     pack("event"){
+                         START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                         DS_DVC_NAME = dname;
+                         DS_PROCESS_NAME = mod;
+                         EVT_CATEGORY = "/Audit";
+                         EVT_TYPE = auth_type;
+                         N_EVT_CATEGORY = "/Audit";
+                         SEVERITY = pri;
+                         N_SEVERITY = dictMapping("severity",pri);
+                         SBJ_TYPE = "/User";
+                         SBJ_NAME = user;
+                         BEHAVIOR = act;
+                         OUTCOME = dsp_msg;
+                         STATUS = result;
+                     }
+                }else{
+                     pack("event"){
+                         START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                         DS_DVC_NAME = dname;
+                         DS_PROCESS_NAME = mod;
+                         EVT_CATEGORY = "/Audit";
+                         EVT_TYPE = auth_type;
+                         N_EVT_CATEGORY = "/Audit";
+                         SEVERITY = pri;
+                         N_SEVERITY = dictMapping("severity",pri);
+                         SBJ_TYPE = "/User";
+                         SBJ_NAME = user;
+                         SBJ_IP = ip;
+                         BEHAVIOR = act;
+                         OUTCOME = dsp_msg;
+                         STATUS = result;
+                     }
+                }
+            case "5":
+            case "6":
+                 pack("event"){
+                     START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                     DS_DVC_NAME = dname;
+                     DS_PROCESS_NAME = mod;
+                     EVT_CATEGORY = "/Audit";
+                     EVT_TYPE = auth_type;
+                     N_EVT_CATEGORY = "/Audit";
+                     SEVERITY = pri;
+                     N_SEVERITY = dictMapping("severity",pri);
+                     SBJ_TYPE = "/Ip";
+                     SBJ_NAME = ip;
+                     SBJ_IP = ip;
+                     SBJ_MAC = convert2Mac(mac);
+                     BHV_CATEGORY = "/Is";
+                     BEHAVIOR = act;
+                     OUTCOME = dsp_msg;
+                     STATUS = result;
+                 }
+            case "2":
+                 pack("event"){
+                     START_TIME = format2Time(date, "yyyy/MM/dd HH:mm:ss");
+                     DS_DVC_NAME = dname;
+                     DS_PROCESS_NAME = mod;
+                     EVT_CATEGORY = "/Audit";
+                     EVT_TYPE = auth_type;
+                     N_EVT_CATEGORY = "/Audit";
+                     SEVERITY = pri;
+                     N_SEVERITY = dictMapping("severity",pri);
+                     SBJ_TYPE = "/Ip";
+                     SBJ_NAME = ip;
+                     SBJ_IP = ip;
+                     SBJ_MAC = convert2Mac(mac);
+                     BHV_CATEGORY = "/Is";
+                     BEHAVIOR = act;
+                     OUTCOME = dsp_msg;
+                     STATUS = result;
+                 }
+		}
+	}
+}

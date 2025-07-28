@@ -19,7 +19,7 @@ public class ToInt extends AbstractFunction {
           "The function format is 'toInt(field[, radix)'");
     }
     if (parameters.size() == 2) {
-      radix = (int) (long) parameters.get(1).operate((EntityMap) null);
+      radix = (int) parameters.get(1).operate((EntityMap) null);
     }
   }
 

@@ -1,0 +1,26 @@
+botu("DLP/Topsec/DLP[3.2294]/Syslog") {
+	splitParse(MS_SRC_DATA, '#', null, null, "=");
+	pack("event") {
+		DS_PROCESS_NAME = PROCESS;
+		START_TIME = format2Time(TIME, "yyyy-MM-dd HH:mm:ss");
+		EVT_NAME = "数据防泄漏策略匹配";
+		EVT_ID = INCIDENT_ID;
+		EVT_CATEGORY = PolicyName;
+		EVT_TYPE = RuleName;
+		SEVERITY = Serverty;
+		N_EVT_CATEGORY = "/Audit";
+		N_SEVERITY = dictMapping("severity",Serverty);
+		SBJ_TYPE = "/Ip";
+		SBJ_NAME = SENDERIP;
+		SBJ_IP = SENDERIP;
+		SBJ_PORT = SENDERPORT;
+		BHV_CATEGORY = "/Access";
+		BEHAVIOR = method;
+		APP_PROTO = toUppercase(PROTOCOL);
+		OBJ_TYPE = "/Ip";
+		OBJ_NAME = RECIPIENTSADDR;
+		OBJ_IP = RECIPIENTSADDR;
+		OBJ_PORT = RECIPIENTSPORT;
+		REQ_URL = RECIPIENTSDOMAIN;
+	}
+}

@@ -1,0 +1,188 @@
+botu("IDS/Nsfocus/NIDS[5.6R10F02SP6]/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<detail>.*)")) {
+	    splitParse(detail, ';', null, null, "=");
+	    splitParse(detail, ';', null, null, ":");
+		patternParse(proto,"(?<trans>.*)\\.(?<app>.*)");
+		sev = parseSyslogSeverity(pri);
+		patternParse(event,"\\[(?<evtid>[^\\]]+)\\](?<evtname>.*)");
+		if(log_type != null){
+            switch(log_type) {
+                case "ips":
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        EVT_CATEGORY = log_type;
+                        EVT_NAME = event;
+                        SEVERITY = danger_degree;
+                        N_EVT_CATEGORY = "/Threat";
+                        N_SEVERITY = dictMapping("severity", danger_degree);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = src_addr;
+                        SBJ_IP = src_addr;
+                        SBJ_PORT = src_port;
+                        SBJ_ROLE = user;
+                        BHV_CATEGORY = "/Access";
+                        APP_PROTO = toUppercase(proto);
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME = dst_addr;
+                        OBJ_IP = dst_addr;
+                        OBJ_PORT = dst_port;
+                        PRT_ACTION = breaking_sighn;
+                    }
+                case "av":
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        EVT_CATEGORY = log_type;
+                        EVT_NAME = event;
+                        SEVERITY = danger_degree;
+                        N_EVT_CATEGORY = "/Threat/Malware";
+                        N_SEVERITY = dictMapping("severity", danger_degree);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = src_addr;
+                        SBJ_IP = src_addr;
+                        SBJ_PORT = src_port;
+                        SBJ_ROLE = user;
+                        SBJ_MAC = convert2Mac(src_mac);
+                        APP_PROTO = toUppercase(proto);
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME = dst_addr;
+                        OBJ_IP = dst_addr;
+                        OBJ_PORT = dst_port;
+                        OBJ_MAC = convert2Mac(dst_mac);
+                        PRT_ACTION = breaking_sighn;
+                    }
+                case "url":
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        EVT_CATEGORY = log_type;
+                        EVT_ID = evtid;
+                        EVT_NAME = evtname;
+                        SEVERITY = danger_degree;
+                        N_EVT_CATEGORY = "/Violation";
+                        N_SEVERITY = dictMapping("severity", danger_degree);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = src_addr;
+                        SBJ_IP = src_addr;
+                        SBJ_PORT = src_port;
+                        APP_PROTO = toUppercase(proto);
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME = dst_addr;
+                        OBJ_IP = dst_addr;
+                        OBJ_PORT = dst_port;
+                        PRT_ACTION = breaking_sighn;
+                    }
+                case "rep":
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        EVT_CATEGORY = log_type;
+                        EVT_ID = evtid;
+                        EVT_NAME = evtname;
+                        SEVERITY = danger_degree;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity", danger_degree);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = src_addr;
+                        SBJ_IP = src_addr;
+                        SBJ_PORT = src_port;
+                        APP_PROTO = toUppercase(proto);
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME = dst_addr;
+                        OBJ_IP = dst_addr;
+                        OBJ_PORT = dst_port;
+                        PRT_ACTION = breaking_sighn;
+                    }
+                case "br":
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        EVT_CATEGORY = log_type;
+                        EVT_ID = evtid;
+                        EVT_NAME = evtname;
+                        SEVERITY = danger_degree;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity", danger_degree);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = src_addr;
+                        SBJ_IP = src_addr;
+                        SBJ_PORT = src_port;
+                        SBJ_NAME = user;
+                        APP_PROTO = toUppercase(proto);
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME = dst_addr;
+                        OBJ_IP = dst_addr;
+                        OBJ_PORT = dst_port;
+                        PRT_ACTION = breaking_sighn;
+                    }
+                case "fw_log":
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = log_type;
+                        EVT_NAME = "应用识别日志";
+                        EVT_TYPE = rule_id;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = src_addr;
+                        SBJ_ROLE = user;
+                        SBJ_IP = src_addr;
+                        SBJ_PORT = src_port;
+                        SBJ_INTERFACE = src_intf;
+                        BHV_CATEGORY = "/Access";
+                        TRANS_PROTO = toUppercase(proto);
+                        APP_PROTO = toUppercase(app_name);
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME = dst_addr;
+                        OBJ_IP = dst_addr;
+                        OBJ_PORT = dst_port;
+                        OBJ_INTERFACE = dst_intf;
+                        PRT_ACTION = action;
+                    }
+                case "2":
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = device_type;
+                        EVT_NAME = "配置日志";
+                        EVT_CATEGORY = log_type;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = user;
+                        SBJ_IP = loginip;
+                        BHV_CATEGORY = "/Update";
+                        OUTCOME = msg;
+                    }
+                default:
+                    pack() {}
+            }
+        } else if (event != null) {
+             pack("event") {
+                 START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                 EVT_CATEGORY = event;
+                 SEVERITY = danger_degree;
+                 N_SEVERITY = dictMapping("severity",danger_degree);
+                 SBJ_TYPE = "/Ip";
+                 SBJ_NAME = src_addr;
+                 SBJ_IP = src_addr;
+                 SBJ_PORT = src_port;
+                 TRANS_PROTO = toUppercase(trans);
+                 APP_PROTO = app;
+                 OBJ_TYPE = "/Ip";
+                 OBJ_NAME = dst_addr;
+                 OBJ_IP = dst_addr;
+                 OBJ_PORT = dst_port;
+             }
+        } else if (user != null){
+            pack("event") {
+                START_TIME = toTime(time);
+                EVT_NAME = "登录日志";
+                EVT_TYPE = type;
+                SEVERITY = sev;
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user;
+                SBJ_IP = loginip;
+            }
+        }
+	}
+}

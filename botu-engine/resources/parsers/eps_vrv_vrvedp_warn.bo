@@ -1,0 +1,75 @@
+botu("EPS/VRV/VRVEDP/Warn") {
+	patternSplitParse(MS_SRC_DATA, "\\*\\|", null);
+	if($1 != "STA") {
+        ip = regExtract($5,"(\\d+\\.\\d+\\.\\d+\\.\\d+).*");
+        mac = regExtract($6,"([^;]+).*");
+        user = $9;
+        inx = indexString(user,":");
+        if (inx != -1) {
+            u = subString(user, 0, inx);
+            role = subString(user, inx + 1);
+            user = u;
+        }
+        if ($3 == "上网访问") {
+            url = regExtract($16, "(\\w+:[^\\s]+).*");
+            dn = regExtract(url, "\\w+://([^/]+).*");
+            pack("event") {
+                START_TIME = format2Time($4, "yyyy-MM-dd HH:mm:ss");
+                EVT_CATEGORY = strFormat("%s/%s", $1,$3);
+                EVT_TYPE = $15;
+                SEVERITY = $2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",$2);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user;
+                SBJ_ROLE = role;
+                SBJ_HOST = $7;
+                SBJ_IP = ip;
+                SBJ_MAC = Convert2Mac(mac);
+                SBJ_LOCATION = $8;
+                BHV_CATEGORY = "/Access";
+                OBJ_TYPE = "/Service/Web";
+                OBJ_NAME = dn;
+                REQ_URL = url;
+                OUTCOME = $16;
+            }
+        }else if( $3 == "病毒行为"){
+            pack("event") {
+                START_TIME = format2Time($4, "yyyy-MM-dd HH:mm:ss");
+                EVT_CATEGORY = strFormat("%s/%s", $1,$3);
+                EVT_TYPE = $15;
+                SEVERITY = $2;
+                N_EVT_CATEGORY = "/Threat/Malware";
+                N_SEVERITY = dictMapping("severity",$2);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user;
+                SBJ_ROLE = role;
+                SBJ_HOST = $7;
+                SBJ_IP = ip;
+                SBJ_MAC = Convert2Mac(mac);
+                SBJ_LOCATION = $8;
+                BHV_CATEGORY = "/Access";
+                OUTCOME = $16;
+            }
+        }else {
+            pack("event") {
+                START_TIME = format2Time($4, "yyyy-MM-dd HH:mm:ss");
+                EVT_CATEGORY = strFormat("%s/%s", $1,$3);
+                EVT_TYPE = $15;
+                SEVERITY = $2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",$2);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user;
+                SBJ_ROLE = role;
+                SBJ_HOST = $7;
+                SBJ_IP = ip;
+                SBJ_MAC = Convert2Mac(mac);
+                SBJ_LOCATION = $8;
+                BHV_CATEGORY = "/Access";
+                OUTCOME = $16;
+            }
+        }
+    }
+
+}

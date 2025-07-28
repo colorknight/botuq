@@ -1,0 +1,132 @@
+botu("VPN/Venus/SAG6000[V3.0]/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) ([^:]+): (?<detail>.*)")) {
+        sev = parseSyslogSeverity(pri);
+        splitParse(detail, ' ', '"', '"', "=");
+        switch(logtype){
+           case "1":
+                if(user != null){
+                  sbjType = "/User";
+                  sbjName = user;
+                  sbjIp = from;
+                  behavior = act;
+                }
+                pack("event"){
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = dname;
+                    DS_PROCESS_NAME = mod;
+                    EVT_CATEGORY = "管理日志";
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/System";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = sbjType;
+                    SBJ_NAME = sbjName;
+                    SBJ_IP = sbjIp;
+                    BEHAVIOR = behavior;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dname;
+                    OBJ_IP = MS_SRC_ADDRESS;
+                    STATUS = simpleMapping(result, "{0:成功,1:失败}", 1);
+                    OUTCOME = dsp_msg;
+                }
+           case "2":
+                pack("event"){
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = dname;
+                    DS_PROCESS_NAME = mod;
+                    EVT_CATEGORY = "系统日志";
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    STATUS = simpleMapping(result, "{0:成功,1:失败}", 1);
+                    OUTCOME = dsp_msg;
+                }
+           case "3":
+                pack("event"){
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = dname;
+                    DS_PROCESS_NAME = mod;
+                    EVT_CATEGORY = "防火墙日志";
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    STATUS = simpleMapping(result, "{0:成功,1:失败}", 1);
+                    OUTCOME = dsp_msg;
+                }
+           case "4":
+                pack("event"){
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = dname;
+                    DS_PROCESS_NAME = mod;
+                    EVT_CATEGORY = "用户认证日志";
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = usertype;
+                    SBJ_NAME = username;
+                    SBJ_IP = login_ip;
+                    BEHAVIOR = act;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dname;
+                    OBJ_IP = MS_SRC_ADDRESS;
+                    STATUS = simpleMapping(result, "{0:成功,1:失败}", 1);
+                    OUTCOME = strFormat("%s,reason is %s", dsp_msg,simpleMapping(reason, "{0:license不足,1:客户端策略不满足,2:动态令牌认证失败,3:用户被禁用,4:用户不在有效期,5:口令认证未启用,6:无该用户或密码错误,7:用户被锁定,8:用户名已锁定,9:用户IP已锁定,10:其他原因登录失败,11:证书验证失败,12:证书超期,13:证书被撤销,14:证书解签名失败,15:硬件特征码错误,16:绑定MAC错误,17:绑定HOST错误,18:暴力破解,19:短信码认证失败,20:第三方认证服务器异常,21:证书认证未启用,22:绑定IP错误}", 0));
+                }
+           case "5":
+                pack("event"){
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = dname;
+                    DS_PROCESS_NAME = mod;
+                    EVT_CATEGORY = "IPSEC VPN日志";
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    STATUS = simpleMapping(result, "{0:成功,1:失败}", 1);
+                    OUTCOME = dsp_msg;
+                }
+           case "6":
+                pack("event"){
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = dname;
+                    DS_PROCESS_NAME = mod;
+                    EVT_CATEGORY = "资源访问日志";
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = addr;
+                    BHV_CATEGORY = "/Access";
+                    BEHAVIOR = act;
+                    OBJ_TYPE = resourcetype;
+                    OBJ_NAME = resourcename;
+                    BYTES_IN = resurceupflow;
+                    BYTES_OUT = resourcedownflow;
+                    OUTCOME = dsp_msg;
+                }
+           case "7":
+                pack("event"){
+                    START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = dname;
+                    DS_PROCESS_NAME = mod;
+                    EVT_CATEGORY = "VPDN日志";
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    STATUS = simpleMapping(result, "{0:成功,1:失败}", 1);
+                    OUTCOME = dsp_msg;
+                }
+           case "8":
+                pack("event"){
+                   START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                   DS_DVC_NAME = dname;
+                   DS_PROCESS_NAME = mod;
+                   EVT_CATEGORY = "集群配置日志";
+                   SEVERITY = sev;
+                   N_EVT_CATEGORY = "/Audit";
+                   N_SEVERITY = dictMapping("severity",sev);
+                   STATUS = simpleMapping(result, "{0:成功,1:失败}", 1);
+                   OUTCOME = dsp_msg;
+                }
+        }
+    }
+}

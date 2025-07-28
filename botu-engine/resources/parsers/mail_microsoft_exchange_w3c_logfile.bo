@@ -1,0 +1,27 @@
+// Exchange
+botu("Mail/Microsoft/Exchange/W3C/Logfile"){
+    startTime = strFormat("%s %s", date, time);
+    pack("event"){
+        START_TIME = extractTime(startTime);
+        DS_DVC_NAME = field("Server-hostname");
+        EVT_CATEGORY = field("s-svcname");
+        SEVERITY = Priority;
+        N_EVT_CATEGORY = "/Audit";
+        N_SEVERITY = dictMapping("severity","info");
+        SBJ_TYPE = "/User";
+        SBJ_IP = convert2Ip(field("client-ip"));
+        SBJ_NAME = parseEmailAccount(field("Sender-Address"));
+        SBJ_SUBO_TYPE = "/Resource/Account";
+        SBJ_SUBO = field("Sender-Address");
+        BHV_CATEGORY = "/Send";
+        APP_PROTO = field("Partner-Name");
+        OBJ_TYPE = "/User";
+        OBJ_NAME = parseEmailAccount(field("Recipient-Address"));
+        OBJ_SUBO_TYPE = "/Resource/Account";
+        OBJ_SUBO = field("Recipient-Address");
+        OBJ_IP = convert2Ip(field("Recipient-Address"));
+        STATUS = field("Recipient-Report-Status");
+        REQ_USER_AGENT = field("c-agent");
+        REQ_REFERER = field("cs-referred");
+    }
+}

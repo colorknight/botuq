@@ -1,0 +1,202 @@
+botu("Firewall/VENUS/Firewall/Syslog") {
+    if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d\\d:\\d\\d) (?<host>\\S+) (?<type>\\S+): (?<detail>.*)")) {
+        splitParse(detail, ' ', '"', '"', "=");
+        sev = parseSyslogSeverity(pri);
+        switch(type){
+         case "FILTER":
+            if(Action == "PERMIT"){
+                nCat = "/Audit";
+            }else{
+                nCat = "/Violation";
+            }
+            pack("event"){
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                EVT_CATEGORY = type;
+                EVT_TYPE = PolicyID;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = nCat;
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = SrcIP;
+                SBJ_IP = SrcIP;
+                SBJ_PORT = SrcPort;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = Protocol;
+                OBJ_NAME = DstIP;
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = DstIP;
+                OBJ_PORT = DstPort;
+                PRT_ACTION = Action;
+                OUTCOME = strFormat("%s %s", $14, $15);
+            }
+         case "SYSTEM_INFO":
+         case "WARNING_INFO":
+         case "IF_INFO":
+         case "HA":
+         case "OSPF":
+         case "RIP":
+         case "DHCP":
+         case "CONFIG":
+         case "DNS_PROXY":
+         case "NAT":
+         case "WEB_AUTH":
+         case "IPSECVPN":
+         case "L2TPVPN":
+            pack("event"){
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = type;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit/System";
+                N_SEVERITY = dictMapping("severity",sev);
+                OUTCOME = Content;
+            }
+         case "QOS":
+         case "APPCONTROL":
+         case "URL":
+         case "SESSIONPOLICY":
+            pack("event"){
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = type;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = SrcIP;
+                SBJ_IP = SrcIP;
+                SBJ_PORT = SrcPort;
+                TRANS_PROTO = Protocol;
+                BHV_CATEGORY = "/Access";
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = DstIP;
+                OBJ_NAME = DstIP;
+                OBJ_PORT = DstPort;
+                OUTCOME = Content;
+                PRT_ACTION = Action;
+            }
+         case "FLOOD":
+         case "DDOS":
+            pack("event"){
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = type;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Threat/Attack/DOS";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = SrcIP;
+                SBJ_IP = SrcIP;
+                SBJ_PORT = SrcPort;
+                TRANS_PROTO = Protocol;
+                BHV_CATEGORY = "/Attack";
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = DstIP;
+                OBJ_NAME = DstIP;
+                OBJ_PORT = DstPort;
+                OUTCOME = Content;
+                PRT_ACTION = Action;
+            }
+         case "SCAN":
+            pack("event"){
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = type;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Threat/Attack/Scan";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = SrcIP;
+                SBJ_IP = SrcIP;
+                BHV_CATEGORY = "/Scan";
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = MS_SRC_ADDRESS;
+                OBJ_NAME = MS_SRC_ADDRESS;
+                OUTCOME = Content;
+            }
+         case "AV":
+            pack("event"){
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = type;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Threat/Malware";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = SrcIP;
+                SBJ_IP = SrcIP;
+                BHV_CATEGORY = "/Attack";
+                TRANS_PROTO = Protocol;
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = DstIP;
+                OBJ_NAME = DstIP;
+                OBJ_PORT = DstPort;
+                OUTCOME = Content;
+                PRT_ACTION = Action;
+            }
+         case "IPS":
+         case "WEB_SECURITY":
+            pack("event"){
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = type;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = SrcIP;
+                SBJ_IP = SrcIP;
+                BHV_CATEGORY = "/Attack";
+                TRANS_PROTO = Protocol;
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = DstIP;
+                OBJ_NAME = DstIP;
+                OBJ_PORT = DstPort;
+                OUTCOME = Content;
+                PRT_ACTION = Action;
+            }
+         case "ANTIARP":
+            pack("event"){
+                START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                DS_DVC_NAME = host;
+                EVT_CATEGORY = type;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = SrcIP;
+                SBJ_IP = SrcIP;
+                SBJ_PORT = SrcPort;
+                SBJ_MAC = convert2Mac(SMAC);
+                BHV_CATEGORY = "/Attack";
+                TRANS_PROTO = Protocol;
+                OUTCOME = Content;
+                PRT_ACTION = Action;
+            }
+         case "BLACKLIST":
+             pack("event"){
+                 START_TIME = format2Time(time, "MMM dd HH:mm:ss");
+                 DS_DVC_NAME = host;
+                 EVT_CATEGORY = type;
+                 SEVERITY = sev;
+                 N_EVT_CATEGORY = "/Violation";
+                 N_SEVERITY = dictMapping("severity",sev);
+                 SBJ_TYPE = "/Ip";
+                 SBJ_NAME = SrcIP;
+                 SBJ_IP = SrcIP;
+                 SBJ_PORT = SrcPort;
+                 TRANS_PROTO = Protocol;
+                 BHV_CATEGORY = "/Access";
+                 OBJ_TYPE = "/Ip";
+                 OBJ_IP = DstIP;
+                 OBJ_NAME = DstIP;
+                 OBJ_PORT = DstPort;
+                 OUTCOME = Content;
+                 PRT_ACTION = Action;
+             }
+         default:
+            pack(){}
+        }
+    }
+
+}

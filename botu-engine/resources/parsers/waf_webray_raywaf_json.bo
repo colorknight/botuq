@@ -66,7 +66,7 @@ botu("WAF/Webray/Raywaf/Json") {
     } else if (patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>.*WAF :(?<time>.*) DDOS: devicename=(.*) sip=(?<sip>.*) sport=(?<sport>\\d*)\\s+dip=(?<dip>.*) dport=(?<dport>\\d*)\\s+ipproto=(?<proto>.*) attack=(?<attack>.*) url=(?<url>.*) host=(?<host>.*) cdnip=(?<cdnip>.*) xff=(?<xff>.*) grade=.*")) {
         sev = parseSyslogSeverity(pri);
         pack("event") {
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "MMM dd HH:mm:ss");
             DS_DVC_NAME = devicename;
             EVT_CATEGORY = attack;
             SEVERITY = sev;
@@ -89,7 +89,7 @@ botu("WAF/Webray/Raywaf/Json") {
         }
     } else if (patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>.*WAF :(?<time>.*) WAF: (?<sip>[^:]*):(?<sport>\\d+)-\\>(?<dip>[^ ]*) devicename=(?<devicename>.*) url=(?<url>.*)\\s+method=(?<method>.*)\\s+args=(?<args>.*)\\s+flag_field=(?<flagfield>.*)\\s+block_time=(?<blocktime>\\d*)\\s+http_type=(?<httptype>.*)\\s+attack_field=(?<attackfield>\\d*)\\s+profile_id=(?<profileid>\\d*)\\s+rule_id=(?<ruleid>\\d*)\\s+type=(?<type>.*)\\s+severity=(?<severity>\\d*)\\s+action=(?<action>\\d*)\\s+referer=(?<referer>.*)\\s+useragent=(?<useragent>.*)\\s+post=(?<post>.*)\\s+xip=(?<xff>.*) code=.*")) {
         pack("event") {
-            START_TIME = extractTime(time);
+            START_TIME = format2Time(time, "MMM dd HH:mm:ss");
             DS_DVC_NAME = devicename;
             EVT_CATEGORY = type;
             EVT_TYPE = strFormat("%s/%s", profileid, ruleid);

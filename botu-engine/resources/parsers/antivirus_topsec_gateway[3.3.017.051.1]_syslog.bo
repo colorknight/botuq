@@ -1,0 +1,103 @@
+botu("AntiVirus/Topsec/Gateway[3.3.017.051.1]/Syslog") {
+	splitParse(MS_SRC_DATA, ' ', '"', '"', "=");
+	sev = parseSyslogSeverity(pri);
+	switch(type) {
+		case "mgmt":
+		    dvcIp = regExtract(MS_SRC_DATA, ".*\\d+:\\d+\\s(\\d+\\.\\d+\\.\\d+\\.\\d+).*");
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_PROCESS_NAME = recoreder;
+				EVT_CATEGORY = type;
+			    SEVERITY = sev;
+			    N_EVT_CATEGORY = "/Audit/System";
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/User";
+				SBJ_NAME = user;
+				SBJ_IP = src;
+				BHV_CATEGORY = "/Update";
+				OBJ_TYPE = "/Ip";
+				OBJ_NAME = dvcIp;
+				OBJ_IP = dvcIp;
+				STATUS = result;
+				OUTCOME = msg;
+			}
+		case "dpi":
+		    if(action == "forbid"){
+		        nCat = "/Vulnerability";
+		    }else{
+		        nCat = "/Audit";
+		    }
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				EVT_CATEGORY = type;
+				EVT_TYPE = filter;
+			    SEVERITY = sev;
+			    N_EVT_CATEGORY = nCat;
+                N_SEVERITY = dictMapping("severity",sev);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = sender;
+				SBJ_IP = src;
+				SBJ_PORT = sport;
+				BHV_CATEGORY = "/Send";
+				APP_PROTO = toUppercase(proto);
+                OBJ_TYPE = "/Resource/Account";
+				OBJ_NAME = receiver;
+				OBJ_IP = dst;
+				OBJ_PORT = dport;
+				PRT_ACTION = action;
+				CC = cc;
+				BCC = bcc;
+				SUBJECT = subject;
+				ATTACHE = filename;
+			}
+		case "avse":
+		    if (proto == "http") {
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = virus_name;
+                    SEVERITY = pri;
+                    N_EVT_CATEGORY = "/Threat/Malware";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src;
+                    SBJ_IP = src;
+                    SBJ_ROLE = user;
+                    SBJ_PORT = sport;
+                    APP_PROTO = toUppercase(proto);
+                    BHV_CATEGORY = "/Access";
+                    BEHAVIOR = method;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst;
+                    OBJ_IP = dst;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = virus_deal;
+                    REQ_URL = url;
+                }
+			} else if (proto == "ftp"){
+			    pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    EVT_CATEGORY = type;
+                    EVT_TYPE = virus_name;
+                    SEVERITY = pri;
+                    N_EVT_CATEGORY = "/Threat/Malware";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src;
+                    SBJ_ROLE = user;
+                    SBJ_IP = src;
+                    SBJ_PORT = sport;
+                    APP_PROTO = toUppercase(proto);
+                    BHV_CATEGORY = "/Access";
+                    BEHAVIOR = command;
+                    OBJ_TYPE = "/Resource/File";
+                    OBJ_NAME = filename;
+                    OBJ_IP = dst;
+                    OBJ_PORT = dport;
+                    PRT_ACTION = virus_deal;
+				}
+			}
+		default:
+			pack(){}
+	}
+}

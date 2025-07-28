@@ -1,0 +1,116 @@
+botu("Bastion/LegendSec/SecFox/Warn") {
+    patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>(?<logtime>[^\\s]+)\\s[^\\s]+\\s(?<dev>[^\\s]+)\\s(?<msg>.*)");
+    index = indexString(msg, "logType");
+    sev = parseSyslogSeverity(pri);
+    if (index != -1) {
+        kvp = subString(msg, index);
+        splitParse(kvp, ',', '"', '"', "=");
+        switch(logType) {
+            case "YAB_CMD_OPS_LOG":
+                pack("event") {
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_DVC_NAME = dev;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = sourceIP;
+                    BHV_CATEGORY = "/Execute";
+                    BHV_BODY = command;
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = resource;
+                    OBJ_IP = targetIP;
+                    PRT_ACTION = action;
+                }
+            case "YAB_FILE_OPS_LOG":
+                pack("event") {
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_DVC_NAME = dev;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = sourceIP;
+                    BHV_CATEGORY = dictMapping("bhv_category",operation);
+                    BEHAVIOR = operation;
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = resource;
+                    OBJ_IP = targetIP;
+                    OBJ_SUBO_TYPE = "/File";
+                    OBJ_SUBO = strFormat("%s/%s", sourcePath, filename);
+                    OUTCOME = result;
+                }
+            case "YAB_SYSTEM_LOGIN_LOG":
+                pack("event") {
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_DVC_NAME = dev;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = sourceIP;
+                    BHV_CATEGORY = "/Login";
+                    BEHAVIOR = operation;
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = dev;
+                    OBJ_IP = MS_SRC_ADDRESS;
+                    OUTCOME = result;
+                }
+            case "YAB_HISTORY_SESSION_LOG":
+                pack("event") {
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_DVC_NAME = dev;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    DURATION = diffTime(format2Time(startTime,"yyyy-MM-dd HH:mm:ss"), format2Time(endTime,"yyyy-MM-dd HH:mm:ss"));
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = sourceIP;
+                    SBJ_ROLE = account;
+                    BHV_CATEGORY = "/Access";
+                    APP_PROTO = protocol;
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = resource;
+                    OBJ_IP = targetIP;
+                    OUTCOME = historySession;
+                }
+            case "YAB_RESOURCE_LOGIN_LOG":
+                pack("event") {
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd'T'HH:mm:ss");
+                    DS_DVC_NAME = dev;
+                    EVT_CATEGORY = logType;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    DURATION = diffTime(format2Time(startTime,"yyyy-MM-dd HH:mm:ss"), format2Time(endTime,"yyyy-MM-dd HH:mm:ss"));
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = sourceIP;
+                    SBJ_ROLE = account;
+                    BHV_CATEGORY = "/Login";
+                    APP_PROTO = protocol;
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = resource;
+                    OBJ_IP = targetIP;
+                }
+        }
+    } else {
+        pack("event") {
+            START_TIME = format2Time(logtime, "yyyy-MM-dd'T'HH:mm:ss");
+            DS_DVC_NAME = dev;
+            EVT_CATEGORY = "/Other";
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            OUTCOME = msg;
+        }
+    }
+}

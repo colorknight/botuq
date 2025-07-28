@@ -1,0 +1,70 @@
+botu("EPS/Webray/RayGuard/Syslog") {
+    if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>[^:+]+:\\d+:\\d.*)\\s(?<host>[^\\s]+)\\s([^:]+): (?<detail>.*)")) {
+        segs = strSplit(detail, " ");
+        sev = parseSyslogSeverity(pri);
+        switch(segs[0]){
+            case "traffic":
+                pack("event") {
+                    START_TIME = toTime(segs[1]);
+                    SEVERITY = sev;
+                    EVT_CATEGORY = segs[0];
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = segs[3];
+                    SBJ_IP = segs[3];
+                    SBJ_PORT = segs[4];
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = dictMapping("trans_protocol",toInt(segs[2]));
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = segs[5];
+                    OBJ_IP = segs[5];
+                    OBJ_PORT = segs[6];
+                    PRT_ACTION = segs[7];
+                }
+            case "system":
+                 pack("event") {
+                     START_TIME = toTime(segs[1]);
+                     EVT_CATEGORY = segs[2];
+                     SEVERITY = sev;
+                     N_EVT_CATEGORY = "/Audit";
+                     N_SEVERITY = dictMapping("severity",sev);
+                     SBJ_TYPE = "/Ip";
+                     SBJ_NAME = segs[4];
+                     SBJ_IP = segs[3];
+                     OUTCOME = segs[5];
+                 }
+            case "operate":
+                 pack("event") {
+                     START_TIME = toTime(segs[1]);
+                     EVT_CATEGORY = segs[2];
+                     EVT_TYPE = segs[3];
+                     SEVERITY = sev;
+                     N_EVT_CATEGORY = "/Audit";
+                     N_SEVERITY = dictMapping("severity",sev);
+                     SBJ_TYPE = "/User";
+                     SBJ_NAME = segs[4];
+                     OUTCOME = segs[5];
+                 }
+            case "threat":
+                pack("event") {
+                    START_TIME = toTime(segs[1]);
+                    SEVERITY = sev;
+                    EVT_CATEGORY = segs[0];
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = segs[4];
+                    SBJ_IP = segs[4];
+                    SBJ_PORT = segs[5];
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = segs[6];
+                    OBJ_IP = segs[6];
+                    OBJ_PORT = segs[7];
+                    PRT_ACTION = segs[8];
+                }
+        }
+
+    }
+}

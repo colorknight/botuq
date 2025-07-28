@@ -1,0 +1,338 @@
+botu("Audit/Topsec/TA-NET[3.2294.3419.1_net_upt-3524.1_net]/Syslog") {
+    splitParse(MS_SRC_DATA, ' ', '"', '"', "=");
+    switch(s_protocol) {
+        case "HTTP下载":
+        case "HTTP上传":
+        case "HTTP":
+			pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_PROCESS_NAME = dev_name;
+                DURATION = toLong(toDouble(i_http_resp_time));
+                EVT_CATEGORY = s_protocolgroup;
+                EVT_TYPE = s_protocol;
+                SEVERITY = i_warninglevel;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",i_warninglevel);
+                SBJ_TYPE = "/Ip";
+                SBJ_IP = i_srcip;
+                SBJ_NAME = i_srcip;
+                SBJ_PORT = i_srcport;
+                SBJ_MAC = convert2Mac(s_srcmac);
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = s_http_method;
+                TRANS_PROTO = dictMapping("trans_protocol",i_ipproto);
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = i_dstip;
+                OBJ_NAME = i_dstip;
+                OBJ_PORT = i_dstport;
+                OBJ_MAC = convert2Mac(s_dstmac);
+                STATUS = i_http_retcode;
+                REQ_URL = s_http_url;
+                REQ_USER_AGENT = s_http_user_agent;
+                REQ_COOKIE = s_http_cookie;
+                REQ_REFERER = s_http_refer;
+                REP_CONTENT_TYPE = s_http_request_ct;
+                REP_HTTP_SERVER = s_http_server;
+                REP_CONTENT_LENGTH = i_http_return_len;
+			}
+	    case "SSL":
+	    case "HTTPS":
+			pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_PROCESS_NAME = dev_name;
+                EVT_CATEGORY = s_protocolgroup;
+                EVT_TYPE = s_protocol;
+                SEVERITY = i_warninglevel;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",i_warninglevel);
+                SBJ_TYPE = "/Ip";
+                SBJ_IP = i_srcip;
+                SBJ_NAME = i_srcip;
+                SBJ_PORT = i_srcport;
+                SBJ_MAC = convert2Mac(s_srcmac);
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_protocol",i_ipproto);
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = i_dstip;
+                OBJ_NAME = i_dstip;
+                OBJ_PORT = i_dstport;
+                OBJ_MAC = convert2Mac(s_dstmac);
+			}
+		case "SSH":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_PROCESS_NAME = dev_name;
+                EVT_CATEGORY = s_protocolgroup;
+                EVT_TYPE = s_protocol;
+                SEVERITY = i_warninglevel;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",i_warninglevel);
+                SBJ_TYPE = "/Ip";
+                SBJ_IP = i_srcip;
+                SBJ_NAME = s_ssh_username;
+                SBJ_PORT = i_srcport;
+                SBJ_MAC = convert2Mac(s_srcmac);
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = s_ssh_command;
+                TRANS_PROTO = dictMapping("trans_protocol",i_ipproto);
+                OBJ_TYPE = "/Ip";
+                OBJ_IP = i_dstip;
+                OBJ_NAME = i_dstip;
+                OBJ_PORT = i_dstport;
+                OBJ_MAC = convert2Mac(s_dstmac);
+                STATUS = s_ssh_return;
+            }
+		case "FTP信令":
+		case "FTP数据上传":
+        case "FTP数据下载":
+        case "FTP":
+			pack("event") {
+                START_TIME = extractTime(s_logtime);
+                DS_PROCESS_NAME = s_type;
+                EVT_ID = s_id;
+                EVT_CATEGORY = s_protocol;
+                EVT_TYPE = strFormat("%s/%s", s_syslog_policygroup, s_syslog_policyname);
+                EVT_NAME = s_remark;
+                SEVERITY = i_warninglevel;
+                N_SEVERITY = dictMapping("severity",i_warninglevel);
+                SBJ_IP = s_dstip;
+                SBJ_MAC = convert2Mac(s_dstmac);
+                SBJ_PORT = i_dstport;
+                TRANS_PROTO = i_ipproto;
+                APP_PROTO = s_protocol;
+                BHV_BODY = s_ftp_cmd;
+                OBJ_IP = s_srcip;
+                OBJ_MAC = convert2Mac(s_srcmac);
+                OBJ_PORT = i_srcport;
+                OBJ_VLAN = i_vlanID;
+                OBJ_TYPE = "/Account";
+                OBJ_NAME = s_ftp_username;
+                STATUS = s_ftp_ret;
+                EVIDENCE = s_ftp_filename;
+			}
+        case "Telnet":
+			pack("event") {
+                START_TIME = extractTime(s_logtime);
+                DS_PROCESS_NAME = s_type;
+                EVT_ID = s_id;
+                EVT_CATEGORY = s_protocol;
+                EVT_NAME = s_detail;
+                SEVERITY = i_warninglevel;
+                N_SEVERITY = dictMapping("severity",i_warninglevel);
+                SBJ_IP = s_dstip;
+                SBJ_MAC = convert2Mac(s_dstmac);
+                SBJ_PORT = i_dstport;
+                TRANS_PROTO = i_ipproto;
+                APP_PROTO = s_protocol;
+                BHV_BODY = s_telnet_cmd;
+                OBJ_IP = s_srcip;
+                OBJ_MAC = convert2Mac(s_srcmac);
+                OBJ_PORT = i_srcport;
+                OBJ_VLAN = i_vlanID;
+                OBJ_TYPE = "/Account";
+                OBJ_NAME = s_telnet_username;
+                STATUS = s_telnet_ret;
+			}
+        case "SMB":
+			pack("event") {
+                START_TIME = extractTime(s_logtime);
+                DS_PROCESS_NAME = s_type;
+                EVT_ID = s_id;
+                EVT_CATEGORY = s_protocol;
+                EVT_NAME = s_detail;
+                SEVERITY = i_warninglevel;
+                N_SEVERITY = dictMapping("severity",i_warninglevel);
+                SBJ_IP = s_dstip;
+                SBJ_MAC = convert2Mac(s_dstmac);
+                SBJ_PORT = i_dstport;
+                SBJ_HOST = s_smb_rephostname;
+                SBJ_OS = s_smb_rephostos;
+                TRANS_PROTO = i_ipproto;
+                APP_PROTO = s_protocol;
+                BHV_BODY = s_smb_cmd;
+                OBJ_IP = s_srcip;
+                OBJ_MAC = convert2Mac(s_srcmac);
+                OBJ_PORT = i_srcport;
+                OBJ_HOST = s_smb_reqhostname;
+                OBJ_OS = s_smb_reqhostos;
+                OBJ_VLAN = i_vlanID;
+                OBJ_TYPE = "/Account";
+                OBJ_NAME = s_smb_account;
+                EVIDENCE = s_smb_filename;
+			}
+        case "NFS":
+			pack("event") {
+                START_TIME = extractTime(s_logtime);
+                DS_PROCESS_NAME = s_type;
+                EVT_ID = s_id;
+                EVT_CATEGORY = s_protocol;
+                EVT_TYPE = s_nfs_msg_type;
+                EVT_NAME = s_detail;
+                SEVERITY = i_warninglevel;
+                N_SEVERITY = dictMapping("severity",i_warninglevel);
+                SBJ_IP = s_dstip;
+                SBJ_MAC = convert2Mac(s_dstmac);
+                SBJ_PORT = i_dstport;
+                SBJ_NAME = s_nfs_program_name;
+                TRANS_PROTO = i_ipproto;
+                APP_PROTO = s_protocol;
+                BHV_BODY = s_nfs_cmd_name;
+                OBJ_IP = s_srcip;
+                OBJ_MAC = convert2Mac(s_srcmac);
+                OBJ_PORT = i_srcport;
+                OBJ_VLAN = i_vlanID;
+                OBJ_TYPE = "/Process";
+                OBJ_NAME = s_nfs_client_name;
+                STATUS = s_nfs_accept_state;
+                EVIDENCE = s_nfs_fname;
+			}
+        case "DNS":
+			pack("event") {
+                START_TIME = extractTime(s_logtime);
+                DS_PROCESS_NAME = s_type;
+                EVT_ID = s_id;
+                EVT_CATEGORY = s_protocol;
+                SEVERITY = i_warninglevel;
+                N_SEVERITY = dictMapping("severity",i_warninglevel);
+                SBJ_IP = s_dstip;
+                SBJ_MAC = convert2Mac(s_dstmac);
+                SBJ_PORT = i_dstport;
+                SBJ_NAME = s_dns_domain;
+                TRANS_PROTO = i_ipproto;
+                APP_PROTO = s_protocol;
+                BEHAVIOR = strFormat("DNS:%s",s_dns_ip);
+                BHV_BODY = s_nfs_cmd_name;
+                OBJ_IP = s_srcip;
+                OBJ_MAC = convert2Mac(s_srcmac);
+                OBJ_PORT = i_srcport;
+                OBJ_VLAN = i_vlanID;
+                STATUS = s_dns_status;
+			}
+        case "Rlogin":
+			pack("event") {
+                START_TIME = extractTime(s_logtime);
+                DS_PROCESS_NAME = s_type;
+                EVT_ID = s_id;
+                EVT_CATEGORY = s_protocol;
+                SEVERITY = i_warninglevel;
+                N_SEVERITY = dictMapping("severity",i_warninglevel);
+                SBJ_IP = s_dstip;
+                SBJ_MAC = convert2Mac(s_dstmac);
+                SBJ_PORT = i_dstport;
+                TRANS_PROTO = i_ipproto;
+                APP_PROTO = s_protocol;
+                BHV_BODY = s_telnet_cmd;
+                OBJ_IP = s_srcip;
+                OBJ_MAC = convert2Mac(s_srcmac);
+                OBJ_PORT = i_srcport;
+                OBJ_VLAN = i_vlanID;
+                OBJ_TYPE = "/Account";
+                OBJ_NAME = s_telnet_username;
+                STATUS = s_telnet_ret;
+			}
+        case "Radius":
+			pack("event") {
+                START_TIME = extractTime(s_logtime);
+                DS_PROCESS_NAME = s_type;
+                EVT_ID = s_id;
+                EVT_CATEGORY = s_protocol;
+                EVT_NAME = s_detail;
+                SEVERITY = i_warninglevel;
+                N_SEVERITY = dictMapping("severity",i_warninglevel);
+                SBJ_IP = s_dstip;
+                SBJ_MAC = convert2Mac(s_dstmac);
+                SBJ_PORT = i_dstport;
+                SBJ_NAME = s_nfs_program_name;
+                TRANS_PROTO = i_ipproto;
+                APP_PROTO = s_protocol;
+                BHV_BODY = s_nfs_cmd_name;
+                OBJ_IP = s_srcip;
+                OBJ_MAC = convert2Mac(s_srcmac);
+                OBJ_PORT = i_srcport;
+                OBJ_VLAN = i_vlanID;
+                OBJ_TYPE = "/Account";
+                OBJ_NAME = s_radius_auth_user_name;
+                STATUS = s_radius_auth_status;
+			}
+        default:
+            if( s_protocol == "SMTP" || s_protocol == "IMAP" || s_protocol == "POP3" || regex(s_protocol,".*邮箱.*")){
+                pack("event") {
+                    START_TIME = extractTime(s_logtime);
+                    DS_PROCESS_NAME = s_type;
+                    EVT_ID = s_id;
+                    EVT_CATEGORY = s_protocol;
+                    EVT_NAME = s_detail;
+                    SEVERITY = i_warninglevel;
+                    N_SEVERITY = dictMapping("severity",i_warninglevel);
+                    SBJ_IP = s_dstip;
+                    SBJ_MAC = convert2Mac(s_dstmac);
+                    SBJ_PORT = i_dstport;
+                    SBJ_TYPE = "/Mail";
+                    SBJ_NAME = s_mail_recever;
+                    TRANS_PROTO = i_ipproto;
+                    APP_PROTO = s_protocol;
+                    BHV_BODY = s_webmail_content;
+                    OBJ_IP = s_srcip;
+                    OBJ_MAC = convert2Mac(s_srcmac);
+                    OBJ_PORT = i_srcport;
+                    OBJ_VLAN = i_vlanID;
+                    OBJ_TYPE = "/Mail";
+                    OBJ_NAME = s_mail_sender;
+                    CC = s_mail_cc;
+                    BCC = s_mail_bcc;
+                    SUBJECT = s_mail_subject;
+                    ATTACHE = s_mail_attache;
+                }
+            }else if(s_db_serverprogram != NULL){
+                pack("event") {
+                    START_TIME = extractTime(s_logtime);
+                    DS_PROCESS_NAME = s_type;
+                    EVT_ID = s_id;
+                    EVT_CATEGORY = s_protocol;
+                    EVT_NAME = s_detail;
+                    SEVERITY = i_warninglevel;
+                    N_SEVERITY = dictMapping("severity",i_warninglevel);
+                    SBJ_IP = s_dstip;
+                    SBJ_MAC = convert2Mac(s_dstmac);
+                    SBJ_PORT = i_dstport;
+                    SBJ_TYPE = "/Mail";
+                    SBJ_NAME = s_mail_recever;
+                    TRANS_PROTO = i_ipproto;
+                    APP_PROTO = s_protocol;
+                    BHV_BODY = s_webmail_content;
+                    OBJ_IP = s_srcip;
+                    OBJ_MAC = convert2Mac(s_srcmac);
+                    OBJ_PORT = i_srcport;
+                    OBJ_VLAN = i_vlanID;
+                    OBJ_TYPE = "/Mail";
+                    OBJ_NAME = s_mail_sender;
+                    CC = s_mail_cc;
+                    BCC = s_mail_bcc;
+                    SUBJECT = s_mail_subject;
+                    ATTACHE = s_mail_attache;
+                }
+            }else{
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    DS_PROCESS_NAME = dev_name;
+                    EVT_CATEGORY = s_protocolgroup;
+                    EVT_TYPE = s_protocol;
+                    SEVERITY = i_warninglevel;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",i_warninglevel);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_IP = i_srcip;
+                    SBJ_NAME = i_srcip;
+                    SBJ_PORT = i_srcport;
+                    SBJ_MAC = convert2Mac(s_srcmac);
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = dictMapping("trans_protocol",i_ipproto);
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = i_dstip;
+                    OBJ_NAME = i_dstip;
+                    OBJ_PORT = i_dstport;
+                    OBJ_MAC = convert2Mac(s_dstmac);
+                }
+            }
+    }
+}

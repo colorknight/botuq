@@ -1,0 +1,481 @@
+botu("LB/Topsec/TopApp[3.2294.30096_TAD.1]/Syslog") {
+    splitParse(MS_SRC_DATA, ' ', '"', '"', "=");
+    switch(recorder) {
+        case "config":
+            pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit/System";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/User";
+				SBJ_NAME = user;
+                SBJ_IP = src;
+                BHV_CATEGORY = "/Update";
+                OBJ_TYPE = "/Resource/Configuration";
+                OBJ_NAME = "Configuration";
+                OBJ_IP = MS_SRC_ADDRESS;
+                OBJ_HOST = dev;
+                OUTCOME = msg;
+            }
+        case "mgmt":
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit/System";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/User";
+				SBJ_NAME = user;
+                SBJ_IP = src;
+                BHV_CATEGORY = dictMapping("bhv_category", op);
+                BEHAVIOR = op;
+                TECHNICAL = method;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = MS_SRC_ADDRESS;
+                OBJ_IP = MS_SRC_ADDRESS;
+                OBJ_HOST = dev;
+                OUTCOME = msg;
+			}
+        case "linkbak":
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Ip";
+				SBJ_NAME = MS_SRC_ADDRESS;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Is";
+                OUTCOME = msg;
+			}
+	    case "outbound":
+        case "pf":
+            if (protocol == null)
+                protocol = protoid;
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+				EVT_TYPE = outboundtype;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Ip";
+				SBJ_NAME = src;
+                SBJ_IP = src;
+                SBJ_PORT = sport;
+                SBJ_MAC = smac;
+                SBJ_INTERFACE = sdev;
+                TRANS_PROTO = dictMapping("trans_protocol",toInt(protocol));
+                BHV_CATEGORY = "/Access";
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dst;
+                OBJ_IP = dst;
+                OBJ_PORT = dport;
+                OBJ_MAC = dmac;
+                PRT_ACTION = op;
+			}
+        case "ha":
+            pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Ip";
+				SBJ_NAME = MS_SRC_ADDRESS;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Is";
+                OUTCOME = msg;
+            }
+        case "license":
+            objType = "/Resource/License";
+            objName = "License";
+        case "topguard":
+            if (objName == null) {
+                objType = "/Resource/System";
+                objName = "System";
+            }
+        case "firmware":
+            if (objName == null) {
+                objType = "/Resource/Firmware";
+                objName = "Firmware";
+            }
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit/Status";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/Host";
+                SBJ_NAME = dev;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = dictMapping("bhv_category", op);
+                BEHAVIOR = op;
+                OBJ_TYPE = objType;
+                OBJ_NAME = objName;
+                OUTCOME = msg;
+            }
+         case "interface":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/Resource/Interface";
+                SBJ_NAME = dev;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Is";
+                BEHAVIOR = op;
+                OUTCOME = speed;
+                STATUS = duplex;
+            }
+        case "neighbour":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/Resource/Interface";
+                SBJ_NAME = dev;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Discovery";
+                BEHAVIOR = op;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = ip;
+                OBJ_IP = convert2Ip(ip);
+                OUTCOME = msg;
+            }
+        case "fproxy":
+        case "fproxy_http":
+        case "lfm":
+        case "wave":
+        case "ac":
+        case "info_sync":
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Ip";
+				SBJ_NAME = src;
+                SBJ_IP = src;
+                SBJ_PORT = srcport;
+                TRANS_PROTO = toUpperCase(protocol);
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = action;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dst;
+                OBJ_IP = dst;
+                OBJ_PORT = dstport;
+                STATUS = result_code;
+                OUTCOME = action;
+			}
+        case "eos":
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+				EVT_TYPE = eos_chkname;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Host";
+				SBJ_NAME = dev;
+				SBJ_IP = MS_SRC_ADDRESS;
+			    BHV_CATEGORY = "/Check";
+			    BEHAVIOR = action;
+			    TRANS_PROTO = method;
+			    OBJ_TYPE = strFormat("/Resource/Other/%s", objtype);
+			    OBJ_NAME = objname;
+			    STATUS = result_code;
+			    OUTCOME = result;
+			}
+        case "wideip_module":
+        case "gslb_wideip_module":
+            pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/Service/Web";
+                SBJ_NAME = query_domain;
+                BHV_CATEGORY = "/Query";
+                BEHAVIOR = action;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = resource;
+                OBJ_IP = resource;
+                STATUS = result;
+            }
+        case "statistics":
+        case "poap_agent":
+            pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Host";
+				SBJ_NAME = dev;
+				SBJ_IP = MS_SRC_ADDRESS;
+			    BHV_CATEGORY = "/Other";
+			    BEHAVIOR = action;
+			    OBJ_TYPE = strFormat("/Resource/Other/%s", objtype);
+			    OBJ_NAME = objname;
+			    STATUS = result_code;
+			    OUTCOME = result;
+            }
+        case "dns_Proxy":
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+				EVT_TYPE = dns_proxy_type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Ip";
+				SBJ_NAME = src;
+				SBJ_IP = src;
+				SBJ_PORT = srcport;
+                BHV_CATEGORY = "/Substituded";
+                BEHAVIOR = action;
+                TRANS_PROTO = dictMapping("trans_protocol", toInt(protocol));
+				OBJ_TYPE = "/Ip";
+				OBJ_NAME = dst;
+				OBJ_IP = dst;
+				OBJ_PORT = dstport;
+                OUTCOME = result;
+			}
+        case "cpu_monitor":
+            sbjType = "/Resource/CPU";
+        case "memory_monitor":
+            if (sbjType == null) {
+                sbjType = "/Resource/Memory";
+            }
+        case "disk_monitor":
+            if (sbjType == null) {
+                sbjType = "/Resource/Disk";
+            }
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit/Status";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = sbjType;
+				SBJ_HOST = dev;
+				SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Is";
+                OUTCOME = msg;
+			}
+		case "db_sec":
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+				EVT_TYPE = dbtype;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Ip";
+				SBJ_NAME = src;
+                SBJ_IP = src;
+                SBJ_PORT = srcport;
+                BHV_CATEGORY = "/Access";
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dst;
+                OBJ_IP = dst;
+                OBJ_PORT = dstport;
+                OUTCOME = msg;
+			}
+
+        case "db_sec_match":
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Ip";
+				SBJ_NAME = src;
+                SBJ_IP = src;
+                SBJ_PORT = srcport;
+                TRANS_PROTO = dictMapping("trans_protocol", toInt(protocol));
+                BHV_CATEGORY = "/Access";
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dst;
+                OBJ_IP = dst;
+                OBJ_PORT = dstport;
+                OBJ_VLAN = zone;
+                PRT_ACTION = action;
+			}
+        case "control-session":
+            pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit/Session";
+                N_SEVERITY = dictMapping("severity",pri);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = cs_obj;
+                SBJ_IP = cs_obj;
+                SBJ_ROLE = user;
+                BEHAVIOR = "/Access";
+                OBJ_TYPE = "/Host";
+                OBJ_NAME = dev;
+                OBJ_IP = MS_SRC_ADDRESS;
+                OUTCOME = action;
+                STATUS = result;
+            }
+        case "DDoS_atk":
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Threat/Attack/DOS";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Ip";
+				SBJ_NAME = src_addr;
+                SBJ_IP = src_addr;
+                BHV_CATEGORY = "/Attack";
+                TECHNICAL = attack_type;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dst_addr;
+                OBJ_IP = dst_addr;
+                OBJ_VLAN = zonename;
+                PRT_ACTION = data_action;
+                PACKETS_IN = total_packets;
+                BYTES_IN = total_bytes;
+			}
+        case "admin_login":
+            bhvcat = "/Login";
+            inx = indexString(op, "login");
+            if (inx == -1) {
+                bhvcat = "/Logout";
+            }
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/User";
+				SBJ_NAME = user;
+                SBJ_IP = src;
+                SBJ_INTERFACE = indev;
+                BEHAVIOR = op;
+                BHV_CATEGORY = bhvcat;
+                TECHNICAL = method;
+                OBJ_TYPE = "/Host";
+                OBJ_NAME = dev;
+                OBJ_IP = MS_SRC_ADDRESS;
+                OUTCOME = description;
+			}
+        case "admin_pwd":
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/User";
+				SBJ_NAME = user;
+                BHV_CATEGORY = "/Update";
+                OBJ_TYPE = "/Resource/Account";
+                OBJ_NAME = "Password";
+                OBJ_IP = MS_SRC_ADDRESS;
+                OBJ_HOST = dev;
+                OUTCOME = description;
+			}
+        case "session":
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				DURATION = duration;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit/Session";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Ip";
+				SBJ_NAME = src;
+                SBJ_IP = src;
+                SBJ_PORT = sport;
+                SBJ_TRANS_IP = trans_sip;
+                SBJ_TRANS_PORT = trans_sport;
+                TRANS_PROTO = toUpperCase(proto);
+                BHV_CATEGORY = "/Access";
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dst;
+                OBJ_IP = dst;
+                OBJ_PORT = dport;
+                OBJ_TRANS_IP = trans_dip;
+                OBJ_TRANS_PORT = trans_dport;
+                PRT_ACTION = op;
+                PACKETS_IN = rcv_pkt;
+                PACKETS_OUT = send_pkt;
+                BYTES_IN = rcv_bytes;
+                BYTES_OUT = send_bytes;
+			}
+        default:
+            if (recorder == "poap_runtime") {
+                msg = action;
+            }
+			pack("event") {
+				START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+				DS_DVC_NAME = dev;
+				DS_PROCESS_NAME = recorder;
+				EVT_CATEGORY = type;
+                SEVERITY = pri;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",pri);
+				SBJ_TYPE = "/Host";
+				SBJ_NAME = dev;
+				SBJ_IP = MS_SRC_ADDRESS;
+				OUTCOME = msg;
+			}
+    }
+}

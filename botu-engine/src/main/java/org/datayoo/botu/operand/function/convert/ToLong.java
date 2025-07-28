@@ -19,7 +19,7 @@ public class ToLong extends AbstractFunction {
           "The function format is 'toLong(field[, radix)'");
     }
     if (parameters.size() == 2) {
-      radix = (int) (long) parameters.get(1).operate((EntityMap) null);
+      radix = (int) parameters.get(1).operate((EntityMap) null);
     }
   }
 
@@ -46,6 +46,7 @@ public class ToLong extends AbstractFunction {
       return n.longValue();
     } else {
       return Long.valueOf(o.toString(), radix);
+
     }
   }
 

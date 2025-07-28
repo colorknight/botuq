@@ -1,0 +1,304 @@
+botu("EPS/Topsec/IHS[3.1.0.121]/Syslog"){
+    if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>(?<detail>.*)")){
+        sev = parseSyslogSeverity(pri);
+        splitParse(detail, ' ', '"', '"',"=");
+        switch(logtype){
+            case "SERVERPERFORMANCE":
+                if(object_name == "内存空间"){
+                    sbjType = "/Resource/Memory";
+                }else if(object_name == "磁盘空间"){
+                    sbjType = "/Resource/Disk";
+                }else {
+                    sbjType = "/Resource/Other";
+                }
+                pack("event"){
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
+                    DS_PROCESS_NAME = agentid;
+                    EVT_CATEGORY = logtype;
+                    EVT_TYPE = cid;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/Status";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = sbjType;
+                    SBJ_NAME = object_name;
+                    SBJ_IP = object_class;
+                    SBJ_MAC = convert2Mac(agentmac);
+                    BHV_CATEGORY = "/Is";
+                    STATUS = result;
+                    OUTCOME = reason;
+                    PRT_ACTION = handle;
+                }
+            case "AUDIT":
+                if(action == "修改密码"){
+                    pack("event"){
+                        START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
+                        DS_PROCESS_NAME = trigger_name;
+                        EVT_CATEGORY = logtype;
+                        EVT_TYPE = cid;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit/System";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = subject_name;
+                        SBJ_ROLE = subject_class;
+                        SBJ_IP = agentip;
+                        SBJ_MAC = convert2Mac(agentmac);
+                        BHV_CATEGORY = dictMapping("bhv_category",action);
+                        OBJ_TYPE = "/Resource/Account";
+                        OBJ_NAME = object_name;
+                        OBJ_ROLE = object_class;
+                        STATUS = result;
+                        OUTCOME = reason;
+                    }
+                }else {
+                    pack("event"){
+                        START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
+                        DS_PROCESS_NAME = trigger_name;
+                        EVT_CATEGORY = logtype;
+                        EVT_TYPE = cid;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = subject_name;
+                        SBJ_ROLE = subject_class;
+                        SBJ_IP = agentip;
+                        SBJ_MAC = convert2Mac(agentmac);
+                        BHV_CATEGORY = dictMapping("bhv_category",action);
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME = sourceserverip;
+                        OBJ_IP = sourceserverip;
+                        STATUS = result;
+                        OUTCOME = reason;
+                    }
+                }
+            case "BOOTRECORD":
+                patternParse(subject,".*\\<计算机\\>(?<host>.*)\\<\\/计算机\\>.*");
+                pack("event"){
+                    START_TIME = format2Time(object_name, "yyyy/MM/dd HH:mm:ss");
+                    DS_PROCESS_NAME = trigger_name;
+                    EVT_CATEGORY = logtype;
+                    EVT_TYPE = cid;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = host;
+                    SBJ_IP = agentip;
+                    SBJ_MAC = convert2Mac(agentmac);
+                    BHV_CATEGORY = "/Is";
+                    BEHAVIOR = action;
+                    OUTCOME = object_name;
+                }
+            case "MONITORBOOT":
+                patternParse(objectinfo,".*\\<客户端IP\\>(?<hostIp>.*)\\<\\/客户端IP\\>\\<开机时间\\>(?<time>.*)\\<\\/开机时间\\>.*");
+                pack("event"){
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    DS_PROCESS_NAME = trigger_name;
+                    EVT_CATEGORY = logtype;
+                    EVT_TYPE = cid;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME = subject_name;
+                    SBJ_IP = hostIp;
+                    BHV_CATEGORY = "/Is";
+                    BEHAVIOR = action;
+                    OUTCOME = reason;
+                    PRT_ACTION = handle;
+                    PRT_STATUS = result;
+                }
+            case "PNP":
+                pack("event"){
+                    START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
+                    DS_PROCESS_NAME = trigger_name;
+                    EVT_CATEGORY = logtype;
+                    EVT_TYPE = cid;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME =  subject_name;
+                    SBJ_IP = agentip;
+                    SBJ_MAC = convert2Mac(agentmac);
+                    BHV_CATEGORY = dictMapping("bhv_category",action);
+                    BEHAVIOR = action;
+                    OBJ_TYPE = "/Resource/Firmware";
+                    OBJ_NAME = object_name;
+                    OBJ_IP = agentip;
+                    OBJ_MAC = convert2Mac(agentmac);
+                    OUTCOME = reason;
+                    PRT_ACTION = handle;
+                    PRT_STATUS = result;
+                }
+            case "WHITELIST":
+                patternParse(subject,".*\\<计算机\\>(?<host>.*)\\<\\/计算机\\>\\<用户账号\\>(?<user>.*)\\<\\/用户账号\\>.*");
+                pack("event"){
+                    START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
+                    DS_PROCESS_NAME = trigger_name;
+                    EVT_CATEGORY = logtype;
+                    EVT_TYPE = cid;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME =  user;
+                    SBJ_HOST = host;
+                    SBJ_IP = agentip;
+                    SBJ_MAC = convert2Mac(agentmac);
+                    BHV_CATEGORY = "/Execute";
+                    BEHAVIOR = action;
+                    OBJ_TYPE = "/Resource/Process";
+                    OBJ_NAME = subject_name;
+                    OBJ_IP = agentip;
+                    OBJ_MAC = convert2Mac(agentmac);
+                    OUTCOME = reason;
+                    PRT_ACTION = handle;
+                    PRT_STATUS = result;
+                }
+            default:
+                pack(){}
+        }
+    }else{
+        splitParse(MS_SRC_DATA, ' ', '"', '"',"=");
+        switch(logtype){
+            case "USER":
+                pack("event"){
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
+                    DS_PROCESS_NAME = agentid;
+                    EVT_CATEGORY = logtype;
+                    EVT_TYPE = cid;
+                    SEVERITY = loglevel;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",loglevel);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = username;
+                    SBJ_IP = agentip;
+                    SBJ_MAC = convert2Mac(agentmac);
+                    BHV_CATEGORY = "/Login";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_IP = agentip;
+                    OBJ_MAC = convert2Mac(agentmac);
+                    OUTCOME = reason;
+                    PRT_ACTION = handle;
+                    PRT_STATUS = result;
+                }
+            case "USERIP":
+                patternParse(objectinfo,".*\\<IP\\>(?<hostIp>.*)\\<\\/IP\\>.*");
+                pack("event"){
+                    START_TIME = format2Time(logtime, "yyyy-MM-dd HH:mm:ss");
+                    DS_PROCESS_NAME = agentid;
+                    EVT_CATEGORY = logtype;
+                    EVT_TYPE = cid;
+                    SEVERITY = loglevel;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",loglevel);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = username;
+                    SBJ_IP = agentip;
+                    SBJ_MAC = convert2Mac(agentmac);
+                    BHV_CATEGORY = "/Login";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = object_name;
+                    OBJ_IP = object_class;
+                    OUTCOME = reason;
+                    PRT_ACTION = handle;
+                    PRT_STATUS = result;
+                }
+            case "ADP":
+                pack("event"){
+                    START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
+                    DS_PROCESS_NAME = trigger_name;
+                    EVT_CATEGORY = logtype;
+                    EVT_TYPE = cid;
+                    SEVERITY = loglevel;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",loglevel);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = username;
+                    SBJ_IP = agentip;
+                    SBJ_MAC = convert2Mac(agentmac);
+                    BHV_CATEGORY = "/Execute";
+                    OBJ_TYPE = "/Resource/Process";
+                    OBJ_NAME = subject_name;
+                    OBJ_IP = agentip;
+                    OBJ_MAC = convert2Mac(agentmac);
+                    OUTCOME = reason;
+                    PRT_ACTION = handle;
+                    PRT_STATUS = result;
+                }
+            case "OSAUTH":
+                patternParse(objectinfo,".*\\<登录IP\\>(?<dstIp>.*)\\<\\/登录IP\\>\\<登录终端\\>(?<protol>.*)\\<\\/登录终端\\>.*");
+                pack("event"){
+                    START_TIME = format2Time(time, "yyyy/MM/dd HH:mm:ss");
+                    DS_PROCESS_NAME = trigger_name;
+                    EVT_CATEGORY = logtype;
+                    EVT_TYPE = cid;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = subject_name;
+                    SBJ_IP = agentip;
+                    SBJ_MAC = convert2Mac(agentmac);
+                    BHV_CATEGORY = dictMapping("bhv_category",action);
+                    BEHAVIOR = action;
+                    APP_PROTO = protol;
+                    OBJ_TYPE = "/Host";
+                    OBJ_NAME = object_name;
+                    OBJ_IP = dstIp;
+                    STATUS = result;
+                    OUTCOME = reason;
+                }
+             case "UDEV":
+                patternParse(objectinfo,".*\\<插入时间\\>(?<time>.*)\\<\\/插入时间\\>.*");
+                pack("event"){
+                    START_TIME = format2Time(time, "yyyy/MM/dd HH:mm:ss");
+                    DS_PROCESS_NAME = trigger_name;
+                    EVT_CATEGORY = logtype;
+                    EVT_TYPE = cid;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME =  subject_name;
+                    SBJ_IP = agentip;
+                    SBJ_MAC = convert2Mac(agentmac);
+                    BHV_CATEGORY = dictMapping("bhv_category",action);
+                    BEHAVIOR = action;
+                    OBJ_TYPE = "/Resource/Firmware";
+                    OBJ_NAME = object_name;
+                    OBJ_IP = agentip;
+                    OBJ_MAC = convert2Mac(agentmac);
+                    OUTCOME = reason;
+                    PRT_ACTION = handle;
+                    PRT_STATUS = result;
+                }
+             case "UFS":
+                patternParse(subject,".*\\<计算机\\>(?<host>.*)\\<\\/计算机\\>\\<用户账号\\>(?<user>.*)\\<\\/用户账号\\>.*");
+                 pack("event"){
+                    START_TIME = format2Time(logtime, "yyyy/MM/dd HH:mm:ss");
+                    DS_PROCESS_NAME = trigger_name;
+                    EVT_CATEGORY = logtype;
+                    EVT_TYPE = cid;
+                    SEVERITY = loglevel;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",loglevel);
+                    SBJ_TYPE = "/Host";
+                    SBJ_NAME =  user;
+                    SBJ_HOST = host;
+                    SBJ_IP = agentip;
+                    SBJ_MAC = convert2Mac(agentmac);
+                    BHV_CATEGORY = dictMapping("bhv_category",action);
+                    BEHAVIOR = action;
+                    OBJ_TYPE = "/Resource/File";
+                    OBJ_NAME = object_name;
+                    OBJ_IP = agentip;
+                    OUTCOME = objectinfo;
+                    PRT_ACTION = handle;
+                    PRT_STATUS = result;
+                 }
+        }
+    }
+}

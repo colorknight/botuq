@@ -1,0 +1,62 @@
+botu("AntiVirus/Venus/JC-SVR-Standard/Syslog") {
+    data = replaceString(MS_SRC_DATA,"”","\"");
+    splitParse(data, ' ', '"', '"', "=");
+    if(virus_name != null){
+        pack("event") {
+            START_TIME = toTime(toInt(time)*1000);
+            DS_PROCESS_NAME = devid;
+            EVT_CATEGORY = virus_type;
+            EVT_TYPE = virus_name;
+            SEVERITY = level;
+            N_EVT_CATEGORY = "/Threat/Malware";
+            N_SEVERITY = dictMapping("severity",level);
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = dev_name;
+            SBJ_IP = ip;
+            BHV_CATEGORY = "/exists";
+            OBJ_TYPE = "/Malware/Virus";
+            OBJ_NAME = virus_name;
+            STATUS = op_result;
+        }
+    }else if(status != null){
+        pack("event") {
+            START_TIME = extractTime(time);
+            DS_PROCESS_NAME = devid;
+            EVT_CATEGORY = "/Audit";
+            SEVERITY = "低";
+            N_EVT_CATEGORY = "/Audit/System";
+            N_SEVERITY = 2;
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = dev_name;
+            SBJ_IP = ip;
+            BEHAVIOR = action;
+            STATUS = status;
+        }
+    }else if(user_type != null){
+        pack("event") {
+            START_TIME = extractTime(time);
+            EVT_CATEGORY = "/Audit";
+            SEVERITY = "低";
+            N_EVT_CATEGORY = "/Audit/System";
+            N_SEVERITY = 2;
+            SBJ_TYPE = "/User";
+            SBJ_NAME = user;
+            SBJ_IP = ip;
+            SBJ_ROLE = user_type;
+            BEHAVIOR = action;
+        }
+    }else{
+        pack("event") {
+            START_TIME = extractTime(time);
+            EVT_CATEGORY = "/Audit";
+            SEVERITY = "低";
+            N_EVT_CATEGORY = "/Audit/System";
+            N_SEVERITY = 2;
+            SBJ_TYPE = "/User";
+            SBJ_NAME = user;
+            SBJ_IP = ip;
+            SBJ_ROLE = user_type;
+            BEHAVIOR = action;
+        }
+    }
+}

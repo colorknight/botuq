@@ -1,0 +1,35 @@
+botu("WAF/Chaitin/SafeLine[19.0.002]/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>.*: (?<detail>\\{.*\\})")) {
+        jsonParse(detail, true);
+        patternParse(req_header_raw, "X-Forwarded-For: (?<xff>.*)");
+		pack("event") {
+			DS_PROCESS_NAME = m_rule;
+			START_TIME = extractTime(timestamp_human);
+			EVT_CATEGORY = attack_type;
+			EVT_TYPE = attack_type;
+			SEVERITY = risk_level;
+			N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",risk_level);
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = src_ip;
+            SBJ_IP = src_ip;
+            SBJ_PORT = src_port;
+			APP_PROTO = protocol;
+			BHV_BODY = body;
+			BEHAVIOR = method;
+			TECHNICAL = reason;
+			SBJ_TYPE = "/Host"
+			SBJ_NAME = host;
+			OBJ_HOST = host;
+			OBJ_IP = dest_ip;
+			OBJ_PORT = dest_port;
+			PRT_ACTION = action;
+            REQ_URL = urlpath;
+			REQ_PARAMS = req_header_raw;
+			REQ_USER_AGENT = user_agent;
+			REQ_COOKIE = cookie;
+			REQ_REFERER = referer;
+			REQ_XFF = xff.replaceAll("X-Forwarded-For: ",",").replaceAll("\\\\r\\\\n","");
+		}
+	}
+}

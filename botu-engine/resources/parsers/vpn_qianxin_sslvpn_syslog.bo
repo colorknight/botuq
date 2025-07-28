@@ -1,0 +1,19 @@
+botu("VPN/Qianxin/SSLVPN/Syslog") {
+	if (patternParse(MS_SRC_DATA, "(?<time>[^:]+:\\d+:\\d+) (?<hostName>[^\\s]+) \\|(?<detail>.*)")) {
+        ary = strSplit(detail, "\\|");
+        pack("event"){
+            START_TIME = format2Time(time, "yyyyMMdd HH:mm:ss");
+            DS_DVC_NAME = hostName;
+            EVT_CATEGORY = ary[2];
+            EVT_TYPE = ary[3];
+            SEVERITY = ary[0];
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",ary[0]);
+            SBJ_TYPE = "/User";
+            SBJ_NAME = ary[4];
+            STATUS = ary[5];
+            OUTCOME = ary[6];
+        }
+
+    }
+}

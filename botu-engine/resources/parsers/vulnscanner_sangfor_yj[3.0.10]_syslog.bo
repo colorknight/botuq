@@ -1,0 +1,72 @@
+botu("VulnScanner/Sangfor/YJ[3.0.10]/Syslog") {
+    if(patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>(?<time>[^\\s]+ \\d+:\\d+:\\d+).* - (?<host>[^\\s]+) - (?<logLevel>[^\\s]+) - user：\\s{0,}(?<user>[^\\s]+) - ip:\\s{0,}(?<srcIp>[^\\s]+) - behavior:\\s{0,}(?<behavior>[^-]+) - object:\\s{0,}(?<object>[^-]+) - (?<detail>[^-]+) - (?<data>[^-]+) - (?<url>[^-]+)")){
+        sev = parseSyslogSeverity(pri);
+        jsonParse(data,true);
+        switch(behavior){
+            case "登录":
+                pack("event"){
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = host;
+                    EVT_CATEGORY = behavior;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/System";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Account";
+                    SBJ_NAME = user;
+                    SBJ_IP = srcIp;
+                    BHV_CATEGORY = dictMapping("bhv_category",behavior);
+                    BEHAVIOR = object;
+                    REQ_URL = url;
+                    OUTCOME = detail;
+                }
+            case "资产操作":
+                pack("event"){
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = host;
+                    EVT_CATEGORY = behavior;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = user;
+                    SBJ_IP = srcIp;
+                    BHV_CATEGORY = object;
+                    OBJ_TYPE = device_type;
+                    OBJ_NAME = device_sub_type;
+                    OUTCOME = detail;
+                }
+            case "日志操作":
+                 pack("event"){
+                     START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                     DS_DVC_NAME = host;
+                     EVT_CATEGORY = behavior;
+                     SEVERITY = sev;
+                     N_EVT_CATEGORY = "/Audit";
+                     N_SEVERITY = dictMapping("severity",sev);
+                     SBJ_TYPE = "/User";
+                     SBJ_NAME = user;
+                     SBJ_IP = srcIp;
+                     BHV_CATEGORY = object;
+                     OBJ_TYPE = device_type;
+                     OBJ_NAME = device_sub_type;
+                     OUTCOME = detail;
+                 }
+            default:
+                 pack("event"){
+                     START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                     DS_DVC_NAME = host;
+                     EVT_CATEGORY = behavior;
+                     SEVERITY = sev;
+                     N_EVT_CATEGORY = "/Audit";
+                     N_SEVERITY = dictMapping("severity",sev);
+                     SBJ_TYPE = "/User";
+                     SBJ_NAME = user;
+                     SBJ_IP = srcIp;
+                     BHV_CATEGORY = object;
+                     OBJ_TYPE = device_type;
+                     OBJ_NAME = device_sub_type;
+                     OUTCOME = detail;
+                 }
+        }
+    }
+}

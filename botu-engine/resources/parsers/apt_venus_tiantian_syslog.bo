@@ -1,0 +1,83 @@
+botu("APT/Venus/TianTian/Syslog") {
+    patternParse(MS_SRC_DATA, "([^{}]*)(?<detail>.*)");
+    jsonParse(detail, true);
+    if(log_type == "event-log"){
+        pack("event") {
+            START_TIME = toTime(toInt(start_time)*1000);
+            EVT_CATEGORY = attack_type;
+            EVT_TYPE = security_type;
+            SEVERITY = event_level_name;
+            N_EVT_CATEGORY = "/Threat/Attack";
+            N_SEVERITY = dictMapping("severity",event_level_name);
+            PHRASE = dictMapping("killchain_venus",attck);
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = src_ip;
+            SBJ_IP = src_ip;
+            SBJ_PORT = src_port;
+            SBJ_MAC = convert2Mac(src_mac);
+            BHV_CATEGORY = "/Attack";
+            APP_PROTO = protocol;
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = dst_ip;
+            OBJ_IP = dst_ip;
+            OBJ_PORT = dst_port;
+            OBJ_MAC = convert2Mac(dst_mac);
+            REQ_URL = http_url;
+            REQ_USER_AGENT = http_useragent;
+            STATUS = attack_status;
+        }
+    }else if(log_type == "dac_apt_upload"){
+        if(event_level_name == "安全"){
+           evtType = "/Audit";
+           evtCat = "/Audit";
+        }else{
+           evtType = "/Attack";
+           evtCat = evilTag;
+        }
+        pack("event") {
+            START_TIME = toTime(toInt(start_time)*1000);
+            EVT_CATEGORY = evtCat;
+            EVT_TYPE = evtType;
+            SEVERITY = event_level_name;
+            N_EVT_CATEGORY = "/Threat/Attack";
+            N_SEVERITY = dictMapping("severity",event_level_name);
+            PHRASE = dictMapping("killchain_venus",attck);
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = src_ip;
+            SBJ_IP = src_ip;
+            SBJ_PORT = src_port;
+            SBJ_MAC = convert2Mac(src_mac);
+            BHV_CATEGORY = "/Attack";
+            APP_PROTO = protocol;
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = dst_ip;
+            OBJ_IP = dst_ip;
+            OBJ_PORT = dst_port;
+            OBJ_MAC = convert2Mac(dst_mac);
+            REQ_URL = http_url;
+            REQ_USER_AGENT = http_useragent;
+            STATUS = attack_status;
+        }
+    }else{
+        pack("event") {
+            START_TIME = toTime(toInt(start_time)*1000);
+            EVT_CATEGORY = "/Attack";
+            EVT_TYPE = "/Threat/Attack/Vulnerability";
+            N_EVT_CATEGORY = "/Vulnerability";
+            N_SEVERITY = 3;
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = src_ip;
+            SBJ_IP = src_ip;
+            SBJ_PORT = src_port;
+            SBJ_MAC = convert2Mac(src_mac);
+            BHV_CATEGORY = "/Access";
+            APP_PROTO = protocol;
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = dst_ip;
+            OBJ_IP = dst_ip;
+            OBJ_PORT = dst_port;
+            OBJ_MAC = convert2Mac(dst_mac);
+            STATUS = log_status;
+        }
+    }
+}

@@ -1,0 +1,83 @@
+botu("AntiDoS/Nsfocus/ADS/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>\\s+(?<type>[^:]+): (?<detail>.*)")) {
+		sev = parseSyslogSeverity(pri);
+	    switch(type) {
+            case "Login":
+                patternSplitParse(detail, "\\|", null);
+                pack("event") {
+                    START_TIME = format2Time($5, "yyyy-MM-dd HH:mm:ss");
+                    EVT_CATEGORY = type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_NAME = $1;
+                    SBJ_IP = $4;
+                    BHV_CATEGORY = "/Login";
+                    OUTCOME = $3;
+                }
+            case "Action":
+                patternSplitParse(detail, "\\|", null);
+                pack("event") {
+                    START_TIME = format2Time($1, "yyyy-MM-dd HH:mm:ss");
+                    EVT_CATEGORY = type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/User";
+                    SBJ_IP = $4;
+                    BHV_CATEGORY = "/Access";
+                    BHV_BODY = $3;
+                    OBJ_TYPE = "/Service";
+                    OBJ_NAME = $2;
+                }
+            case "Collapsar load":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    EVT_CATEGORY = type;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    OUTCOME = msg;
+                }
+            case "Attack":
+                if(patternParse(detail, "(?<subtype>\\S+) (?<detail2>.*)")){
+                    splitParse(detail2, ' ', null, null, "=");
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        EVT_CATEGORY = type;
+                        EVT_TYPE = subtype;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Threat/Attack";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = src;
+                        SBJ_IP = src;
+                        SBJ_PORT = sport;
+                        TECHNICAL = flag;
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME = dst;
+                        OBJ_IP = dst;
+                        OBJ_PORT = dport;
+                    }
+                }
+            case "LinkState":
+                if(patternParse(detail, "(?<time>.*) Link state of port (?<intf>.*) is detected from \\w+ to (?<sta>\\w+).*")){
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        EVT_CATEGORY = type;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Resource/Interface";
+                        SBJ_NAME = intf;
+                        SBJ_INTERFACE = intf;
+                        BHV_CATEGORY = "/Is";
+                        STATUS = sta;
+                    }
+                }
+            default:
+                pack("event") {}
+        }
+	}
+}

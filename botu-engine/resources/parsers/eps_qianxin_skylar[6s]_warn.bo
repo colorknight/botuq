@@ -1,0 +1,155 @@
+botu("EPS/Qianxin/SkyLar[6s]/Warn") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<time>[^\\s]+)\\s(?<devname>[^\\s]+)\\s[^\\[]+\\[\\d+\\]:\\s(?<detail>.*)")) {
+        jsonParse(detail,true);
+		sev = parseSyslogSeverity(pri);
+        switch(log_name) {
+            case "logcenter:skylar-client_process_running":
+                pack("event") {
+                    START_TIME = format2Time(field("content.time_event"), "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = devname;
+                    EVT_CATEGORY = log_name;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    EVT_ID = log_id;
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = ip;
+                    SBJ_IP = ip;
+                    SBJ_TRANS_IP = report_ip;
+                    SBJ_MAC = mac;
+                    TECHNICAL = field("content.terminal");
+                    BHV_CATEGORY = "/Execute";
+                    BEHAVIOR = field("content.operate");
+                    OBJ_TYPE = "/Resource/Process";
+                    OBJ_NAME = field("content.process_name");
+                    OBJ_ROLE = field("content.process_user");
+                    OBJ_URI = field("content.process_path");
+                    PLD_SIG = field("content.process_md5");
+                }
+            case "logcenter:skylar-client_file_operations":
+                pack("event") {
+                    START_TIME = format2Time(field("content.time_event"), "yyyy-MM-dd HH:mm:ss");
+                    EVT_CATEGORY = log_name;
+                    DS_DVC_NAME = devname;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    EVT_ID = log_id;
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = field("content.process_name");
+                    SBJ_URI = field("content.process_path");
+                    SBJ_ROLE = field("content.process_user");
+                    SBJ_IP = ip;
+                    SBJ_TRANS_IP = report_ip;
+                    SBJ_MAC = mac;
+                    BHV_CATEGORY = "/Access";
+                    BEHAVIOR = field("content.operate");
+                    OBJ_TYPE = "/Resource/File";
+                    OBJ_NAME = field("content.file_path");
+                    PLD_SIG = field("content.file_md5");
+                    OUTCOME = field("content.file_old_path");
+                }
+            case "logcenter:skylar-client_registry_changes":
+                pack("event") {
+                    START_TIME = format2Time(field("content.time_event"), "yyyy-MM-dd HH:mm:ss");
+                    EVT_CATEGORY = log_name;
+                    DS_DVC_NAME = devname;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    EVT_ID = log_id;
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = field("content.process_name");
+                    SBJ_URI = field("content.process_path");
+                    SBJ_ROLE = field("content.process_user");
+                    SBJ_IP = ip;
+                    SBJ_TRANS_IP = report_ip;
+                    SBJ_MAC = mac;
+                    TECHNICAL = field("content.terminal");
+                    BHV_CATEGORY = "/Execute";
+                    BEHAVIOR = field("content.operate");
+                    OBJ_TYPE = "/Resource/Registry";
+                    OBJ_NAME = field("content.reg_key");
+                    OUTCOME = field("content.reg_oldkey");
+                }
+            case "logcenter:skylar-client_processsocket":
+                pack("event") {
+                    START_TIME = format2Time(field("content.time"), "yyyy-MM-dd HH:mm:ss");
+                    EVT_CATEGORY = log_name;
+                    DS_DVC_NAME = devname;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    EVT_ID = log_id;
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = field("content.process_name");
+                    SBJ_URI = field("content.process_path");
+                    SBJ_ROLE = field("content.user");
+                    SBJ_IP = ip;
+                    SBJ_PORT = field("content.sport");
+                    SBJ_TRANS_IP = report_ip;
+                    SBJ_MAC = mac;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = proto;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = field("content.dip");
+                    OBJ_NAME = field("content.dipv6");
+                    OBJ_IP = field("content.dip");
+                    OBJ_IP = regExtract(field("content.dipv6"), "\\[([^\\]]+).*");
+                    OBJ_PORT = field("content.dport");
+                }
+            case "logcenter:skylar-client_udisk":
+                pack("event") {
+                    START_TIME = format2Time(field("content.time_event"), "yyyy-MM-dd HH:mm:ss");
+                    EVT_CATEGORY = log_name;
+                    DS_DVC_NAME = devname;
+                    SEVERITY = sev;
+                    N_SEVERITY = dictMapping("severity",sev);
+                    EVT_ID = log_id;
+                    SBJ_TYPE = "/Resource/Process";
+                    SBJ_NAME = field("content.process_name");
+                    SBJ_URI = field("content.process_path");
+                    SBJ_ROLE = field("content.process_user");
+                    SBJ_IP = ip;
+                    SBJ_TRANS_IP = report_ip;
+                    SBJ_MAC = mac;
+                    TECHNICAL = field("content.usb_sn");
+                    BHV_CATEGORY = "/Access";
+                    BEHAVIOR = field("content.operate");
+                    OBJ_TYPE = "/Resource/File";
+                    OBJ_NAME = getFileName(field("content.file_path"));
+                    OBJ_URI = field("content.file_path");
+                    OUTCOME = field("content.file_old_path");
+                    PLD_SIG = field("content.file_md5");
+                }
+        }
+	} else if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>(?<detail>.*)")) {
+        jsonParse(detail,true);
+   		sev = parseSyslogSeverity(pri);
+	    switch(log_name) {
+	        case "病毒分析":
+                 pack("event") {
+                     START_TIME = format2Time(create_time, "yyyy-MM-dd HH:mm:ss");
+                     EVT_CATEGORY = log_name;
+                     EVT_TYPE = field("content.type");
+                     SEVERITY = sev;
+                     N_EVT_CATEGORY = "/Threat/Malware";
+                     N_SEVERITY = dictMapping("severity",sev);
+                     EVT_ID = log_id;
+                     EVT_NAME = field("content.name");
+                     SBJ_TYPE = "/Ip";
+                     SBJ_NAME = ip;
+                     SBJ_IP = ip;
+                     SBJ_URI = mid;
+                     SBJ_TRANS_IP = report_ip;
+                     SBJ_MAC = mac;
+                     BHV_CATEGORY = "/Exist";
+                     OBJ_TYPE = "/Malcode/Virus";
+                     OBJ_NAME = field("content.name");
+                     OUTCOME = field("content.op");
+                     PRT_ACTION = field("content.task");
+                     PLD_NAME = field("content.virus_path");
+                 }
+	    }
+	}
+}

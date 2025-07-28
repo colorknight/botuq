@@ -1,0 +1,141 @@
+botu("WAF/Venus/WAG/Syslog") {
+    patternParse(MS_SRC_DATA,"\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) (?<host>[^\\s]+) (?<type>[^:]+): (?<detail>.*)");
+    temp = replaceString(detail,"\"","");
+    keyPositionSplitParse(temp, ' ', "=");
+    sev = parseSyslogSeverity(pri);
+    if(type == "WAG"){
+        switch(Evt_type){
+            case "网页爬虫":
+                splitParse(Content, ';', '"', '"', "=");
+                pack("event"){
+                    START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = "WAG";
+                    EVT_CATEGORY = Evt_type;
+                    EVT_TYPE = Module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    BEHAVIOR = Method;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = DstIP;
+                    OBJ_IP = DstIP;
+                    OBJ_PORT = DstPort;
+                    PRT_ACTION = Action;
+                    REQ_URL = URL;
+                    REQ_USER_AGENT = User_Agent;
+                }
+            case "安全审计":
+                pack("event"){
+                    START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = "WAG";
+                    EVT_CATEGORY = Evt_type;
+                    EVT_TYPE = Module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = DstIP;
+                    OBJ_IP = DstIP;
+                    OBJ_PORT = DstPort;
+                    PRT_ACTION = Action;
+                    OUTCOME = Content;
+                }
+            case "其他事件":
+                pack("event"){
+                    START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = "WAG";
+                    EVT_CATEGORY = Evt_type;
+                    EVT_TYPE = Module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = DstIP;
+                    OBJ_IP = DstIP;
+                    OBJ_PORT = DstPort;
+                    PRT_ACTION = Action;
+                    REQ_URL = URL;
+                }
+            case "敏感文件访问":
+                splitParse(Content, ';', '"', '"', "=");
+                pack("event"){
+                    START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = "WAG";
+                    EVT_CATEGORY = Evt_type;
+                    EVT_TYPE = Module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Access";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = DstIP;
+                    OBJ_IP = DstIP;
+                    OBJ_PORT = DstPort;
+                    PRT_ACTION = Action;
+                    REQ_URL = URL;
+                    PLD_TYPE = "/File";
+                    PLD_NAME = 访问文件;
+                }
+            case "木马攻击":
+                pack("event"){
+                    START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
+                    DS_DVC_NAME = host;
+                    DS_PROCESS_NAME = "WAG";
+                    EVT_CATEGORY = Evt_type;
+                    EVT_TYPE = Module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Malware";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = SrcIP;
+                    SBJ_IP = SrcIP;
+                    SBJ_PORT = SrcPort;
+                    BHV_CATEGORY = "/Attack";
+                    BEHAVIOR = Method;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = DstIP;
+                    OBJ_IP = DstIP;
+                    OBJ_PORT = DstPort;
+                    PRT_ACTION = Action;
+                    PLD_TYPE = "/File";
+                    PLD_NAME = URL;
+                }
+        }
+    }else{
+        pack("event"){
+            START_TIME = format2Time(GenTime, "MMM dd HH:mm:ss");
+            DS_DVC_NAME = host;
+            DS_PROCESS_NAME = module;
+            EVT_CATEGORY = Evt_type;
+            EVT_TYPE = Module;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            PRT_ACTION = Action;
+            OUTCOME = Content;
+        }
+    }
+}

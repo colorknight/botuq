@@ -1,0 +1,893 @@
+botu("IPS/Topsec/NGIDP[3.2262]/Syslog"){
+    splitParse(MS_SRC_DATA, ' ', '"', '"',"=");
+    switch(recorder){
+        case "urlfilter":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                EVT_TYPE = dictMapping("ett_ips_topsec_ngidp3.2262_syslog",type);
+                EVT_NAME = dictMapping("etn_ips_topsec_ngidp3.2262_syslog",sub_type);
+                SEVERITY = level;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",level);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = method;
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                APP_PROTO = dictMapping("app_protocol",app_pro);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                REQ_URL = appendix;
+                OUTCOME = msg;
+                REQ_USER_AGENT = client;
+                PRT_ACTION = dictMapping("op_ips_topsec_ngidp3.2262_syslog",op);
+                PRT_STATUS = simpleMapping(result, "{0:成功,2:失败}",null);
+            }
+        case "admin":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 6;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",6);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user;
+                SBJ_IP = src;
+                BHV_CATEGORY = "/Login";
+                BEHAVIOR = op;
+                TECHNICAL = method;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = MS_SRC_ADDRESS;
+                OBJ_IP = MS_SRC_ADDRESS;
+                STATUS = simpleMapping(result, "{0:成功,2:失败}",null);
+                OUTCOME = description;
+            }
+        case "admin_config":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 6;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",6);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Update";
+                OBJ_TYPE = "/Resource/Account";
+                OUTCOME = description;
+            }
+        case "attack":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = dictMapping("ett_ips_topsec_ngidp3.2262_syslog",type);
+                N_EVT_CATEGORY = "/Threat/Attack";
+                EVT_TYPE = dictMapping("etn_ips_topsec_ngidp3.2262_syslog",sub_type);
+                SEVERITY = level;
+                N_SEVERITY = dictMapping("severity",level);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Attack";
+                BEHAVIOR = method;
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                APP_PROTO = dictMapping("app_protocol",app_pro);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                OUTCOME = msg;
+                REQ_XFF = x_forwarded_for;
+                PRT_ACTION = dictMapping("op_ips_topsec_ngidp3.2262_syslog",op);
+                PRT_STATUS = simpleMapping(result, "{0:尝试,1:成功,2:失陷}",null);
+            }
+        case "config":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = "notice";
+                N_EVT_CATEGORY = "/Audit/System";
+                N_SEVERITY = dictMapping("severity","notice");
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user;
+                SBJ_IP = src;
+                BHV_CATEGORY = "/Update";
+                OBJ_TYPE = "/Resource/Configuration";
+                OBJ_IP = MS_SRC_ADDRESS;
+                OBJ_HOST = dev_name;
+                OUTCOME = msg;
+            }
+        case "cpu_monitor":
+            sbjType = "/Resource/CPU";
+        case "memory_monitor":
+            if (sbjType == null) {
+                sbjType = "/Resource/Memory";
+            }
+        case "disk_monitor":
+            if (sbjType == null) {
+                sbjType = "/Resource/Disk";
+            }
+        case "cputemp_monitor":
+            if (sbjType == null) {
+                sbjType = "/Resource/CPU";
+            }
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = "emergent";
+                N_EVT_CATEGORY = "/Audit/Status";
+                N_SEVERITY = dictMapping("severity","emergent");
+                SBJ_TYPE = sbjType;
+                SBJ_HOST = dev_name;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Is";
+                OUTCOME = msg;
+            }
+        case "audit_dnp3":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 6;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",6);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_PORT = sport;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                APP_PROTO = dictMapping("app_protocol",app_pro);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_PORT = dport;
+            }
+        case "audit_dns":
+            pack("event") {
+                DS_DVC_NAME = dev_name;
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = "info";
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity","info");
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                BHV_CATEGORY = "/Access";
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = dmac;
+                STATUS = dictMapping("rcode_ips_topsec_ngidp3.2262_syslog",rcode);
+                DURATION = ttl;
+            }
+        case "firmware":
+            objType = "/Resource/Firmware";
+            objName = "Firmware";
+        case "license":
+            if (objName == null) {
+               objType = "/Resource/License";
+               objName = "License";
+            }
+        case "rules_update":
+            if (objName == null) {
+               objType = "/Resource/Rule";
+               objName = "Rule";
+            }
+            pack("event") {
+               START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+               DS_DVC_NAME = dev_name;
+               DS_PROCESS_NAME = recorder;
+               EVT_CATEGORY = recorder;
+               SEVERITY = "notice";
+               N_EVT_CATEGORY = "/Audit/System";
+               N_SEVERITY = dictMapping("severity","notice");
+               SBJ_TYPE = "/Host";
+               SBJ_NAME = dev_name;
+               SBJ_IP = MS_SRC_ADDRESS;
+               BHV_CATEGORY = "/Update";
+               BEHAVIOR = op;
+               OUTCOME = msg;
+            }
+        case "audit_ftp":
+            pack("event") {
+               START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+               DS_DVC_NAME = dev_name;
+               DS_PROCESS_NAME = recorder;
+               EVT_CATEGORY = recorder;
+               SEVERITY = 4;
+               N_EVT_CATEGORY = "/Audit";
+               N_SEVERITY = dictMapping("severity",4);
+               SBJ_TYPE = "/User";
+               SBJ_NAME = user;
+               SBJ_IP = sip;
+               SBJ_MAC = convert2Mac(smac);
+               SBJ_PORT = sport;
+               BHV_CATEGORY = "/Upload";
+               TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+               OBJ_TYPE = "/Ip";
+               OBJ_NAME = dip;
+               OBJ_IP = dip;
+               OBJ_MAC = convert2Mac(dmac);
+               OBJ_PORT = dport;
+               STATUS = ret_code;
+               OUTCOME = ret;
+            }
+        case "ha":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = alarm;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",alarm);
+                SBJ_TYPE = "/Resource/Other";
+                SBJ_NAME = recorder;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Is";
+                OUTCOME = msg;
+            }
+        case "audit_http2":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = method;
+                BHV_BODY = post_data;
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                STATUS = status_code;
+                REQ_USER_AGENT = user_agent;
+                REQ_URL = path;
+                REQ_COOKIE = cookies;
+                REQ_REFERER = referer;
+                REQ_XFF = x_forwarded_for;
+                REP_HTTP_SERVER = server;
+                REP_CONTENT_TYPE = content_type;
+                REP_CONTENT_LENGTH = content_length_server;
+            }
+        case "audit_http":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = method;
+                BHV_BODY = post_data;
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                STATUS = status_code;
+                REQ_USER_AGENT = user_agent;
+                REQ_URL = path;
+                REQ_COOKIE = cookies;
+                REQ_REFERER = referer;
+                REQ_XFF = x_forwarded_for;
+                REP_HTTP_SERVER = server;
+                REP_CONTENT_TYPE = content_type;
+                REP_CONTENT_LENGTH = content_length_server;
+            }
+        case "audit_icmp":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                STATUS = reply_code;
+                PLD_SIZE = reply_payload;
+            }
+        case "audit_ikev2":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 6;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",6);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_PORT = sport;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                APP_PROTO = dictMapping("app_protocol",app_pro);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_PORT = dport;
+            }
+        case "interface":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = alarm;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",alarm);
+                SBJ_TYPE = "/Resource/Interface";
+                SBJ_NAME = recorder;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Is";
+                BEHAVIOR = op;
+            }
+        case "ipsipbw":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                EVT_TYPE = dictMapping("ett_ips_topsec_ngidp3.2262_syslog",type);
+                EVT_NAME = dictMapping("etn_ips_topsec_ngidp3.2262_syslog",sub_type);
+                SEVERITY = level;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",level);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Attack";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                APP_PROTO = dictMapping("app_protocol",app_pro);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                OUTCOME = msg;
+                PRT_ACTION = dictMapping("op_ips_topsec_ngidp3.2262_syslog",op);
+                PRT_STATUS = simpleMapping(result, "{0:尝试,1:成功,2:失陷}",null);
+            }
+        case "audit_ldap":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = username;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+            }
+        case "audit_modbus":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 6;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",6);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_PORT = sport;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_PORT = dport;
+            }
+        case "audit_mqtt":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 6;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",6);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_PORT = sport;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_PORT = dport;
+                OUTCOME = decodeBase64(topicmsg);
+            }
+        case "audit_nfs":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_PORT = sport;
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = simpleMapping(operation, "{0:上传,2:下载}",null);
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_PORT = dport;
+                STATUS = simpleMapping(result, "{0:成功,2:失败}",null);
+                PLD_TYPE = "/Resource/File";
+                PLD_NAME = file_name;
+                PLD_SIZE = file_size;
+            }
+        case "pf":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = "information";
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity","information");
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = src;
+                SBJ_IP = src;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_PORT = sport;
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dst;
+                OBJ_IP = dst;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_PORT = dport;
+                PRT_ACTION = op;
+            }
+        case "audit_rdp":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = "information";
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity","information");
+                SBJ_TYPE = "/User";
+                SBJ_NAME = username;
+                SBJ_IP = sip;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_PORT = sport;
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_PORT = dport;
+            }
+        case "recover":
+            sbj_name = regExtract(msg, "'(?<name>.*)'");
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 1;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",1);
+                SBJ_TYPE = "/Resource/Process";
+                SBJ_NAME = sbj_name;
+                SBJ_IP = MS_SRC_ADDRESS;
+                BHV_CATEGORY = "/Is";
+                OUTCOME = msg;
+            }
+        case "securitypolicy":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                EVT_ID = policyid;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Violation";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = src;
+                SBJ_IP = src;
+                SBJ_PORT = sport;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = proto;
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dst;
+                OBJ_IP = dst;
+                OBJ_PORT = dport;
+                PRT_ACTION = action;
+            }
+        case "audit_sip":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip_from;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = method;
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = sip_to;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                STATUS = response_code;
+                REQ_USER_AGENT = user_agent;
+                REQ_URL = uri;
+            }
+        case "audit_smb":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = user_name;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_HOST = host_name;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                BEHAVIOR = simpleMapping(operation, "{0:上传,1:下载,2:认证}",null);
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                STATUS = simpleMapping(result, "{0:成功,2:失败}",null);
+                PLD_TYPE = "/Resource/File";
+                PLD_NAME = file_name;
+                PLD_SIZE = file_size;
+            }
+        case "audit_snmp":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                STATUS = errorstatus;
+            }
+        case "audit_db":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = username;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                OBJ_TYPE = "/DB/Resource/Tablespace";
+                OBJ_NAME = dbname;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                OBJ_TAG = dbtype;
+                STATUS = retcode;
+                PLD_TYPE = "SQL";
+                PLD_CONTENT = command;
+            }
+        case "audit_tdp":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DURATION = toLong(last_time) - toLong(first_time);
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Access";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                APP_PROTO = dictMapping("app_protocol",app_pro);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                OUTCOME = simpleMapping(alert_flag, "{0:正常,1:有威胁}",null);
+                PACKETS_IN = up_pkts;
+                PACKETS_OUT = down_pkts;
+                BYTES_IN = up_bytes;
+                BYTES_OUT = down_bytes;
+            }
+        case "audit_tftp":
+            pack("event") {
+               START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+               DS_DVC_NAME = dev_name;
+               DS_PROCESS_NAME = recorder;
+               EVT_CATEGORY = recorder;
+               SEVERITY = 4;
+               N_EVT_CATEGORY = "/Audit";
+               N_SEVERITY = dictMapping("severity",4);
+               SBJ_TYPE = "/Ip";
+               SBJ_NAME = sip;
+               SBJ_IP = sip;
+               SBJ_MAC = convert2Mac(smac);
+               SBJ_PORT = sport;
+               BHV_CATEGORY = "/Upload";
+               BEHAVIOR = simpleMapping(operation, "{0:上传,1:下载}",null);
+               TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+               OBJ_TYPE = "/Ip";
+               OBJ_NAME = dip;
+               OBJ_IP = dip;
+               OBJ_MAC = convert2Mac(dmac);
+               OBJ_PORT = dport;
+               STATUS = err_code;
+               OUTCOME = tftp_result;
+               PLD_TYPE = "/Resource/File";
+               PLD_NAME = file_name;
+               PLD_SIZE = tsize_option;
+            }
+        case "tvdevent":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                EVT_TYPE = dictMapping("ett_ips_topsec_ngidp3.2262_syslog",type);
+                EVT_NAME = dictMapping("etn_ips_topsec_ngidp3.2262_syslog",sub_type);
+                SEVERITY = level;
+                N_EVT_CATEGORY = "/Threat/Attack";
+                N_SEVERITY = dictMapping("severity",level);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Attack";
+                BEHAVIOR = method;
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                APP_PROTO = dictMapping("app_protocol",app_pro);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                STATUS = response_code;
+                OUTCOME = msg;
+                PRT_ACTION = dictMapping("op_ips_topsec_ngidp3.2262_syslog",op);
+                PRT_STATUS = simpleMapping(result, "{0:尝试,1:成功,2:失陷}",null);
+                PLD_TYPE = "/Resource/File";
+                PLD_NAME = file;
+            }
+        case "audit_xmpp":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = msg_from;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Send";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/User";
+                OBJ_NAME = msg_to;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                PLD_TYPE = msg_type;
+                PLD_NAME = msg_body;
+            }
+        case "audit_file":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/Ip";
+                SBJ_NAME = sip;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Send";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/Ip";
+                OBJ_NAME = dip;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                PLD_TYPE = "/Resource/File";
+                PLD_NAME = msg_body;
+            }
+        case "audit_mail":
+            pack("event"){
+                START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                DS_DVC_NAME = dev_name;
+                DS_PROCESS_NAME = recorder;
+                EVT_CATEGORY = recorder;
+                SEVERITY = 2;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",2);
+                SBJ_TYPE = "/User";
+                SBJ_NAME = sender;
+                SBJ_IP = sip;
+                SBJ_PORT = sport;
+                SBJ_MAC = convert2Mac(smac);
+                SBJ_INTERFACE = sdev;
+                BHV_CATEGORY = "/Send";
+                TRANS_PROTO = dictMapping("trans_ips_topsec_ngidp3.2262_syslog",proto);
+                OBJ_TYPE = "/User";
+                OBJ_NAME = receiver;
+                OBJ_IP = dip;
+                OBJ_PORT = dport;
+                OBJ_MAC = convert2Mac(dmac);
+                OBJ_INTERFACE = ddev;
+                CC = cc;
+                BCC = bcc;
+                SUBJECT = subject;
+            }
+    }
+}

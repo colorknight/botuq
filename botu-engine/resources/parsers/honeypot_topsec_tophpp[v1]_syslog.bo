@@ -1,0 +1,23 @@
+botu("Honeypot/Topsec/TopHPP[V1]/Syslog"){
+    splitParse(MS_SRC_DATA, ',', null, null, "=");
+    if(attack_brief != null){
+        pack("event"){
+            START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+            EVT_CATEGORY = type;
+            EVT_TYPE = attack_brief;
+            SEVERITY = severity;
+            N_EVT_CATEGORY = "/Threat/Attack";
+            N_SEVERITY = dictMapping("severity",severity);
+            SBJ_TYPE = "/Ip";
+            SBJ_NAME = sip;
+            SBJ_IP = sip;
+            SBJ_PORT = sport;
+            BHV_CATEGORY = "/Attack";
+            TRANS_PROTO = protocol;
+            OBJ_TYPE = "/Ip";
+            OBJ_NAME = dip;
+            OBJ_IP = dip;
+            OBJ_PORT = dport;
+        }
+    }
+}

@@ -1,0 +1,258 @@
+botu("Firewall/Juniper/SSG5/Syslog") {
+	if (patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>[^\\]]+\\]\\w+-(?<level>\\w+)-(?<module>\\d+)(\\(\\w+\\))?:\\s(?<msg>.*)")) {
+        sev = parseSyslogSeverity(pri);
+        switch(module) {
+            case "00515":
+                if(patternParse(msg, ".*to system by (?<loginName>\\w+).* from (?<sip>[^:]+):(?<sport>\\d+)[^\\(]+\\((?<time>[^\\)]+).*")) {
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = loginName;
+                        SBJ_IP = sip;
+                        SBJ_PORT = sport;
+                        SBJ_ROLE = "admin";
+                        BHV_CATEGORY = "/Login";
+                        STATUS = "Failed";
+                        OUTCOME = msg;
+                    }
+                } else {
+                    patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = "n/a";
+                        SBJ_IP = MS_SRC_ADDRESS;
+                        BHV_CATEGORY = "/Login";
+                        OUTCOME = msg;
+                    }
+                }
+            case "00518":
+                if(patternParse(msg, ".*login name (?<loginName>\\w+)[^\\(]+\\((?<time>[^\\)]+).*")) {
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = loginName;
+                        SBJ_IP = MS_SRC_ADDRESS;
+                        SBJ_ROLE = "admin";
+                        BHV_CATEGORY = "/Login";
+                        STATUS = "Failed";
+                        OUTCOME = msg;
+                    }
+                } else {
+                    patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = "n/a";
+                        SBJ_IP = MS_SRC_ADDRESS;
+                        BHV_CATEGORY = "/Login";
+                        OUTCOME = msg;
+                    }
+                }
+            case "00519":
+                if(patternParse(msg, ".*login name (?<loginName>\\w+)[^\\(]+\\((?<time>[^\\)]+).*")) {
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = loginName;
+                        SBJ_IP = MS_SRC_ADDRESS;
+                        SBJ_ROLE = "admin";
+                        BHV_CATEGORY = "/Login";
+                        STATUS = "Succeed";
+                        OUTCOME = msg;
+                    }
+                } else {
+                    patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        EVT_ID = evtId;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = "n/a";
+                        SBJ_IP = MS_SRC_ADDRESS;
+                        BHV_CATEGORY = "/Login";
+                        OUTCOME = msg;
+                    }
+                }
+            case "00527":
+                patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    DS_PROCESS_NAME = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = MS_SRC_ADDRESS;
+                    SBJ_IP = MS_SRC_ADDRESS;
+                    OUTCOME = msg;
+                }
+            case "00528":
+                if(patternParse(msg, ".*for admin user '(?<loginName>\\w+)' at host (?<sip>[^:]+)[^\\(]+\\((?<time>[^\\)]+).*")) {
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = loginName;
+                        SBJ_IP = sip;
+                        SBJ_ROLE = "admin";
+                        BHV_CATEGORY = "/Login";
+                        STATUS = "Failed";
+                        OUTCOME = msg;
+                    }
+                } else {
+                    patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = "n/a";
+                        SBJ_IP = MS_SRC_ADDRESS;
+                        BHV_CATEGORY = "/Login";
+                        OUTCOME = msg;
+                    }
+                }
+            case "00531":
+                patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    DS_PROCESS_NAME = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = MS_SRC_ADDRESS;
+                    SBJ_IP = MS_SRC_ADDRESS;
+                    OUTCOME = msg;
+                }
+            case "00019":
+                patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    DS_PROCESS_NAME = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = MS_SRC_ADDRESS;
+                    SBJ_IP = MS_SRC_ADDRESS;
+                    OUTCOME = msg;
+                }
+            case "00528":
+                if(patternParse(msg, ".*for admin user '(?<loginName>\\w+)' at host (?<sip>\\d+\\.\\d+\\.\\d+\\.\\d+)\\. \\((?<time>[^\\)]+).*")) {
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = loginName;
+                        SBJ_IP = sip;
+                        SBJ_ROLE = "admin";
+                        BHV_CATEGORY = "/Login";
+                        STATUS = "Failed";
+                        OUTCOME = msg;
+                    }
+                } else {
+                    patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = "n/a";
+                        SBJ_IP = MS_SRC_ADDRESS;
+                        BHV_CATEGORY = "/Login";
+                        OUTCOME = msg;
+                    }
+                }
+            case "00027":
+                if(patternParse(msg, "Login attempt by (?<role>\\w+) (?<loginName>\\w+) from (?<sip>\\d+\\.\\d+\\.\\d+\\.\\d+) [^\\(]+\\((?<time>[^\\)]+).*")) {
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = loginName;
+                        SBJ_IP = sip;
+                        SBJ_ROLE = role;
+                        BHV_CATEGORY = "/Login";
+                        STATUS = "Failed";
+                        OUTCOME = msg;
+                    }
+                } else {
+                    patternParse(msg, "[^\\(]+\\((?<time>[^\\)]+).*");
+                    pack("event") {
+                        START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                        DS_PROCESS_NAME = module;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = "n/a";
+                        SBJ_IP = MS_SRC_ADDRESS;
+                        BHV_CATEGORY = "/Login";
+                        OUTCOME = msg;
+                    }
+                }
+            case "00257":
+                splitParse(msg, ' ', '"', '"', "=");
+                patternParse(msg, ".*reason=(?<reason>.*)");
+                pack("event") {
+                    START_TIME = format2Time(start_time, "yyyy-MM-dd HH:mm:ss");
+                    DS_PROCESS_NAME = module;
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/Session";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    DURATION = duration;
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = src;
+                    SBJ_IP = src;
+                    SBJ_PORT = src_port;
+                    BHV_CATEGORY = "/Access";
+                    TRANS_PROTO = proto;
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = dst;
+                    OBJ_IP = dst;
+                    OBJ_PORT = dst_port;
+                    OUTCOME = reason;
+                    PRT_ACTION = action;
+                    PACKETS_IN = rcvd;
+                    PACKETS_OUT = send;
+                }
+        }
+	}
+}

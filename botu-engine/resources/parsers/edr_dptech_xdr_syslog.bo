@@ -1,0 +1,178 @@
+botu("EDR/DPtech/XDR/Syslog") {
+    if(patternParse(MS_SRC_DATA, "(?<module>[^;]+);;(?<sev>[^;]+);;(?<time>[^;]+);;(?<clientIp>[^;]+);;(?<clientId>[^;]+);;(?<detail>.*)")){
+            patternSplitParse(detail, ";;", "=");
+            switch(module){
+                case "AntiVirusReport":
+                    pack("event"){
+                        START_TIME = toTime(vftime);
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = simpleMapping(vtype, "{1:木马,2:后门,3:感染型病毒,4:蠕虫病毒,5:脚本病毒,6:漏洞利用,7:广告软件,8:间谍软件,9:宏病毒,10:黑客工具,11:加壳病毒,12:RootKit病毒,13:其他}", 13);
+                        EVT_NAME = vname;
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Threat/Malware/Virus";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = clientIp;
+                        SBJ_IP = clientIp;
+                        SBJ_HOST = nodename;
+                        SBJ_MAC = convert2Mac(mac);
+                        BHV_CATEGORY = "/Exists";
+                        TECHNICAL = simpleMapping(vfindby, "{3:网页监控,4:邮件控制（发送）,5:邮件监控（接收）,10:不区分扫描具体规则,11:扫描：可移动存储设备,12:扫描：硬盘,13:扫描：网络共享,14:扫描：光盘,15:扫描：内存虚拟硬盘,20:不区分文件监控具体规则,21:文件监控：可移动存储设备,22:文件监控：硬盘,23:文件监控：网络共享,24:文件监控：光盘,25:文件监控：内存虚拟硬盘}", 10);
+                        OBJ_TYPE = simpleMapping(vtype, "{1:木马,2:后门,3:感染型病毒,4:蠕虫病毒,5:脚本病毒,6:漏洞利用,7:广告软件,8:间谍软件,9:宏病毒,10:黑客工具,11:加壳病毒,12:RootKit病毒,13:其他}", 13);
+                        OBJ_NAME = vname;
+                        PRT_ACTION = simpleMapping(vresult, "{0:已忽略,1:已信任,2:已隔离,3:处理失败,4:已删除,5:已清除}", 0);
+                        PLD_TYPE = "/File";
+                        PLD_NAME = vpath;
+                    }
+                case "ActionRuleReport":
+                    pack("event"){
+                        START_TIME = toTime(op_time);
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = "/Audit";
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = clientIp;
+                        SBJ_IP = clientIp;
+                        SBJ_HOST = machineName;
+                        SBJ_MAC = convert2Mac(mac);
+                        BEHAVIOR = simpleMapping(action, "{0:提醒,1:隔离文件,2:删除文件,3:处理失败,4:终止执行操作的进程,5:切断连接}", 0);
+                        STATUS = action_result;
+                    }
+                case "FileActionsInfo":
+                    pack("event"){
+                        START_TIME = toTime(updated_at);
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = "/Audit";
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = clientIp;
+                        SBJ_IP = clientIp;
+                        SBJ_HOST = machineName;
+                        SBJ_MAC = convert2Mac(mac);
+                        BEHAVIOR = simpleMapping(action, "{1:ADD,2:UPDATED,3:DELETE,4:OPEN,5:CLOSE,6:重命名,7:移动}", 1);
+                        OBJ_TYPE = "/File";
+                        OBJ_NAME = file_path;
+                        STATUS = simpleMapping(result, "{0:成功,1:失败}", 1);
+                        PLD_TYPE = "/File";
+                        PLD_NAME = file_path;
+                        PLD_SIZE = file_size ;
+                    }
+                case "ProcessBasicInfo":
+                    pack("event"){
+                        START_TIME = toTime(create_at);
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = "/Audit";
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit/Status";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = user;
+                        SBJ_IP = clientIp;
+                        SBJ_HOST = machineName;
+                        SBJ_MAC = convert2Mac(mac);
+                        BHV_CATEGORY = "/Execute";
+                        BEHAVIOR = cmd;
+                        OBJ_TYPE = "/Resource/Process";
+                        OBJ_NAME = proc_path;
+                    }
+                case "RegisterActionsInfo":
+                    pack("event"){
+                        START_TIME = toTime(op_time);
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = "/Audit";
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = clientIp;
+                        SBJ_IP = clientIp;
+                        SBJ_HOST = machineName;
+                        SBJ_MAC = convert2Mac(mac);
+                        BEHAVIOR = simpleMapping(action, "{1:创建、修改键值,2:读,3:重命名键,4:删除}", 1);
+                        OBJ_TYPE = "/Resource/Registry";
+                        OBJ_NAME = name;
+                        STATUS = simpleMapping(result, "{0:成功,1:失败}", 1);
+                    }
+                case "NetworkActionsInfo":
+                    pack("event"){
+                        START_TIME = toTime(op_time);
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = "/Audit";
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit/Status";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = src_ip;
+                        SBJ_IP = src_ip;
+                        SBJ_HOST = machineName;
+                        SBJ_PORT = src_port;
+                        SBJ_MAC = convert2Mac(mac);
+                        BHV_CATEGORY = "/Access";
+                        TRANS_PROTO = protocol;
+                        OBJ_TYPE = "/Ip";
+                        OBJ_NAME = dest_ip;
+                        OBJ_IP = dest_ip;
+                        REQ_URL = url;
+                        STATUS = simpleMapping(result, "{0:成功,1:失败}", 1);
+                    }
+                case "UserInfo":
+                    pack("event"){
+                        START_TIME = toTime(op_time);
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = "/Audit";
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit/System";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = account;
+                        SBJ_IP = clientIp;
+                        SBJ_HOST = machineName;
+                        SBJ_MAC = convert2Mac(mac);
+                        BEHAVIOR = simpleMapping(action_type, "{0:删除,1:创建,2:修改账号}", 1);
+                        OBJ_TYPE = "/Resource/Account";
+                        OBJ_NAME = user_name;
+                    }
+                case "PrintActionsInfo":
+                    pack("event"){
+                        START_TIME = toTime(op_time);
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = "/Audit";
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit/System";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/User";
+                        SBJ_NAME = user;
+                        SBJ_IP = clientIp;
+                        SBJ_HOST = machineName;
+                        SBJ_MAC = convert2Mac(mac);
+                        OBJ_TYPE = "/Resource";
+                        OBJ_NAME = printer;
+                        PLD_TYPE = "/File";
+                        PLD_NAME = document;
+                    }
+                default:
+                    pack("event"){
+                        START_TIME = toTime(op_time);
+                        DS_PROCESS_NAME = module;
+                        EVT_CATEGORY = "/Audit";
+                        SEVERITY = sev;
+                        N_EVT_CATEGORY = "/Audit";
+                        N_SEVERITY = dictMapping("severity",sev);
+                        SBJ_TYPE = "/Ip";
+                        SBJ_NAME = clientIp;
+                        SBJ_IP = clientIp;
+                        SBJ_HOST = machineName;
+                        SBJ_MAC = convert2Mac(mac);
+                        BHV_CATEGORY = "/other";
+                        BEHAVIOR = op;
+                        OBJ_TYPE = "/Resource";
+                        OBJ_NAME = name;
+                        OBJ_NAME = dns_query;
+                    }
+            }
+    }
+}

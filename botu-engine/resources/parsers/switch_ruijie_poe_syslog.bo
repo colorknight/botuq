@@ -1,0 +1,26 @@
+botu("Switch/RuiJie/POE/Syslog"){
+    patternParse(MS_SRC_DATA, "\\<(?<pri>\\d+)\\>.*\\s*\\*(?<time>[^:]+:\\d+:\\d+): %(?<module>\\S+)-(?<sev>\\d+)-(?<type>\\S+): (?<detail>.*)");
+    time = strFormat("%s %s", time2String(now(), "yyyy"), time);
+    switch(module) {
+        case "SYS":
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss");
+                DS_PROCESS_NAME = module;
+                EVT_CATEGORY = type;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                OUTCOME = detail;
+            }
+        default:
+            pack("event") {
+                START_TIME = format2Time(time, "yyyy MMM dd HH:mm:ss");
+                DS_PROCESS_NAME = module;
+                EVT_CATEGORY = module;
+                SEVERITY = sev;
+                N_EVT_CATEGORY = "/Audit";
+                N_SEVERITY = dictMapping("severity",sev);
+                OUTCOME = detail;
+            }
+    }
+}

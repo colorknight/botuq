@@ -1,0 +1,68 @@
+botu("AntiDos/DPtech/Guard3000/Syslog") {
+    if (patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>(?<time>[^\\s]+ \\d+:\\d+:\\d+) (?<dev>[^\\s]+) %%.*/[^/]+/\\d/(?<cat>[^:]+):\\s?(?<msg>.*)")) {
+        splitParse(msg, ';', null, null, ":");
+        sev = parseSyslogSeverity(pri);
+        switch(cat) {
+            case "ALARM":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = dev;
+                    DS_PROCESS_NAME = cat;
+                    EVT_CATEGORY = field("Type");
+                    EVT_TYPE = field("Sub-type");
+                    EVT_ID = field("Anomaly ID");
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/IpGrp";
+                    SBJ_NAME = strFormat("[%s:%s,%s:%s,%s:%s]",field("SIP1"),field("SPort1"),field("SIP2"),field("SPort2"),field("SIP3"),field("SPort3"));
+                    SBJ_IP = field("SIP1");
+                    TRANS_PROTO = field("Protocol");
+                    BHV_CATEGORY = "/Attack";
+                    OBJ_TYPE = "/IpGrp";
+                    OBJ_NAME = strFormat("[%s:%s,%s:%s,%s:%s]",field("DIP1"),field("DPort1"),field("DIP2"),field("DPort2"),field("DIP3"),field("DPort3"));
+                    OBJ_IP = field("DIP1");
+                    EVIDENCE = field("URL to Link the Report");
+                }
+            case "SIP-LIST":
+                json = jsonParse(TOPIPData);
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = dev;
+                    DS_PROCESS_NAME = cat;
+                    EVT_CATEGORY = field("Type");
+                    EVT_TYPE = field("Sub-type");
+                    EVT_ID = field("Anomaly ID");
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Threat/Attack";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/IpGrp";
+                    SBJ_NAME = strFormat("[%s,%s,%s]",json.TOPIPData[0].SIPOrDIP,json.TOPIPData[1].SIPOrDIP,json.TOPIPData[2].SIPOrDIP);
+                    SBJ_IP = json.TOPIPData[0].SIPOrDIP;
+                    BEHAVIOR = field("Sub-type");
+                    TRANS_PROTO = field("Protocol");
+                    BHV_CATEGORY = "/Attack";
+                    OBJ_TYPE = "/Ip";
+                    OBJ_NAME = field("DIP");
+                    OBJ_IP = field("DIP");
+                    OUTCOME = msg;
+                }
+            case "TRAFFIC":
+                pack("event") {
+                    START_TIME = format2Time(time, "yyyy-MM-dd HH:mm:ss");
+                    DS_DVC_NAME = dev;
+                    DS_PROCESS_NAME = cat;
+                    EVT_CATEGORY = field("Traffic Type");
+                    EVT_TYPE = field("Traffic Type");
+                    SEVERITY = sev;
+                    N_EVT_CATEGORY = "/Audit/Flow";
+                    N_SEVERITY = dictMapping("severity",sev);
+                    SBJ_TYPE = "/Ip";
+                    SBJ_NAME = field("IP address");
+                    SBJ_IP = field("IP address");
+                    BHV_CATEGORY = "/Create";
+                    OUTCOME = msg;
+                }
+            }
+	}
+}

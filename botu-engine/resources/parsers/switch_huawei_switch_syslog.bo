@@ -1,0 +1,45 @@
+botu("Switch/Huawei/Switch/Syslog"){
+    if(patternParse(MS_SRC_DATA, "(?<time>[^:]+:\\d+:\\d+) (?<host>.*) %% (?<version>.*) (?<module>.*)/(?<sev>\\d+)/(?<brief>.*): (?<info>.*)")){
+        pack("event"){
+            START_TIME = format2Time(time, "MMM dd yyyy HH:mm:ss");
+            DS_DVC_NAME = strFormat("%s/%s", host, module);
+            EVT_CATEGORY = module;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/Ip";
+            SBJ_IP = MS_SRC_ADDRESS;
+            SBJ_NAME = MS_SRC_ADDRESS;
+            BHV_CATEGORY = "/Is";
+            OUTCOME=info;
+        }
+    }else if(patternParse(MS_SRC_DATA, "(?<time>[^:]+:\\d+:\\d+)\\+\\d+:\\d+ (?<host>.*) %% (?<version>.*) (?<module>.*)/(?<sev>\\d+)/(?<brief>.*): (?<info>.*)")){
+        pack("event"){
+            START_TIME = format2Time(time, "MMM dd yyyy HH:mm:ss");
+            DS_DVC_NAME = strFormat("%s/%s", host, module);
+            EVT_CATEGORY = module;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/Ip";
+            SBJ_IP = MS_SRC_ADDRESS;
+            SBJ_NAME = MS_SRC_ADDRESS;
+            BHV_CATEGORY = "/Is";
+            OUTCOME=info;
+        }
+    }else if(patternParse(MS_SRC_DATA, "^\\<(?<pri>\\d+)\\>(?<time>[^:]+:\\d+:\\d+) (?<host>.*) %%\\s*(?<version>\\d+)\\s*(?<module>.*)/(?<sev>\\d+)/(?<brief>.*):\\s*(?<info>.*)")){
+        pack("event"){
+            START_TIME = format2Time(time, "MMM dd yyyy HH:mm:ss");
+            DS_DVC_NAME = strFormat("%s/%s", host, module);
+            EVT_CATEGORY = module;
+            SEVERITY = sev;
+            N_EVT_CATEGORY = "/Audit";
+            N_SEVERITY = dictMapping("severity",sev);
+            SBJ_TYPE = "/Ip";
+            SBJ_IP = MS_SRC_ADDRESS;
+            SBJ_NAME = MS_SRC_ADDRESS;
+            BHV_CATEGORY = "/Is";
+            OUTCOME=info;
+        }
+    }
+}
